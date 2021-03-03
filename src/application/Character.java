@@ -66,7 +66,7 @@ public class Character {
 	public double getdx() {
 		return this.dx;
 	}
-	public void setdx(int dx) {
+	public void setdx(double dx) {
 		this.dx = dx;
 	}
 	public double getdy() {
@@ -74,5 +74,14 @@ public class Character {
 	}
 	public void setdy(double dy) {
 		this.dy = dy;
+	}
+	
+	public void setJumping(boolean b)
+	{
+		this.jumping = b;
+	}
+	public boolean getJumping()
+	{
+		return this.jumping;
 	}
 }

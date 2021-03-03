@@ -31,7 +31,7 @@ public class GameObject extends InputFunctions{
 		this.running = true;
 		
 		group.setManaged(false);
-		root.setPrefSize(200, 200);
+		root.setPrefSize(640, 480);
 		//mainGuy.getCharacter().setCenterX(root.getPrefWidth()/2);
 		//mainGuy.getCharacter().setCenterY(root.getPrefHeight()/2);
 		
@@ -77,8 +77,26 @@ public class GameObject extends InputFunctions{
 			mainGuy.sety(mainGuy.gety() + mainGuy.getdy()*calculate());
 		}
 		
-		if (mainGuy.walking) {
+		/*if (mainGuy.walking) {
 			//System.out.println("guy is walking");
+			mainGuy.move();
+			group.setTranslateX(group.getTranslateX() - mainGuy.getdx());
+			group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
+			//mainGuy.setdy(mainGuy.getdy() + (gravity*calculate()));
+			//mainGuy.sety(mainGuy.gety() + mainGuy.getdy()*calculate());
+		}*/
+		
+		if (mainGuy.getdx() != 0) {
+			//System.out.println("guy is walking");
+			
+			//Speed cap
+			if (mainGuy.getdx() > 3)
+				mainGuy.setdx(3);
+			if (mainGuy.getdx() < -3)
+				mainGuy.setdx(-3);
+			
+			//Stop ghost movement
+			
 			mainGuy.move();
 			group.setTranslateX(group.getTranslateX() - mainGuy.getdx());
 			group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
