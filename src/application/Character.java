@@ -23,15 +23,15 @@ public class Character {
 	}
 	
 	public void move() {
-		setx(getx() + getdx());
 		this.character.setTranslateX(this.character.getTranslateX() + getdx());
-		sety(gety() + getdy());
+		setx(this.character.getCenterX() + this.character.getTranslateX());
 		this.character.setTranslateY(this.character.getTranslateY() + getdy());
+		sety(this.character.getCenterY() + this.character.getTranslateY());
 		// the background game objects are scrolled accordingly in the GameObject class
 	}
 	
 	public Circle getCharacter() {
-		return this.character;
+		return this.character;      
 	}
 	public void setCharacter(double x, double y, double size, Color color) {
 		this.character.setCenterX(x);
@@ -75,13 +75,16 @@ public class Character {
 	public void setdy(double dy) {
 		this.dy = dy;
 	}
-	
-	public void setJumping(boolean b)
-	{
+	public void setJumping(boolean b){
 		this.jumping = b;
 	}
-	public boolean getJumping()
-	{
+	public boolean getJumping(){
 		return this.jumping;
+	}
+	public void setWalking(boolean b) {
+		this.walking = b;
+	}
+	public boolean getWalking(boolean b) {
+		return this.walking;
 	}
 }

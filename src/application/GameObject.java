@@ -8,17 +8,18 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class GameObject extends InputFunctions{
-	
-	Boolean running;
-	
-	Rectangle background = new Rectangle(2000, 200);
+
+	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
+	Rectangle background = new Rectangle(2000, 500, Color.LIGHTSKYBLUE);
+	Rectangle ground = new Rectangle(2000, 100, Color.GREEN);
+	Rectangle obstacleBox = new Rectangle(50, 50, Color.BROWN);
 	Character ref = new Character(50, 50, 20, Color.YELLOW);
 	Character ref2 = new Character (300, 50, 20, Color.GREEN);
 	Character ref3 = new Character (500, 50, 20, Color.BLUE);
 	Character ref4 = new Character (700, 50, 20, Color.ORANGE);
 	Character ref5 = new Character (900, 50, 20, Color.PURPLE);
-	Character mainGuy = new Character(100, 100, 20, Color.RED);
-	Group group = new Group(background, ref.getCharacter(), ref2.getCharacter(), ref3.getCharacter(), ref4.getCharacter(), ref5.getCharacter(), mainGuy.getCharacter());
+	Character mainGuy = new Character(250, 300-20, 20, Color.RED);
+	Group group = new Group(theVoid, background, ground, obstacleBox, ref.getCharacter(), ref2.getCharacter(), ref3.getCharacter(), ref4.getCharacter(), ref5.getCharacter(), mainGuy.getCharacter());
 	BorderPane root = new BorderPane(group);
 	Scene scene = new Scene(root);
 	
@@ -27,14 +28,19 @@ public class GameObject extends InputFunctions{
 	double gravity = 1;
 		
 	public GameObject() {
-		
-		this.running = true;
-		
+				
 		group.setManaged(false);
-		root.setPrefSize(640, 480);
-		//mainGuy.getCharacter().setCenterX(root.getPrefWidth()/2);
-		//mainGuy.getCharacter().setCenterY(root.getPrefHeight()/2);
 		
+		ground.setX(0);
+		ground.setY(300);
+		
+		obstacleBox.setX(500);
+		obstacleBox.setY(250);
+		
+		theVoid.setY(-2500);
+		theVoid.setX(-2500);
+		
+		root.setPrefSize(500, 500);
 	}
 	
 	public void processInput() {
@@ -51,66 +57,51 @@ public class GameObject extends InputFunctions{
 	
 	public void update() {
 		
+		System.out.println("center x = " + (mainGuy.getCharacter().getCenterX() /*+ mainGuy.getCharacter().getTranslateX()*/));
 		System.out.println("character translate x = " + mainGuy.getCharacter().getTranslateX());
 		System.out.println("group translate x = " + group.getTranslateX());
 		System.out.println("dx = " + mainGuy.getdx());
 		System.out.println("x = " + mainGuy.getx());
 		System.out.println("dy = " + mainGuy.getdy());
 		System.out.println("y = " + mainGuy.gety());
-	
-		if (mainGuy.gety() > 100) {
-			//System.out.println("guy is over the line");
+		System.out.println("center y = " + (mainGuy.getCharacter().getCenterY() /*+ mainGuy.getCharacter().getTranslateY()*/));
+		System.out.println("character translate y " + mainGuy.getCharacter().   getTranslateY());
+		System.out.println("group translate y " + group.getTranslateY() + '\n');
+		
+		if (mainGuy.walking || mainGuy.jumping) {
+			mainGuy.move();
+			group.setTranslateX(group.getTranslateX() - mainGuy.getdx());
+			group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
+			if (mainGuy.jumping) {
+				mainGuy.setdy(mainGuy.getdy() + (gravity*calculate()));
+				//mainGuy.sety(mainGuy.gety() + mainGuy.getdy()*calculate());
+			}
+		}
+
+		if (mainGuy.getdx() > 5)
+			mainGuy.setdx(5);
+		if (mainGuy.getdx() < -5)
+			mainGuy.setdx(-5);
+		
+		if (mainGuy.getdx() != 0 && !mainGuy.walking) {
+			if (mainGuy.getdx() > 0)
+				mainGuy.setdx(mainGuy.getdx()-0.25);
+			if (mainGuy.getdx() < 0)
+				mainGuy.setdx(mainGuy.getdx()+0.25);
+			group.setTranslateX(group.getTranslateX() - mainGuy.getdx());
+			group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
+			mainGuy.move();
+		}
+		if (mainGuy.gety() > 280) {
 			mainGuy.jumping = false;
-			//mainGuy.character.setCenterY(100);
-			//mainGuy.setCharacter(50, 50, 20, Color.GREEN);
-			mainGuy.sety(100);
 			mainGuy.setdy(0);
-			
 		}
-		
-		if ((mainGuy.gety() < 0) || (mainGuy.jumping == true)) {
-			//System.out.println("guy is in the air");
-			mainGuy.move();
-			group.setTranslateX(group.getTranslateX() - mainGuy.getdx());
-			group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
-			mainGuy.setdy(mainGuy.getdy() + (gravity*calculate()));
-			mainGuy.sety(mainGuy.gety() + mainGuy.getdy()*calculate());
+		if (mainGuy.getCharacter().getCenterY() != 280) {
+			mainGuy.setCharacter(250, 280, 20, Color.YELLOW);
 		}
-		
-		/*if (mainGuy.walking) {
-			//System.out.println("guy is walking");
-			mainGuy.move();
-			group.setTranslateX(group.getTranslateX() - mainGuy.getdx());
-			group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
-			//mainGuy.setdy(mainGuy.getdy() + (gravity*calculate()));
-			//mainGuy.sety(mainGuy.gety() + mainGuy.getdy()*calculate());
-		}*/
-		
-		if (mainGuy.getdx() != 0) {
-			//System.out.println("guy is walking");
-			
-			//Speed cap
-			if (mainGuy.getdx() > 3)
-				mainGuy.setdx(3);
-			if (mainGuy.getdx() < -3)
-				mainGuy.setdx(-3);
-			
-			//Stop ghost movement
-			
-			mainGuy.move();
-			group.setTranslateX(group.getTranslateX() - mainGuy.getdx());
-			group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
-			//mainGuy.setdy(mainGuy.getdy() + (gravity*calculate()));
-			//mainGuy.sety(mainGuy.gety() + mainGuy.getdy()*calculate());
+		if (mainGuy.getCharacter().getCenterX() != 250) {
+			mainGuy.setCharacter(250, 280, 20, Color.ORANGE);
 		}
-	
-	/*
-		mainGuy.move();
-		group.setTranslateX(group.getTranslateX() - mainGuy.getdx());
-		group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
-		mainGuy.setdy(mainGuy.getdy() + gravity*calculate());
-		mainGuy.sety(mainGuy.gety() + mainGuy.getdy()*calculate());
-	*/
 	}
 	
 	public void render(Stage primaryStage) {
