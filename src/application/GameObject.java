@@ -77,6 +77,11 @@ public class GameObject extends InputFunctions{
 				//mainGuy.sety(mainGuy.gety() + mainGuy.getdy()*calculate());
 			}
 		}
+		
+		if (group.getTranslateY() != 0 && !mainGuy.jumping) {
+			group.setTranslateY(0);
+			mainGuy.getCharacter().setTranslateY(0);
+		}
 
 		if (mainGuy.getdx() > 5)
 			mainGuy.setdx(5);
