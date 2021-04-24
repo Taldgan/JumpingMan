@@ -10,11 +10,14 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 
 public class GameObject extends InputFunctions{
-
+	String lvl1Set1 = "0000000110023300000100100000203020010000001";
+	String lvl1Set2 = "000000002000400000002";
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
 	Rectangle background = new Rectangle(2000, 500, Color.LIGHTSKYBLUE);
 	Rectangle ground = new Rectangle(2000, 100, Color.GREEN);
 	Rectangle obstacleBox = new Rectangle(50, 50, Color.BROWN);
+	Group platformSet1 = spawnPlatforms(lvl1Set1,0,0,Color.DARKORCHID);
+	Group platformSet2 = spawnPlatforms(lvl1Set2,-50,50,Color.DARKOLIVEGREEN);
 	Character ref = new Character(50, 50, 20, Color.YELLOW);
 	Character ref2 = new Character (300, 50, 20, Color.GREEN);
 	Character ref3 = new Character (500, 50, 20, Color.BLUE);
@@ -23,16 +26,18 @@ public class GameObject extends InputFunctions{
 	ArrayList<Enemies> eList = new ArrayList<Enemies>();
 	Group e1 = spawnEnemies();
 	Character mainGuy = new Character(250, 300-20, 20, Color.RED);
-	Group group = new Group(theVoid, background, ground, obstacleBox, ref.getCharacter(), ref2.getCharacter(), ref3.getCharacter(), ref4.getCharacter(), ref5.getCharacter(), mainGuy.getCharacter(),e1);
+	Group group = new Group(theVoid, background, ground, obstacleBox, ref.getCharacter(), ref2.getCharacter(), 
+			ref3.getCharacter(), ref4.getCharacter(), ref5.getCharacter(), mainGuy.getCharacter(),e1,platformSet1,platformSet2);
 	BorderPane root = new BorderPane(group);
 	Scene scene = new Scene(root);
+	
+	
 	
 	double lastTime = System.currentTimeMillis();
 	double delta;
 	double gravity = 1;
 	
 	public GameObject() {
-		
 		group.setManaged(false);
 		
 		ground.setX(0);
@@ -137,10 +142,7 @@ public class GameObject extends InputFunctions{
 				}
 				
 			}
-			
-				
 			eList.get(x).enemyMove();
-			//Random jumping lmao
 			
 		}
 		
@@ -179,6 +181,29 @@ public class GameObject extends InputFunctions{
 		}
 			
 		return enemyGroup;
+	}
+	
+	public Group spawnPlatforms(String lvl, int offsetX, int offsetY, Color c) 
+	{
+		//lvl string:
+		//0's mean no platform, and then the varying numbers mean a platform will spawn at that level of height.
+		//Their position in the string will correlate to how far into the level they spawn. See below for the formula I used.
+		//Feel free to change whatever.
+		Group platG = new Group();
+		for(int x = 0; x < lvl.length();x++)
+		{
+			if(lvl.charAt(x) != '0') //If the current char is not 0, create a platfor in that spot.
+			{
+				//Spawn platform based off of char's location in string
+				//Each char will be 90 pixels of space, and will spawn at a height of 265-(y*45)
+				Rectangle r = new Rectangle(90,25,c); //Platforms are 70x25
+				platG.getChildren().add(r);
+				
+				r.setX(250+90*x+offsetX);
+				r.setY(265+Integer.parseInt(String.valueOf(lvl.charAt(x)))*45*-1-offsetY);
+			}
+		}
+		return platG;
 	}
 	
 }

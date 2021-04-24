@@ -52,7 +52,7 @@ public class Enemies extends Character
 	public int getRNG()
 	{
 		Random rng = new Random();
-		return rng.nextInt(1001);
+		return rng.nextInt(1000);
 	}
 	public double getInitY()
 	{
