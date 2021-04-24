@@ -119,7 +119,7 @@ public class GameObject extends InputFunctions{
 		//System.out.println("Number of children: "+enemies.getChildren().size());
 		for(int x = 0; x < eList.size();x++)
 		{
-			if(x%2 != 0)
+			if(x%2 != 0) //Made it to where every odd enemy added to the list bounces.
 			{
 				eList.get(x).enemyJump();
 				if(eList.get(x).getJumping())

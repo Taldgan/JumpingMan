@@ -32,14 +32,14 @@ public class Enemies extends Character
 	{
 		if(!getJumping())
 		{
-			System.out.println("Here");
+			//System.out.println("Enemy jumping");
 			setJumping(true);
 			setdy(-3); //Up
 		}
 		
 		else if(getJumping() && gety() > initialY)
 		{
-			System.out.println("Enemy not jumping");
+			//System.out.println("Enemy not jumping");
 			setdy(0); //down
 			setJumping(false);
 		}
