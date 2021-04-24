@@ -1,11 +1,13 @@
 package application;
 
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import java.util.ArrayList;
 
 public class GameObject extends InputFunctions{
 
@@ -18,8 +20,10 @@ public class GameObject extends InputFunctions{
 	Character ref3 = new Character (500, 50, 20, Color.BLUE);
 	Character ref4 = new Character (700, 50, 20, Color.ORANGE);
 	Character ref5 = new Character (900, 50, 20, Color.PURPLE);
+	ArrayList<Enemies> eList = new ArrayList<Enemies>();
+	Group e1 = spawnEnemies();
 	Character mainGuy = new Character(250, 300-20, 20, Color.RED);
-	Group group = new Group(theVoid, background, ground, obstacleBox, ref.getCharacter(), ref2.getCharacter(), ref3.getCharacter(), ref4.getCharacter(), ref5.getCharacter(), mainGuy.getCharacter());
+	Group group = new Group(theVoid, background, ground, obstacleBox, ref.getCharacter(), ref2.getCharacter(), ref3.getCharacter(), ref4.getCharacter(), ref5.getCharacter(), mainGuy.getCharacter(),e1);
 	BorderPane root = new BorderPane(group);
 	Scene scene = new Scene(root);
 	
@@ -28,7 +32,8 @@ public class GameObject extends InputFunctions{
 	double gravity = 1;
 		
 	public GameObject() {
-				
+		
+		//spawnEnemies();
 		group.setManaged(false);
 		
 		ground.setX(0);
@@ -39,6 +44,7 @@ public class GameObject extends InputFunctions{
 		
 		theVoid.setY(-2500);
 		theVoid.setX(-2500);
+		
 		
 		root.setPrefSize(500, 500);
 	}
@@ -107,6 +113,16 @@ public class GameObject extends InputFunctions{
 		if (mainGuy.getCharacter().getCenterX() != 250) {
 			mainGuy.setCharacter(250, 280, 20, Color.ORANGE);
 		}
+		
+		
+		//=====================================================
+		//Update enemies
+		//System.out.println("Number of children: "+enemies.getChildren().size());
+		for(int x = 0; x < eList.size();x++)
+		{
+			eList.get(x).enemyMove();
+		}
+		
 	}
 	
 	public void render(Stage primaryStage) {
@@ -129,4 +145,19 @@ public class GameObject extends InputFunctions{
 		 
 		 return delta;
 	}
+	 
+	public Group spawnEnemies()
+	{
+		eList.add(new Enemies(500, 280, 20, Color.WHITE));
+		eList.add(new Enemies(750, 280, 20, Color.WHITE));
+		Group enemyGroup = new Group();
+		for(int x = 0; x < eList.size(); x++)
+		{
+			System.out.println("Enemy added");
+			enemyGroup.getChildren().add(eList.get(x).getCharacter());
+		}
+			
+		return enemyGroup;
+	}
+	
 }

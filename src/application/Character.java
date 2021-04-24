@@ -67,6 +67,11 @@ public class Character {
 		return this.dx;
 	}
 	public void setdx(double dx) {
+		//Set speed cap to 5 or -5
+		if(dx > 5)
+			dx = 5;
+		else if(dx < -5)
+			dx = -5;
 		this.dx = dx;
 	}
 	public double getdy() {

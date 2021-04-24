@@ -2,6 +2,7 @@ package application;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
 
 public class InputFunctions {
 	
@@ -18,11 +19,12 @@ public class InputFunctions {
 		}
 
 		if (key == KeyCode.RIGHT) {
-			character.setdx(character.getdx()+1);
+			character.setdx(5);
+			//character.setColor(Color.BLACK);
 			character.walking = true;
 		}
 		if (key == KeyCode.LEFT) {
-			character.setdx(character.getdx()-1);
+			character.setdx(-5);
 			character.walking = true;
 		}
 		if (key == KeyCode.SPACE || key == KeyCode.UP) {
@@ -39,9 +41,11 @@ public class InputFunctions {
 		
 		if (key == KeyCode.RIGHT) {
 			character.walking = false;
+			character.setdx(0);
 		}
 		if (key == KeyCode.LEFT) {
 			character.walking = false;
+			character.setdx(0);
 		}
 		
 	}
