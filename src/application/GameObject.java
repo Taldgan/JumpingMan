@@ -16,15 +16,21 @@ public class GameObject extends InputFunctions{
 	Rectangle background = new Rectangle(2000, 500, Color.LIGHTSKYBLUE);
 	Rectangle ground = new Rectangle(2000, 100, Color.GREEN);
 	Rectangle obstacleBox = new Rectangle(50, 50, Color.BROWN);
-	Group platformSet1 = spawnPlatforms(lvl1Set1,0,0,Color.DARKORCHID);
-	Group platformSet2 = spawnPlatforms(lvl1Set2,-50,50,Color.DARKOLIVEGREEN);
 	Character ref = new Character(50, 50, 20, Color.YELLOW);
 	Character ref2 = new Character (300, 50, 20, Color.GREEN);
 	Character ref3 = new Character (500, 50, 20, Color.BLUE);
 	Character ref4 = new Character (700, 50, 20, Color.ORANGE);
 	Character ref5 = new Character (900, 50, 20, Color.PURPLE);
+	//Enemy  vars
 	ArrayList<Enemies> eList = new ArrayList<Enemies>();
 	Group e1 = spawnEnemies();
+
+	//Platform vars
+	ArrayList<Obstacle> pList1 = new ArrayList<Obstacle>();
+	ArrayList<Obstacle> pList2 = new ArrayList<Obstacle>();
+	Group platformSet1 = spawnPlatforms(lvl1Set1,0,0,Color.DARKORCHID, pList1);
+	Group platformSet2 = spawnPlatforms(lvl1Set2,-50,50,Color.DARKOLIVEGREEN, pList2);
+
 	Character mainGuy = new Character(250, 300-20, 20, Color.RED);
 	Group group = new Group(theVoid, background, ground, obstacleBox, ref.getCharacter(), ref2.getCharacter(), 
 			ref3.getCharacter(), ref4.getCharacter(), ref5.getCharacter(), mainGuy.getCharacter(),e1,platformSet1,platformSet2);
@@ -151,7 +157,15 @@ public class GameObject extends InputFunctions{
 			eList.get(x).enemyMove();
 			
 		}
-		
+
+		//=====================================================
+		//Update platforms, testing collision
+		//System.out.println("Number of children: "+enemies.getChildren().size());
+		for(int i = 0; i < pList1.size(); i++) {
+			if(pList1.get(i).collide(mainGuy.getx(), mainGuy.gety(), mainGuy.getCharacter().getRadius(), mainGuy.getCharacter().getRadius())) {
+				pList1.get(i).getPlat().setFill(Color.CORAL);
+			}
+		}
 	}
 	
 	public void render(Stage primaryStage) {
@@ -190,9 +204,9 @@ public class GameObject extends InputFunctions{
 		return enemyGroup;
 	}
 	
-	public Group spawnPlatforms(String lvl, int offsetX, int offsetY, Color c) 
+	public Group spawnPlatforms(String lvl, int offsetX, int offsetY, Color c, ArrayList<Obstacle> pList) 
 	{
-		//lvl string:
+		//lvl string: 
 		//0's mean no platform, and then the varying numbers mean a platform will spawn at that level of height.
 		//Their position in the string will correlate to how far into the level they spawn. See below for the formula I used.
 		//Feel free to change whatever.
@@ -203,8 +217,10 @@ public class GameObject extends InputFunctions{
 			{
 				//Spawn platform based off of char's location in string
 				//Each char will be 90 pixels of space, and will spawn at a height of 265-(y*45)
-				Rectangle r = new Rectangle(90,25,c); //Platforms are 90x25
-				platG.getChildren().add(r);
+
+				Obstacle r = new Obstacle(90,25,c); //Platforms are 90x25
+				pList.add(r);
+				platG.getChildren().add(r.getPlat());
 				
 				r.setX(250+90*x+offsetX);
 				r.setY(265+Integer.parseInt(String.valueOf(lvl.charAt(x)))*45*-1-offsetY);
