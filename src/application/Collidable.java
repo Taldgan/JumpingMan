@@ -1,7 +1,7 @@
 package application;
 
 public interface Collidable {
-	public boolean collide(int x, int y, int width, int height);
-	public void setCollidable();
+	public boolean collide(double x, double y, double w, double h);
+	public void setCollidable(boolean isCollidable);
 	public boolean isCollidable();
 }
