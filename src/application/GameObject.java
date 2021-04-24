@@ -30,10 +30,9 @@ public class GameObject extends InputFunctions{
 	double lastTime = System.currentTimeMillis();
 	double delta;
 	double gravity = 1;
-		
+	
 	public GameObject() {
 		
-		//spawnEnemies();
 		group.setManaged(false);
 		
 		ground.setX(0);
@@ -120,7 +119,16 @@ public class GameObject extends InputFunctions{
 		//System.out.println("Number of children: "+enemies.getChildren().size());
 		for(int x = 0; x < eList.size();x++)
 		{
+			if(x%2 != 0)
+			{
+				eList.get(x).enemyJump();
+				if(eList.get(x).getJumping())
+					eList.get(x).setdy(gravity*calculate()+eList.get(x).getdy());
+			}
+				
 			eList.get(x).enemyMove();
+			//Random jumping lmao
+			
 		}
 		
 	}
