@@ -119,12 +119,25 @@ public class GameObject extends InputFunctions{
 		//System.out.println("Number of children: "+enemies.getChildren().size());
 		for(int x = 0; x < eList.size();x++)
 		{
-			if(x%2 != 0) //Made it to where every odd enemy added to the list bounces.
+			if(x%2 != 0) //Made it to where every odd enemy added to the list might bounce.
 			{
-				eList.get(x).enemyJump();
 				if(eList.get(x).getJumping())
 					eList.get(x).setdy(gravity*calculate()+eList.get(x).getdy());
+				
+				if(eList.get(x).getJumping() && eList.get(x).gety() > eList.get(x).getInitY())
+				{
+					//System.out.println("Enemy not jumping");
+					eList.get(x).setdy(0); //down
+					eList.get(x).setJumping(false);
+				}
+				int ran = eList.get(x).getRNG();
+				if(ran >= 0 && ran <= 15) //Random chance (15/1000) that an enemy will jump. I think this is per frame, so it's still quite a lot.
+				{
+					eList.get(x).enemyJump();
+				}
+				
 			}
+			
 				
 			eList.get(x).enemyMove();
 			//Random jumping lmao
