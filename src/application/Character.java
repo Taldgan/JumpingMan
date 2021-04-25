@@ -13,11 +13,13 @@ public class Character {
 	Circle character = new Circle(x, y, size, color);
 	boolean collide;
 	double groundLvl;
+	double radius;
 	
 	public Character(double x, double y, double size, Color color) {
 		jumping = false;
 		walking = false;
 		collide = false;
+		radius = size;
 		groundLvl = 280;
 		setx(x);
 		sety(y);
@@ -118,5 +120,13 @@ public class Character {
 	}
 	public double getMinY() {
 		return this.minY;
+	}
+	public double getRadius()
+	{
+		return radius;
+	}
+	public void setRadius(double r)
+	{
+		radius = r;
 	}
 }

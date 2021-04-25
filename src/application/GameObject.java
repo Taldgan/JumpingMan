@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 
 public class GameObject extends InputFunctions{
-	String lvl1Set1 = "0000000110023300000100100000203020010000001";
+	String lvl1Set1 = "0000000110023301000100100000203020010000001";
 	String lvl1Set2 = "000000002000400000002";
 	String lvl1Set3 = "0001100";
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
@@ -78,10 +78,11 @@ public class GameObject extends InputFunctions{
 	public void update() {
 		//mainGuy.setGroundLvl(105);
 		//Troubleshooting output
-		/*System.out.println("center x = " + (mainGuy.getCharacter().getCenterX()));
+		System.out.println("center x = " + (mainGuy.getCharacter().getCenterX()));
 		System.out.println("character translate x = " + mainGuy.getCharacter().getTranslateX());
-		System.out.println("group translate x = " + group.getTranslateX());
-		System.out.println("dx = " + mainGuy.getdx());*/
+		System.out.println("mainguy x: "+mainGuy.getx());
+		//System.out.println("group translate x = " + group.getTranslateX());
+		//System.out.println("dx = " + mainGuy.getdx());
 		//System.out.println("center x = " + (mainGuy.getCharacter().getCenterX())); /*+ mainGuy.getCharacter().getTranslateX()));
 		//System.out.println("character translate x = " + mainGuy.getCharacter().getTranslateX());
 		//System.out.println("group translate x = " + group.getTranslateX());
@@ -162,6 +163,7 @@ public class GameObject extends InputFunctions{
 		//System.out.println("Number of children: "+enemies.getChildren().size());
 		for(int x = 0; x < eList.size();x++)
 		{
+			System.out.println("Enemy "+x+" x: "+eList.get(x).getx());
 			if(x%2 != 0) //Made it to where every odd enemy added to the list might bounce.
 			{
 				if(eList.get(x).getJumping())
@@ -188,6 +190,15 @@ public class GameObject extends InputFunctions{
 			
 			eList.get(x).enemyMove();
 			
+			//Check collision with the player
+			if(eList.get(x).collide(mainGuy.getx(),mainGuy.gety(),mainGuy.getRadius(),mainGuy.getRadius()))
+			{
+				//Player got hit, go to game over screen or whatever. For now, change the enemy's color.
+				eList.get(x).getCharacter().setFill(Color.YELLOW);
+			}
+			else
+				eList.get(x).getCharacter().setFill(eList.get(x).getColor());
+			
 		}
 
 		//=====================================================
@@ -197,19 +208,24 @@ public class GameObject extends InputFunctions{
 			if(pList1.get(i).collide(mainGuy.getx(), mainGuy.gety(), mainGuy.getCharacter().getRadius(), mainGuy.getCharacter().getRadius())) {
 				pList1.get(i).getPlat().setFill(Color.CORAL);
 				//mainGuy.getCharacter().setCenterY(mainGuy.gety());
-				double temp = mainGuy.getdx();
-				System.out.println("ground level set to: "+pList1.get(i).getY());
+				//double temp = mainGuy.getdx();
+				//System.out.println("ground level set to: "+pList1.get(i).getY());
 				
 				
 				
 				//On top of the platform
-				if(mainGuy.gety()+mainGuy.getCharacter().getRadius()-5 <= pList1.get(i).getY())
+				if(mainGuy.gety()+mainGuy.getCharacter().getRadius()-12 <= pList1.get(i).getY())
 				{
 					mainGuy.setGroundLvl(mainGuy.gety());
 					mainGuy.setCollide(true);
 					//mainGuy.getCharacter().setCenterY(pList1.get(i).getY());
-					
+					/*if(mainGuy.gety()+mainGuy.getCharacter().getRadius()> pList1.get(i).getY())
+					{
+						mainGuy.setdy(-.05);
+					}*/
+					//else
 					mainGuy.setdy(0);
+					
 					//Troubleshooting prints
 					System.out.println("Main guy y + radius: "+(mainGuy.gety()+mainGuy.getCharacter().getRadius()));
 					System.out.println("Platform's y:"+pList1.get(i).getY());
@@ -221,7 +237,6 @@ public class GameObject extends InputFunctions{
 					//mainGuy.setJumping(false);
 					mainGuy.setdy(1);
 					//mainGuy.setdy(0);
-					System.out.println("1");
 				}
 				//mainGuy.setdx(temp);
 				//Break out of loop, since you can only be colliding with at most 2 things.

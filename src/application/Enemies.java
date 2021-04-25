@@ -9,12 +9,14 @@ public class Enemies extends Character implements Collidable
 	private double initialY;
 	private boolean dir;
 	private boolean isCollidable;
+	private Color initColor;
 	public Enemies(double x, double y, double size, Color color) 
 	{
 		super(x, y, size, color);
 		initialY = y;
 		dir = true;
 		isCollidable = true;
+		initColor = color;
 	}
 
 	public double getInitY()
@@ -77,7 +79,10 @@ public class Enemies extends Character implements Collidable
 	
 	public boolean collide(double x, double y, double w, double h)
 	{
-		return false;
+		if((getx() - radius <= x && getx()+radius >= x) && (gety()+radius >= y && gety()-radius <= y))
+			return true;
+		else
+			return false;
 	}
 	public void setCollidable(boolean isCollidable)
 	{
@@ -86,6 +91,10 @@ public class Enemies extends Character implements Collidable
 	public boolean isCollidable()
 	{
 		return true;
+	}
+	public Color getColor()
+	{
+		return color;
 	}
 
 }
