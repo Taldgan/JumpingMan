@@ -16,8 +16,9 @@ public class GameObject extends InputFunctions{
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
 	Rectangle background = new Rectangle(2000, 500, Color.LIGHTSKYBLUE);
 	Rectangle ground = new Rectangle(2000, 100, Color.GREEN);
+	//Obstacle ground = new Obstacle(2000, 100, Color.GREEN);
 	//Rectangle obstacleBox = new Rectangle(50, 50, Color.BROWN);
-	Rectangle obstacleBox = new Rectangle(50, 50, Color.BROWN);
+	Obstacle obstacleBox = new Obstacle(50, 50, Color.BROWN);
 	Character ref = new Character(50, 50, 20, Color.YELLOW);
 	Character ref2 = new Character (300, 50, 20, Color.GREEN);
 	Character ref3 = new Character (500, 50, 20, Color.BLUE);
@@ -34,11 +35,10 @@ public class GameObject extends InputFunctions{
 	Group platformSet1 = spawnPlatforms(lvl1Set1,0,0,Color.DARKORCHID, pList1);
 	Group platformSet2 = spawnPlatforms(lvl1Set2,-50,50,Color.DARKOLIVEGREEN, pList2);
 	Character mainGuy = new Character(250, 300-20, 20, Color.RED);
-	Group group = new Group(theVoid, background, ground, obstacleBox, ref.getCharacter(), ref2.getCharacter(), 
+	Group group = new Group(theVoid, background, ground, obstacleBox.getPlat(), ref.getCharacter(), ref2.getCharacter(), 
 			ref3.getCharacter(), ref4.getCharacter(), ref5.getCharacter(), mainGuy.getCharacter(),e1,platformSet1,platformSet2);
 	BorderPane root = new BorderPane(group);
 	Scene scene = new Scene(root);
-	
 	
 	
 	double lastTime = System.currentTimeMillis();
@@ -76,15 +76,17 @@ public class GameObject extends InputFunctions{
 	public void update() {
 		
 		System.out.println("center x = " + (mainGuy.getCharacter().getCenterX() /*+ mainGuy.getCharacter().getTranslateX()*/));
-		System.out.println("character translate x = " + mainGuy.getCharacter().getTranslateX());
-		System.out.println("group translate x = " + group.getTranslateX());
-		System.out.println("dx = " + mainGuy.getdx());
+		//System.out.println("character translate x = " + mainGuy.getCharacter().getTranslateX());
+		//System.out.println("group translate x = " + group.getTranslateX());
+		//System.out.println("dx = " + mainGuy.getdx());
 		System.out.println("x = " + mainGuy.getx());
-		System.out.println("dy = " + mainGuy.getdy());
+		//System.out.println("dy = " + mainGuy.getdy());
 		System.out.println("y = " + mainGuy.gety());
-		System.out.println("center y = " + (mainGuy.getCharacter().getCenterY() /*+ mainGuy.getCharacter().getTranslateY()*/));
-		System.out.println("character translate y " + mainGuy.getCharacter().   getTranslateY());
-		System.out.println("group translate y " + group.getTranslateY() + '\n');
+		//System.out.println("center y = " + (mainGuy.getCharacter().getCenterY() /*+ mainGuy.getCharacter().getTranslateY()*/));
+		//System.out.println("character translate y " + mainGuy.getCharacter().   getTranslateY());
+		//System.out.println("group translate y " + group.getTranslateY() + '\n');
+		System.out.println("obstacleBox x: " + obstacleBox.getX() + " y: " + obstacleBox.getY() + 
+				" Colliding: " + pList1.get(pList1.size()-1).collide(mainGuy.getx(), mainGuy.gety(), mainGuy.getCharacter().getRadius(), mainGuy.getCharacter().getRadius()));
 		
 		if (mainGuy.walking || mainGuy.jumping) {
 			mainGuy.move();
@@ -119,11 +121,11 @@ public class GameObject extends InputFunctions{
 			mainGuy.jumping = false;
 			mainGuy.setdy(0);
 		}
-		if (mainGuy.getCharacter().getCenterY() != 280) {
-			mainGuy.setCharacter(250, 280, 20, Color.YELLOW);
+		if (mainGuy.getCharacter().getCenterY() != mainGuy.getMinY()) {
+			mainGuy.setCharacter(250, mainGuy.getMinY(), 20, Color.YELLOW);
 		}
 		if (mainGuy.getCharacter().getCenterX() != 250) {
-			mainGuy.setCharacter(250, 280, 20, Color.ORANGE);
+			mainGuy.setCharacter(250, mainGuy.getMinY(), 20, Color.ORANGE);
 		}
 		
 		
@@ -162,11 +164,24 @@ public class GameObject extends InputFunctions{
 
 		//=====================================================
 		//Update platforms, testing collision
+		
 		for(int i = 0; i < pList1.size(); i++) {
 			if(pList1.get(i).collide(mainGuy.getx(), mainGuy.gety(), mainGuy.getCharacter().getRadius(), mainGuy.getCharacter().getRadius())) {
 				pList1.get(i).getPlat().setFill(Color.CORAL);
+				//mainGuy.setMinY(pList1.get(i).getY()-mainGuy.getCharacter().getRadius()); //set minimum player Y to platform y
+			}
+			else {
+				pList1.get(i).getPlat().setFill(Color.DARKORCHID); //reset color if not touching
 			}
 		}
+		
+		if(obstacleBox.collide(mainGuy.getx(), mainGuy.gety(), mainGuy.getCharacter().getRadius(), mainGuy.getCharacter().getRadius())) {
+				obstacleBox.getPlat().setFill(Color.CORAL);
+				//mainGuy.setMinY(obstacleBox.getY()-mainGuy.getCharacter().getRadius()); //set minimum player Y to platform y
+			}
+			else {
+				obstacleBox.getPlat().setFill(Color.DARKORCHID); //reset color if not touching
+			}
 	}
 	
 	public void render(Stage primaryStage) {

@@ -17,7 +17,7 @@ public class Obstacle implements Collidable {
 	}
 
 	public boolean collide(double x, double y, double w, double h) {
-		if((x >= this.x && x<= this.x+width) && (y == this.y-this.height || y <= this.y+height))
+		if((x+w >= this.x && x-w<= this.x+width) && (y+h >= this.y && y-h <= this.y+height))
 			return true;
 		else 
 			return false;
