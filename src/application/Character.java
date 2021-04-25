@@ -14,6 +14,7 @@ public class Character {
 	boolean collide;
 	double groundLvl;
 	double radius;
+	private boolean dir;
 	
 	public Character(double x, double y, double size, Color color) {
 		jumping = false;
@@ -21,6 +22,7 @@ public class Character {
 		collide = false;
 		radius = size;
 		groundLvl = 280;
+		dir = true;
 		setx(x);
 		sety(y);
 		setSize(size);
@@ -128,5 +130,12 @@ public class Character {
 	public void setRadius(double r)
 	{
 		radius = r;
+	}
+	public void swapDir()
+	{
+		if(dir)
+			dir = false;
+		else
+			dir = true;
 	}
 }

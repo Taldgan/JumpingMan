@@ -13,6 +13,7 @@ public class GameObject extends InputFunctions{
 	String lvl1Set1 = "0000000110023301000100100000203020010000001";
 	String lvl1Set2 = "000000002000400000002";
 	String lvl1Set3 = "0001100";
+	String lvl1ESet = "00000000000101020001210001000201000222";
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
 	Rectangle background = new Rectangle(4000, 500, Color.LIGHTSKYBLUE);
 	Rectangle ground = new Rectangle(4000, 100, Color.GREEN);
@@ -26,7 +27,7 @@ public class GameObject extends InputFunctions{
 	Character ref5 = new Character (900, 50, 20, Color.PURPLE);
 	//Enemy  vars
 	ArrayList<Enemies> eList = new ArrayList<Enemies>();
-	Group e1 = spawnEnemies();
+	Group e1 = spawnEnemies(lvl1ESet);
 
 	//Platform vars
 	ArrayList<Obstacle> pList1 = new ArrayList<Obstacle>();
@@ -163,8 +164,8 @@ public class GameObject extends InputFunctions{
 		//System.out.println("Number of children: "+enemies.getChildren().size());
 		for(int x = 0; x < eList.size();x++)
 		{
-			System.out.println("Enemy "+x+" x: "+eList.get(x).getx());
-			if(x%2 != 0) //Made it to where every odd enemy added to the list might bounce.
+			//System.out.println("Enemy "+x+" x: "+eList.get(x).getx());
+			if(eList.get(x).getColor() == Color.BLUE) //Made it to where every odd enemy added to the list might bounce.
 			{
 				if(eList.get(x).getJumping())
 					eList.get(x).setdy(gravity*calculate()+eList.get(x).getdy());
@@ -199,63 +200,17 @@ public class GameObject extends InputFunctions{
 			else
 				eList.get(x).getCharacter().setFill(eList.get(x).getColor());
 			
+			//Check collision with obstacles/platforms
+			checkCollision(eList.get(x));
+			
 		}
 
 		//=====================================================
-		//Update platforms, testing collision
+		//Update platforms, testing collision. Moved down to a method at the bottom so
+		//That enemies can also collide with objects.
 		
-		for(int i = 0; i < pList1.size(); i++) {
-			if(pList1.get(i).collide(mainGuy.getx(), mainGuy.gety(), mainGuy.getCharacter().getRadius(), mainGuy.getCharacter().getRadius())) {
-				pList1.get(i).getPlat().setFill(Color.CORAL);
-				//mainGuy.getCharacter().setCenterY(mainGuy.gety());
-				//double temp = mainGuy.getdx();
-				//System.out.println("ground level set to: "+pList1.get(i).getY());
-				
-				
-				
-				//On top of the platform
-				if(mainGuy.gety()+mainGuy.getCharacter().getRadius()-12 <= pList1.get(i).getY())
-				{
-					mainGuy.setGroundLvl(mainGuy.gety());
-					mainGuy.setCollide(true);
-					//mainGuy.getCharacter().setCenterY(pList1.get(i).getY());
-					/*if(mainGuy.gety()+mainGuy.getCharacter().getRadius()> pList1.get(i).getY())
-					{
-						mainGuy.setdy(-.05);
-					}*/
-					//else
-					mainGuy.setdy(0);
-					
-					//Troubleshooting prints
-					System.out.println("Main guy y + radius: "+(mainGuy.gety()+mainGuy.getCharacter().getRadius()));
-					System.out.println("Platform's y:"+pList1.get(i).getY());
-				}
-				//If under the platform:
-				else if(mainGuy.gety()-mainGuy.getCharacter().getRadius() <= pList1.get(i).getY()+pList1.get(i).getHeight() ) //&&mainGuy.gety()-mainGuy.getCharacter().getRadius() >= pList1.get(i).getY()
-					
-				{
-					//mainGuy.setJumping(false);
-					mainGuy.setdy(1);
-					//mainGuy.setdy(0);
-				}
-				//mainGuy.setdx(temp);
-				//Break out of loop, since you can only be colliding with at most 2 things.
-				i = pList1.size();
-				
-			}
-			else {
-				mainGuy.setCollide(false);
-				pList1.get(i).getPlat().setFill(Color.DARKORCHID); //reset color if not touching
-			}
-		}
+		checkCollision(mainGuy);
 		
-		if(obstacleBox.collide(mainGuy.getx(), mainGuy.gety(), mainGuy.getCharacter().getRadius(), mainGuy.getCharacter().getRadius())) {
-				obstacleBox.getPlat().setFill(Color.CORAL);
-				//mainGuy.setMinY(obstacleBox.getY()-mainGuy.getCharacter().getRadius()); //set minimum player Y to platform y
-			}
-			else {
-				obstacleBox.getPlat().setFill(Color.DARKORCHID); //reset color if not touching
-			}
 	}
 	
 	public void render(Stage primaryStage) {
@@ -279,12 +234,23 @@ public class GameObject extends InputFunctions{
 		 return delta;
 	}
 	 
-	public Group spawnEnemies()
+	public Group spawnEnemies(String eSet)
 	{
-		eList.add(new Enemies(500, 280, 20, Color.WHITE));
+		/*eList.add(new Enemies(500, 280, 20, Color.WHITE));
 		eList.add(new Enemies(750, 280, 20, Color.BLUE));
-		eList.add(new Enemies(1000, 280, 20, Color.WHITE));
+		eList.add(new Enemies(1000, 280, 20, Color.WHITE));*/
 		Group enemyGroup = new Group();
+		for(int x = 0; x < eSet.length(); x++)
+		{
+			if(eSet.charAt(x) == '1')
+			{
+				eList.add(new Enemies(x*90,280,20,Color.WHITE));
+			}
+			else if(eSet.charAt(x) == '2')
+			{
+				eList.add(new Enemies(x*90,280,20,Color.BLUE));
+			}
+		}
 		for(int x = 0; x < eList.size(); x++)
 		{
 			//System.out.println("Enemy added");
@@ -317,6 +283,60 @@ public class GameObject extends InputFunctions{
 			}
 		}
 		return platG;
+	}
+	
+	public void checkCollision(Character c)
+	{
+		for(int i = 0; i < pList1.size(); i++) {
+			if(pList1.get(i).collide(c.getx(), c.gety(), c.getCharacter().getRadius(), c.getCharacter().getRadius())) {
+				pList1.get(i).getPlat().setFill(Color.CORAL);
+				//c.getCharacter().setCenterY(c.gety());
+				//double temp = c.getdx();
+				//System.out.println("ground level set to: "+pList1.get(i).getY());
+				
+				//On top of the platform
+				if(c.gety()+c.getCharacter().getRadius()-12 <= pList1.get(i).getY())
+				{
+					c.setGroundLvl(c.gety());
+					c.setCollide(true);
+					//c.getCharacter().setCenterY(pList1.get(i).getY());
+					/*if(c.gety()+c.getCharacter().getRadius()> pList1.get(i).getY())
+					{
+						c.setdy(-.05);
+					}*/
+					//else
+					c.setdy(0);
+					
+					//Troubleshooting prints
+					System.out.println("Main guy y + radius: "+(c.gety()+c.getCharacter().getRadius()));
+					System.out.println("Platform's y:"+pList1.get(i).getY());
+				}
+				//If under the platform:
+				else if(c.gety()-c.getCharacter().getRadius() <= pList1.get(i).getY()+pList1.get(i).getHeight() ) //&&c.gety()-c.getCharacter().getRadius() >= pList1.get(i).getY()
+					
+				{
+					//c.setJumping(false);
+					c.setdy(1);
+					//c.setdy(0);
+				}
+				//c.setdx(temp);
+				//Break out of loop, since you can only be colliding with at most 2 things.
+				i = pList1.size();
+				
+			}
+			else {
+				c.setCollide(false);
+				pList1.get(i).getPlat().setFill(Color.DARKORCHID); //reset color if not touching
+			}
+		}
+		if(obstacleBox.collide(c.getx(), c.gety(), c.getCharacter().getRadius(), c.getCharacter().getRadius())) {
+			obstacleBox.getPlat().setFill(Color.CORAL);
+			c.swapDir();
+			//c.setMinY(obstacleBox.getY()-c.getCharacter().getRadius()); //set minimum player Y to platform y
+		}
+		else {
+			obstacleBox.getPlat().setFill(Color.DARKORCHID); //reset color if not touching
+		}
 	}
 	
 }
