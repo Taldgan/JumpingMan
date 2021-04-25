@@ -120,12 +120,12 @@ public class GameObject extends InputFunctions{
 			mainGuy.jumping = false;
 			mainGuy.setdy(0);
 		}
-		if (mainGuy.getCharacter().getCenterY() != 280) {
+		/*if (mainGuy.getCharacter().getCenterY() != 280) {
 			mainGuy.setCharacter(250, 280, 20, Color.YELLOW);
 		}
 		if (mainGuy.getCharacter().getCenterX() != 250) {
 			mainGuy.setCharacter(250, 280, 20, Color.ORANGE);
-		}
+		}*/
 		
 		
 		//=====================================================
@@ -167,10 +167,10 @@ public class GameObject extends InputFunctions{
 		for(int i = 0; i < pList1.size(); i++) {
 			if(pList1.get(i).collide(mainGuy.getx(), mainGuy.gety(), mainGuy.getCharacter().getRadius(), mainGuy.getCharacter().getRadius())) {
 				pList1.get(i).getPlat().setFill(Color.CORAL);
-				/*if(mainGuy.getJumping())
-				{
-					mainGuy.setGroundLvl(pList1.get(i).getY());
-				}*/
+				
+				mainGuy.setGroundLvl(pList1.get(i).getY()-pList1.get(i).getHeight());
+				mainGuy.sety(pList1.get(i).getY());
+				
 			}
 		}
 	}

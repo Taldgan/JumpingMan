@@ -16,11 +16,15 @@ public class Obstacle implements Collidable {
 	}
 
 	public boolean collide(double x, double y, double w, double h) {
-		System.out.println("Platform's y: "+this.y+this.height);
-		System.out.println("Cicle's y: "+y+height+"\n===========================");
+		
 		//if(this.x > x && this.x+this.width < x+w && this.y < x && this.y-this.width < y-h)
 		if((x >= this.x && x<= this.x+width) && (y == this.y-this.height || y <= this.y+height))
+		{
+			System.out.println("Platform's y: "+this.y+this.height);
+			System.out.println("Cicle's y: "+y+height+"\n===========================");
 			return true;
+		}
+			
 		else 
 			return false;
 	}
