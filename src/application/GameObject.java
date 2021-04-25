@@ -12,9 +12,11 @@ import java.util.ArrayList;
 public class GameObject extends InputFunctions{
 	String lvl1Set1 = "0000000110023300000100100000203020010000001";
 	String lvl1Set2 = "000000002000400000002";
+	String lvl1Set3 = "0001100";
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
 	Rectangle background = new Rectangle(2000, 500, Color.LIGHTSKYBLUE);
 	Rectangle ground = new Rectangle(2000, 100, Color.GREEN);
+	//Rectangle obstacleBox = new Rectangle(50, 50, Color.BROWN);
 	Rectangle obstacleBox = new Rectangle(50, 50, Color.BROWN);
 	Character ref = new Character(50, 50, 20, Color.YELLOW);
 	Character ref2 = new Character (300, 50, 20, Color.GREEN);
@@ -28,9 +30,9 @@ public class GameObject extends InputFunctions{
 	//Platform vars
 	ArrayList<Obstacle> pList1 = new ArrayList<Obstacle>();
 	ArrayList<Obstacle> pList2 = new ArrayList<Obstacle>();
+	ArrayList<Obstacle> pList3 = new ArrayList<Obstacle>();
 	Group platformSet1 = spawnPlatforms(lvl1Set1,0,0,Color.DARKORCHID, pList1);
 	Group platformSet2 = spawnPlatforms(lvl1Set2,-50,50,Color.DARKOLIVEGREEN, pList2);
-
 	Character mainGuy = new Character(250, 300-20, 20, Color.RED);
 	Group group = new Group(theVoid, background, ground, obstacleBox, ref.getCharacter(), ref2.getCharacter(), 
 			ref3.getCharacter(), ref4.getCharacter(), ref5.getCharacter(), mainGuy.getCharacter(),e1,platformSet1,platformSet2);
@@ -154,7 +156,6 @@ public class GameObject extends InputFunctions{
 
 		//=====================================================
 		//Update platforms, testing collision
-		//System.out.println("Number of children: "+enemies.getChildren().size());
 		for(int i = 0; i < pList1.size(); i++) {
 			if(pList1.get(i).collide(mainGuy.getx(), mainGuy.gety(), mainGuy.getCharacter().getRadius(), mainGuy.getCharacter().getRadius())) {
 				pList1.get(i).getPlat().setFill(Color.CORAL);
