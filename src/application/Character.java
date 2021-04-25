@@ -7,7 +7,7 @@ public class Character {
 
 	Boolean jumping, walking;
 	double dx, dy;
-	double x, y;
+	double x, y, minY = 280;
 	double size;
 	Color color;
 	Circle character = new Circle(x, y, size, color);
@@ -55,6 +55,9 @@ public class Character {
 	public void sety(double y) {
 		this.y = y;
 	}
+	public void setMinY(double y) {
+		this.minY = y;
+	}
 	public double getSize() {
 		return this.size;
 	}
@@ -100,12 +103,20 @@ public class Character {
 	public boolean getWalking() {
 		return this.walking;
 	}
+
 	public boolean getCollide()
 	{
 		return collide;
 	}
+	public void setCollide(boolean collide)
+	{
+		this.collide = collide;
+	}
 	public double getGroundLvl()
 	{
 		return groundLvl;
+	}
+	public double getMinY() {
+		return this.minY;
 	}
 }

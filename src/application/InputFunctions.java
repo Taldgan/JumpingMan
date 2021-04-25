@@ -27,7 +27,7 @@ public class InputFunctions {
 			character.walking = true;
 		}
 		if (key == KeyCode.SPACE || key == KeyCode.UP) {
-			if (!character.getJumping()) {
+			if (!character.getJumping() || character.getCollide()) {
 				character.setGroundLvl(character.gety());
 				character.setdy(-5);
 				character.jumping = true;

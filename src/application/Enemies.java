@@ -3,16 +3,18 @@ package application;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import java.util.Random;
-public class Enemies extends Character
+public class Enemies extends Character implements Collidable
 {
 	Circle enemy = new Circle(x, y, size, color);
 	private double initialY;
 	private boolean dir;
+	private boolean isCollidable;
 	public Enemies(double x, double y, double size, Color color) 
 	{
 		super(x, y, size, color);
 		initialY = y;
 		dir = true;
+		isCollidable = true;
 	}
 
 	public double getInitY()
@@ -71,6 +73,19 @@ public class Enemies extends Character
 			dir = false;
 		else
 			dir = true;
+	}
+	
+	public boolean collide(double x, double y, double w, double h)
+	{
+		return false;
+	}
+	public void setCollidable(boolean isCollidable)
+	{
+		this.isCollidable = isCollidable;
+	}
+	public boolean isCollidable()
+	{
+		return true;
 	}
 
 }

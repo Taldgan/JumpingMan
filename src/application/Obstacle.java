@@ -8,6 +8,7 @@ public class Obstacle implements Collidable {
 	private boolean collidable = true;
 	private Rectangle platform;
 	private double width, height, x, y;
+	private boolean collided;
 	
 	public Obstacle(int w, int h, Color c) {
 		this.platform = new Rectangle(w, h, c);
@@ -16,15 +17,9 @@ public class Obstacle implements Collidable {
 	}
 
 	public boolean collide(double x, double y, double w, double h) {
-		
-		//if(this.x > x && this.x+this.width < x+w && this.y < x && this.y-this.width < y-h)
-		if((x >= this.x && x<= this.x+width) && (y == this.y-this.height || y <= this.y+height))
-		{
-			System.out.println("Platform's y: "+this.y+this.height);
-			System.out.println("Cicle's y: "+y+height+"\n===========================");
+
+		if((x+w >= this.x && x-w<= this.x+width) && (y+h >= this.y && y-h <= this.y+height))
 			return true;
-		}
-			
 		else 
 			return false;
 	}
@@ -36,6 +31,14 @@ public class Obstacle implements Collidable {
 
 	public void setCollidable(boolean isCollidable) {
 		this.collidable = isCollidable;
+	}
+	
+	public boolean hasCollided() {
+		return collided;
+	}
+	
+	public void setColliding() {
+		this.collided = true;
 	}
 
 	public boolean isCollidable() {
