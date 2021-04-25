@@ -7,14 +7,17 @@ public class Enemies extends Character
 {
 	Circle enemy = new Circle(x, y, size, color);
 	private double initialY;
-	private boolean temp;
+	private boolean dir;
 	public Enemies(double x, double y, double size, Color color) 
 	{
 		super(x, y, size, color);
 		initialY = y;
-		temp = false;
-		
-		// TODO Auto-generated constructor stub
+		dir = true;
+	}
+
+	public double getInitY()
+	{
+		return initialY;
 	}
 	
 	public void enemyMove()
@@ -24,10 +27,17 @@ public class Enemies extends Character
 		this.character.setTranslateY(this.character.getTranslateY() + getdy());
 		sety(this.character.getCenterY() + this.character.getTranslateY());*/
 		
-		//Move left
-		super.setdx(-.5);
-		super.move();
-		
+		//Move left if direction is true
+		if(dir)
+		{
+			super.setdx(-.5);
+			super.move();
+		}
+		else
+		{
+			setdx(.5);
+			move();
+		}
 		//If collision with something, or I guess it reached the end of a platform, move to the right.
 		
 	}
@@ -49,14 +59,18 @@ public class Enemies extends Character
 		//setJumping(false);
 		
 	}
-	public int getRNG()
+	public int getRNG(int max)
 	{
 		Random rng = new Random();
-		return rng.nextInt(1000);
+		return rng.nextInt(max);
 	}
-	public double getInitY()
+	
+	public void swapDir()
 	{
-		return initialY;
+		if(dir)
+			dir = false;
+		else
+			dir = true;
 	}
 
 }

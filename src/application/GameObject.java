@@ -143,13 +143,19 @@ public class GameObject extends InputFunctions{
 					eList.get(x).setdy(0); //down
 					eList.get(x).setJumping(false);
 				}
-				int ran = eList.get(x).getRNG();
-				if(ran >= 0 && ran <= 15) //Random chance (15/1000) that an enemy will jump. I think this is per frame, so it's still quite a lot.
+				int ran = eList.get(x).getRNG(1000);
+				if(ran >= 0 && ran < 15) //Random chance (15/1000) that an enemy will jump. I think this is per frame, so it's still quite a lot.
 				{
 					eList.get(x).enemyJump();
 				}
 				
 			}
+			//Chance for an enemy to swap directions (5/1000 chance) per frame refresh.
+			//This works, but let's not have this be a thing
+			/*int ran = eList.get(x).getRNG(1000);
+			if(ran >= 0 && ran <= 5)
+				eList.get(x).swapDir();*/
+			
 			eList.get(x).enemyMove();
 			
 		}
@@ -187,11 +193,12 @@ public class GameObject extends InputFunctions{
 	public Group spawnEnemies()
 	{
 		eList.add(new Enemies(500, 280, 20, Color.WHITE));
-		eList.add(new Enemies(750, 280, 20, Color.WHITE));
+		eList.add(new Enemies(750, 280, 20, Color.BLUE));
+		eList.add(new Enemies(1000, 280, 20, Color.WHITE));
 		Group enemyGroup = new Group();
 		for(int x = 0; x < eList.size(); x++)
 		{
-			System.out.println("Enemy added");
+			//System.out.println("Enemy added");
 			enemyGroup.getChildren().add(eList.get(x).getCharacter());
 		}
 			
@@ -211,7 +218,8 @@ public class GameObject extends InputFunctions{
 			{
 				//Spawn platform based off of char's location in string
 				//Each char will be 90 pixels of space, and will spawn at a height of 265-(y*45)
-				Obstacle r = new Obstacle(90,25,c); //Platforms are 70x25
+
+				Obstacle r = new Obstacle(90,25,c); //Platforms are 90x25
 				pList.add(r);
 				platG.getChildren().add(r.getPlat());
 				
