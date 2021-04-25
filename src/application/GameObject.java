@@ -13,8 +13,8 @@ public class GameObject extends InputFunctions{
 	String lvl1Set1 = "0000000110023300000100100000203020010000001";
 	String lvl1Set2 = "000000002000400000002";
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
-	Rectangle background = new Rectangle(2000, 500, Color.LIGHTSKYBLUE);
-	Rectangle ground = new Rectangle(2000, 100, Color.GREEN);
+	Rectangle background = new Rectangle(4000, 500, Color.LIGHTSKYBLUE);
+	Rectangle ground = new Rectangle(4000, 100, Color.GREEN);
 	Rectangle obstacleBox = new Rectangle(50, 50, Color.BROWN);
 	Character ref = new Character(50, 50, 20, Color.YELLOW);
 	Character ref2 = new Character (300, 50, 20, Color.GREEN);
@@ -73,16 +73,17 @@ public class GameObject extends InputFunctions{
 	
 	public void update() {
 		
-		System.out.println("center x = " + (mainGuy.getCharacter().getCenterX() /*+ mainGuy.getCharacter().getTranslateX()*/));
+		//Troubleshooting output
+		/*System.out.println("center x = " + (mainGuy.getCharacter().getCenterX()));
 		System.out.println("character translate x = " + mainGuy.getCharacter().getTranslateX());
 		System.out.println("group translate x = " + group.getTranslateX());
 		System.out.println("dx = " + mainGuy.getdx());
 		System.out.println("x = " + mainGuy.getx());
 		System.out.println("dy = " + mainGuy.getdy());
 		System.out.println("y = " + mainGuy.gety());
-		System.out.println("center y = " + (mainGuy.getCharacter().getCenterY() /*+ mainGuy.getCharacter().getTranslateY()*/));
+		System.out.println("center y = " + (mainGuy.getCharacter().getCenterY()));
 		System.out.println("character translate y " + mainGuy.getCharacter().   getTranslateY());
-		System.out.println("group translate y " + group.getTranslateY() + '\n');
+		System.out.println("group translate y " + group.getTranslateY() + '\n');*/
 		
 		if (mainGuy.walking || mainGuy.jumping) {
 			mainGuy.move();
@@ -113,7 +114,9 @@ public class GameObject extends InputFunctions{
 			group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
 			mainGuy.move();
 		}
-		if (mainGuy.gety() > 280) {
+		
+			
+		if (mainGuy.gety() > mainGuy.getGroundLvl()) {
 			mainGuy.jumping = false;
 			mainGuy.setdy(0);
 		}
@@ -164,6 +167,10 @@ public class GameObject extends InputFunctions{
 		for(int i = 0; i < pList1.size(); i++) {
 			if(pList1.get(i).collide(mainGuy.getx(), mainGuy.gety(), mainGuy.getCharacter().getRadius(), mainGuy.getCharacter().getRadius())) {
 				pList1.get(i).getPlat().setFill(Color.CORAL);
+				/*if(mainGuy.getJumping())
+				{
+					mainGuy.setGroundLvl(pList1.get(i).getY());
+				}*/
 			}
 		}
 	}

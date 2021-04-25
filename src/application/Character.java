@@ -11,10 +11,14 @@ public class Character {
 	double size;
 	Color color;
 	Circle character = new Circle(x, y, size, color);
+	boolean collide;
+	double groundLvl;
 	
 	public Character(double x, double y, double size, Color color) {
 		jumping = false;
 		walking = false;
+		collide = false;
+		groundLvl = 280;
 		setx(x);
 		sety(y);
 		setSize(size);
@@ -74,6 +78,10 @@ public class Character {
 			dx = -5;
 		this.dx = dx;
 	}
+	public void setGroundLvl(double y)
+	{
+		groundLvl = y;
+	}
 	public double getdy() {
 		return this.dy;
 	}
@@ -89,7 +97,15 @@ public class Character {
 	public void setWalking(boolean b) {
 		this.walking = b;
 	}
-	public boolean getWalking(boolean b) {
+	public boolean getWalking() {
 		return this.walking;
+	}
+	public boolean getCollide()
+	{
+		return collide;
+	}
+	public double getGroundLvl()
+	{
+		return groundLvl;
 	}
 }
