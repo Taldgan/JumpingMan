@@ -297,55 +297,61 @@ public class GameObject extends InputFunctions{
 	
 	public void checkCollision(Character c)
 	{
-		for(int i = 0; i < pList1.size(); i++) {
-			if(pList1.get(i).collide(c.getx(), c.gety(), c.getCharacter().getRadius(), c.getCharacter().getRadius())) {
-				pList1.get(i).getPlat().setFill(Color.CORAL);
+		//character bound variables for readability
+		double charTop = c.gety()-c.getCharacter().getRadius();
+		double charBot = c.gety()+c.getCharacter().getRadius();
+		double charLeft = c.getx()-c.getCharacter().getRadius();
+		double charRight = c.getx()+c.getCharacter().getRadius();
+		double charRad = c.getCharacter().getRadius();
+
+		//Replaced with for:each, pList1.get(i) was getting tedious :P
+		for(Obstacle obstacle : pList1) {
+			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
+				obstacle.getPlat().setFill(Color.CORAL);
 				
 				//On top of the platform
-				if(c.gety()+c.getCharacter().getRadius()-12 <= pList1.get(i).getY())
+				if(charBot-12 <= obstacle.getY())
 				{
 					c.setGroundLvl(c.gety());
 					c.setCollide(true);
 					c.setdy(0);
-					System.out.println("top collision");
-					
 					//Troubleshooting prints
 					//System.out.println("Main guy y + radius: "+(c.gety()+c.getCharacter().getRadius()));
 					//System.out.println("Platform's y:"+pList1.get(i).getY());
 				}
 				//If under the platform:
-				else if(c.gety()-c.getCharacter().getRadius() <= pList1.get(i).getY()-pList1.get(i).getHeight() )  //-pList1.get(i).getHeight() for fix
+				else if(charTop <= obstacle.getY()-obstacle.getHeight() )  //-pList1.get(i).getHeight() for fix
 				{
 					//pList1.get(i).setY(c.gety()-c.getCharacter().getRadius()-pList1.get(i).getHeight());
 					c.setdy(1);
 				}
 				//Added 2 more checks for horizontal collision
 				//Left of platform collision:
-				else if(c.getx()+c.getCharacter().getRadius() <= pList1.get(i).getX()) {
+				else if(charLeft <= obstacle.getX()) {
 					mainGuy.setCollideRight(true);
 					if(mainGuy.getdx() > 0) {
 						mainGuy.setdx(0);
 					}
 				}
 				//Right of platform collision:
-				else if(c.getx()-c.getCharacter().getRadius() >= pList1.get(i).getX()+pList1.get(i).getWidth()) {
+				else if(charRight >= obstacle.getX()+obstacle.getWidth()) {
 					mainGuy.setCollideLeft(true);
 					if(mainGuy.getdx() < 0) {
 						mainGuy.setdx(0);
 					}
 				}
 				//Break out of loop, since you can only be colliding with at most 2 things.
-				i = pList1.size();
+				break;
 				
 			}
 			else {
 				c.setCollide(false);
-				pList1.get(i).getPlat().setFill(Color.DARKORCHID); //reset color if not touching
+				obstacle.getPlat().setFill(Color.DARKORCHID); //reset color if not touching
 				mainGuy.setCollideLeft(false);
 				mainGuy.setCollideRight(false);
 			}
 		}
-		if(obstacleBox.collide(c.getx(), c.gety(), c.getCharacter().getRadius(), c.getCharacter().getRadius())) {
+		if(obstacleBox.collide(c.getx(), c.gety(), charRad, charRad)) {
 			obstacleBox.getPlat().setFill(Color.CORAL);
 			c.swapDir();
 		}
