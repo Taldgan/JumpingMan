@@ -10,10 +10,12 @@ public class Enemies extends Character implements Collidable
 	private boolean dir;
 	private boolean isCollidable;
 	private Color initColor;
+	private double initialX;
 	public Enemies(double x, double y, double size, Color color) 
 	{
 		super(x, y, size, color);
 		initialY = y;
+		initialX = x;
 		dir = true;
 		isCollidable = true;
 		initColor = color;
@@ -52,6 +54,11 @@ public class Enemies extends Character implements Collidable
 			//System.out.println("Enemy jumping");
 			setJumping(true);
 			setdy(-3); //Up
+		}
+		if(gety() > 300)
+		{
+			setJumping(false);
+			setdy(0);
 		}
 		
 		/*else if(getJumping() && gety() > initialY)
@@ -95,6 +102,14 @@ public class Enemies extends Character implements Collidable
 	public Color getColor()
 	{
 		return color;
+	}
+	public double getInitialX()
+	{
+		return initialX;
+	}
+	public void setInitialX(double x)
+	{
+		initialX = x;
 	}
 
 }

@@ -10,10 +10,12 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 
 public class GameObject extends InputFunctions{
-	String lvl1Set1 = "0000000110023301000100100000203020010000001";
+	//String locations/types
+	String lvl1Set1 = "0100000110020301030100100000203020010000001";
 	String lvl1Set2 = "000000002000400000002";
 	String lvl1Set3 = "0001100";
-	String lvl1ESet = "00000000000101020001210001000201000222";
+	String lvl1ESet = "03000000300405020501210001000201000222";
+	
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
 	Rectangle background = new Rectangle(4000, 500, Color.LIGHTSKYBLUE);
 	Rectangle ground = new Rectangle(4000, 100, Color.GREEN);
@@ -25,7 +27,7 @@ public class GameObject extends InputFunctions{
 	Character ref3 = new Character (500, 50, 20, Color.BLUE);
 	Character ref4 = new Character (700, 50, 20, Color.ORANGE);
 	Character ref5 = new Character (900, 50, 20, Color.PURPLE);
-	//Enemy  vars
+	//Enemy vars
 	ArrayList<Enemies> eList = new ArrayList<Enemies>();
 	Group e1 = spawnEnemies(lvl1ESet);
 
@@ -36,6 +38,8 @@ public class GameObject extends InputFunctions{
 	Group platformSet1 = spawnPlatforms(lvl1Set1,0,0,Color.DARKORCHID, pList1);
 	Group platformSet2 = spawnPlatforms(lvl1Set2,-50,50,Color.DARKOLIVEGREEN, pList2);
 	Character mainGuy = new Character(250, 300-20, 20, Color.RED);
+	
+	//Etc
 	Group group = new Group(theVoid, background, ground, obstacleBox.getPlat(), ref.getCharacter(), ref2.getCharacter(), 
 			ref3.getCharacter(), ref4.getCharacter(), ref5.getCharacter(), mainGuy.getCharacter(),e1,platformSet1,platformSet2);
 	BorderPane root = new BorderPane(group);
@@ -164,7 +168,7 @@ public class GameObject extends InputFunctions{
 		//System.out.println("Number of children: "+enemies.getChildren().size());
 		for(int x = 0; x < eList.size();x++)
 		{
-			//System.out.println("Enemy "+x+" x: "+eList.get(x).getx());
+			//Blue enemies jump
 			if(eList.get(x).getColor() == Color.BLUE) //Made it to where every odd enemy added to the list might bounce.
 			{
 				if(eList.get(x).getJumping())
@@ -182,6 +186,15 @@ public class GameObject extends InputFunctions{
 					eList.get(x).enemyJump();
 				}
 				
+			}
+			//Magenta enemies on platforms
+			if(eList.get(x).getColor() == Color.DARKMAGENTA)
+			{
+				if(eList.get(x).getx() >= eList.get(x).getInitialX()+85 || eList.get(x).getx() <= eList.get(x).getInitialX()-85)
+				{
+					eList.get(x).swapDir();
+					eList.get(x).setInitialX(eList.get(x).getx());
+				}
 			}
 			//Chance for an enemy to swap directions (5/1000 chance) per frame refresh.
 			//This works, but let's not have this be a thing
@@ -236,19 +249,25 @@ public class GameObject extends InputFunctions{
 	 
 	public Group spawnEnemies(String eSet)
 	{
-		/*eList.add(new Enemies(500, 280, 20, Color.WHITE));
-		eList.add(new Enemies(750, 280, 20, Color.BLUE));
-		eList.add(new Enemies(1000, 280, 20, Color.WHITE));*/
+		
+		//1 is a normal enemy
+		//2 is a jumping enemy
+		//3 Is a normal enemy on a platform
 		Group enemyGroup = new Group();
 		for(int x = 0; x < eSet.length(); x++)
 		{
 			if(eSet.charAt(x) == '1')
 			{
-				eList.add(new Enemies(x*90,280,20,Color.WHITE));
+				eList.add(new Enemies(250+x*90,280,20,Color.MAGENTA));
 			}
 			else if(eSet.charAt(x) == '2')
 			{
-				eList.add(new Enemies(x*90,280,20,Color.BLUE));
+				eList.add(new Enemies(250+x*90,280,20,Color.BLUE));
+			}
+			else if(eSet.charAt(x) >= '3' && eSet.charAt(x) <= '9')
+			{
+				eList.add(new Enemies(250+(1+x)*90,
+						245-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA));
 			}
 		}
 		for(int x = 0; x < eList.size(); x++)
@@ -308,8 +327,8 @@ public class GameObject extends InputFunctions{
 					c.setdy(0);
 					
 					//Troubleshooting prints
-					System.out.println("Main guy y + radius: "+(c.gety()+c.getCharacter().getRadius()));
-					System.out.println("Platform's y:"+pList1.get(i).getY());
+					//System.out.println("Main guy y + radius: "+(c.gety()+c.getCharacter().getRadius()));
+					//System.out.println("Platform's y:"+pList1.get(i).getY());
 				}
 				//If under the platform:
 				else if(c.gety()-c.getCharacter().getRadius() <= pList1.get(i).getY()+pList1.get(i).getHeight() ) //&&c.gety()-c.getCharacter().getRadius() >= pList1.get(i).getY()
