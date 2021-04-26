@@ -206,7 +206,7 @@ public class GameObject extends InputFunctions{
 				eList.get(x).getCharacter().setFill(eList.get(x).getColor());
 			
 			//Check collision with obstacles/platforms
-			//checkCollision(eList.get(x)); //TODO UNCOMMENT THIS AFTER TESTING HORIZONTAL COLLISION FOR PLAYER 
+			checkCollision(eList.get(x)); 
 			
 		}
 
