@@ -17,12 +17,12 @@ public class InputFunctions {
 			System.exit(0);
 		}
 
-		if (key == KeyCode.RIGHT) {
+		if (key == KeyCode.RIGHT && !character.getCollideRight()) {
 			character.setdx(5);
 			//character.setColor(Color.BLACK);
 			character.walking = true;
 		}
-		if (key == KeyCode.LEFT) {
+		if (key == KeyCode.LEFT && !character.getCollideLeft()) {
 			character.setdx(-5);
 			character.walking = true;
 		}
