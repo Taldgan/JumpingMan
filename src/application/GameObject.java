@@ -290,7 +290,7 @@ public class GameObject extends InputFunctions{
 				platG.getChildren().add(r.getPlat());
 				
 				r.setX(250+90*x+offsetX);
-				r.setY(265+Integer.parseInt(String.valueOf(lvl.charAt(x)))*45*-1-offsetY);
+				r.setY(265+Integer.parseInt(String.valueOf(lvl.charAt(x)))*40*-1-offsetY);
 			}
 		}
 		return platG;
@@ -309,42 +309,48 @@ public class GameObject extends InputFunctions{
 		for(Obstacle obstacle : pList1) {
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
 				obstacle.getPlat().setFill(Color.CORAL);
-				
+				double diff;
 				//On top of the platform
 				if(charBot-12 <= obstacle.getY() && c.getdy() >= 0)
 				{
 					System.out.println("collide top");
+					diff = group.getTranslateY() + (c.gety() - c.getPrevY());
 					c.setGroundLvl(c.gety());
 					c.setCollide(true);
-					c.sety(mainGuy.getPrevY());
+					c.sety(c.getPrevY());
 					c.setdy(0);
 					c.setJumping(false);
 					c.getCharacter().setTranslateY(mainGuy.getPrevTranslateY());
+					group.setTranslateY(diff);
 				}
 				//Added 2 more checks for horizontal collision
 				//Left of platform collision:
 				if(charLeft <= obstacle.getX()) {
 					System.out.println("collide right");
 					c.setCollideRight(true);
-					c.setx(mainGuy.getPrevX());
-					c.setdx(0);
+					diff = group.getTranslateX() + (c.getx() - c.getPrevX());
+					c.setx(c.getPrevX());
 					c.getCharacter().setTranslateX(mainGuy.getPrevTranslateX());
+					group.setTranslateX(diff); 
 				}
 				//Right of platform collision:
 				else if(charRight >= obstacle.getX()+obstacle.getWidth()) {
 					System.out.println("collide left");
 					c.setCollideLeft(true);
-					c.setx(mainGuy.getPrevX());
-					c.setdx(0);
+					diff = group.getTranslateX() + (c.getx() - c.getPrevX());
+					c.setx(c.getPrevX());
 					c.getCharacter().setTranslateX(mainGuy.getPrevTranslateX());
+					group.setTranslateX(diff);
 				}
 				//If under the platform:
 				else if(charTop <= obstacle.getY()+obstacle.getHeight() && c.getdy() < 0)  //-pList1.get(i).getHeight() for fix
 				{
 					System.out.println("collide bot");
-					c.sety(mainGuy.getPrevY());
+					diff = group.getTranslateY() + (c.gety() - c.getPrevY());
+					c.sety(c.getPrevY());
 					c.getCharacter().setTranslateY(mainGuy.getPrevTranslateY());
 					c.setdy(1);
+					group.setTranslateY(diff);
 				}
 				//Break out of loop, since you can only be colliding with at most 2 things.
 				break;
