@@ -8,6 +8,7 @@ public class Character {
 	Boolean jumping, walking;
 	double dx, dy;
 	double x, y, minY = 280;
+	double prevX, prevY, prevTranslateX, prevTranslateY;
 	double size;
 	Color color;
 	Circle character = new Circle(x, y, size, color);
@@ -33,6 +34,10 @@ public class Character {
 	}
 	
 	public void move() {
+		prevX = this.x;
+		prevY = this.y;
+		prevTranslateX = this.getCharacter().getTranslateX();
+		prevTranslateY = this.getCharacter().getTranslateY();
 		this.character.setTranslateX(this.character.getTranslateX() + getdx());
 		setx(this.character.getCenterX() + this.character.getTranslateX());
 		this.character.setTranslateY(this.character.getTranslateY() + getdy());
@@ -155,5 +160,37 @@ public class Character {
 			dir = false;
 		else
 			dir = true;
+	}
+
+	public double getPrevX() {
+		return prevX;
+	}
+
+	public void setPrevX(double prevX) {
+		this.prevX = prevX;
+	}
+
+	public double getPrevY() {
+		return prevY;
+	}
+
+	public void setPrevY(double prevY) {
+		this.prevY = prevY;
+	}
+
+	public double getPrevTranslateX() {
+		return prevTranslateX;
+	}
+
+	public void setPrevTranslateX(double prevTranslateX) {
+		this.prevTranslateX = prevTranslateX;
+	}
+
+	public double getPrevTranslateY() {
+		return prevTranslateY;
+	}
+
+	public void setPrevTranslateY(double prevTranslateY) {
+		this.prevTranslateY = prevTranslateY;
 	}
 }

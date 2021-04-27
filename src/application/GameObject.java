@@ -106,6 +106,11 @@ public class GameObject extends InputFunctions{
 		//System.out.println("Main guy y: "+mainGuy.gety());
 		//System.out.println("Current ground level: "+mainGuy.getGroundLvl());
 		//System.out.println("Main guy dy: "+mainGuy.getdy());
+		
+		checkCollision(mainGuy);
+
+		if(!mainGuy.getCollide())
+			mainGuy.setJumping(true);
 
 		if (mainGuy.walking || mainGuy.jumping) {
 			mainGuy.move();
@@ -114,11 +119,6 @@ public class GameObject extends InputFunctions{
 			if (mainGuy.jumping) {
 				mainGuy.setdy(mainGuy.getdy() + (gravity*calculate()));
 			}
-		}
-		
-		if (group.getTranslateY() != 0 && !mainGuy.jumping) {
-			group.setTranslateY(0);
-			mainGuy.getCharacter().setTranslateY(0);
 		}
 
 		if (mainGuy.getdx() > 5)
@@ -214,7 +214,7 @@ public class GameObject extends InputFunctions{
 		//=====================================================
 		//Update platforms, testing collision. Moved down to a method at the bottom so
 		//That enemies can also collide with objects.
-		
+
 		checkCollision(mainGuy);
 		
 	}
@@ -316,32 +316,34 @@ public class GameObject extends InputFunctions{
 					System.out.println("collide top");
 					c.setGroundLvl(c.gety());
 					c.setCollide(true);
+					c.sety(mainGuy.getPrevY());
 					c.setdy(0);
-					//Troubleshooting prints
-					//System.out.println("Main guy y + radius: "+(c.gety()+c.getCharacter().getRadius()));
-					//System.out.println("Platform's y:"+pList1.get(i).getY());
+					c.setJumping(false);
+					c.getCharacter().setTranslateY(mainGuy.getPrevTranslateY());
 				}
 				//Added 2 more checks for horizontal collision
 				//Left of platform collision:
 				if(charLeft <= obstacle.getX()) {
 					System.out.println("collide right");
-					mainGuy.setCollideRight(true);
-					if(mainGuy.getdx() > 0) {
-						mainGuy.setdx(0);
-					}
+					c.setCollideRight(true);
+					c.setx(mainGuy.getPrevX());
+					c.setdx(0);
+					c.getCharacter().setTranslateX(mainGuy.getPrevTranslateX());
 				}
 				//Right of platform collision:
 				else if(charRight >= obstacle.getX()+obstacle.getWidth()) {
 					System.out.println("collide left");
-					mainGuy.setCollideLeft(true);
-					if(mainGuy.getdx() < 0) {
-						mainGuy.setdx(0);
-					}
+					c.setCollideLeft(true);
+					c.setx(mainGuy.getPrevX());
+					c.setdx(0);
+					c.getCharacter().setTranslateX(mainGuy.getPrevTranslateX());
 				}
 				//If under the platform:
 				else if(charTop <= obstacle.getY()+obstacle.getHeight() && c.getdy() < 0)  //-pList1.get(i).getHeight() for fix
 				{
 					System.out.println("collide bot");
+					c.sety(mainGuy.getPrevY());
+					c.getCharacter().setTranslateY(mainGuy.getPrevTranslateY());
 					c.setdy(1);
 				}
 				//Break out of loop, since you can only be colliding with at most 2 things.
