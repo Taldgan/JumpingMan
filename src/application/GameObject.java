@@ -309,19 +309,13 @@ public class GameObject extends InputFunctions{
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
 				obstacle.getPlat().setFill(Color.CORAL);
 				//On top of the platform
-				if(charBot-12 <= obstacle.getY())
+				if(charBot-12 <= obstacle.getY() && c.getdy() >= 0)
 				{
 					System.out.println("collide top");
 					c.setGroundLvl(c.gety());
 					c.setCollide(true);
 					c.setdy(0);
 					c.setJumping(false); //If on top of a platform, character is not jumping
-				}
-				//If under the platform:
-				else if(charTop <= obstacle.getY()+obstacle.getHeight() && c.getdy() < 0 && !c.getCollideRight())  //-pList1.get(i).getHeight() for fix
-				{
-					System.out.println("collide bot");
-					c.setdy(1);
 				}
 				//Added 2 more checks for horizontal collision
 				//Left of platform collision:
@@ -339,6 +333,12 @@ public class GameObject extends InputFunctions{
 					if(mainGuy.getdx() < 0) {
 						mainGuy.setdx(0);
 					}
+				}
+				//If under the platform:
+				else if(charTop <= obstacle.getY()+obstacle.getHeight() && c.getdy() < 0)  //-pList1.get(i).getHeight() for fix
+				{
+					System.out.println("collide bot");
+					c.setdy(1);
 				}
 				//Break out of loop, since you can only be colliding with at most 2 things.
 				break;
