@@ -76,6 +76,7 @@ public class GameObject extends InputFunctions{
 		
 		root.setPrefSize(500, 500);
 	}
+	
 	public void processInput() {
 		
 		this.scene.setOnKeyPressed(e ->{
@@ -89,7 +90,6 @@ public class GameObject extends InputFunctions{
 	}
 	
 	public void update() {
-		System.out.println("Jumping: " + mainGuy.getJumping());
 		//System.out.println("MainGuy gety(): " + (int) mainGuy.gety() + " circleCenterY: " + (int) mainGuy.getCharacter().getCenterY());
 		//mainGuy.setGroundLvl(105);
 		//Troubleshooting output
@@ -106,11 +106,6 @@ public class GameObject extends InputFunctions{
 		//System.out.println("Current ground level: "+mainGuy.getGroundLvl());
 		//System.out.println("Main guy dy: "+mainGuy.getdy());
 
-		//If main guy is colliding with nothing, he must be falling ('jumping')
-		if(!mainGuy.getCollide())
-			mainGuy.setJumping(true);
-
-
 		if (mainGuy.walking || mainGuy.jumping) {
 			mainGuy.move();
 			group.setTranslateX(group.getTranslateX() - mainGuy.getdx());
@@ -120,6 +115,11 @@ public class GameObject extends InputFunctions{
 			}
 		}
 		
+		if (group.getTranslateY() != 0 && !mainGuy.jumping) {
+			group.setTranslateY(0);
+			mainGuy.getCharacter().setTranslateY(0);
+		}
+
 		if (mainGuy.getdx() > 5)
 			mainGuy.setdx(5);
 		if (mainGuy.getdx() < -5)
@@ -300,21 +300,24 @@ public class GameObject extends InputFunctions{
 		//character bound variables for readability
 		double charTop = c.gety()-c.getCharacter().getRadius();
 		double charBot = c.gety()+c.getCharacter().getRadius();
-		double charLeft = c.getx()-c.getCharacter().getRadius();
-		double charRight = c.getx()+c.getCharacter().getRadius();
+		double charLeft = c.getx()+c.getCharacter().getRadius();
+		double charRight = c.getx()-c.getCharacter().getRadius();
 		double charRad = c.getCharacter().getRadius();
 
 		//Replaced with for:each, pList1.get(i) was getting tedious :P
 		for(Obstacle obstacle : pList1) {
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
 				obstacle.getPlat().setFill(Color.CORAL);
+				
 				//On top of the platform
 				if(charBot-12 <= obstacle.getY())
 				{
 					c.setGroundLvl(c.gety());
 					c.setCollide(true);
 					c.setdy(0);
-					c.setJumping(false); //If on top of a platform, character is not jumping
+					//Troubleshooting prints
+					//System.out.println("Main guy y + radius: "+(c.gety()+c.getCharacter().getRadius()));
+					//System.out.println("Platform's y:"+pList1.get(i).getY());
 				}
 				//If under the platform:
 				else if(charTop <= obstacle.getY()-obstacle.getHeight() )  //-pList1.get(i).getHeight() for fix
