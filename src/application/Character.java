@@ -11,7 +11,7 @@ public class Character {
 	double size;
 	Color color;
 	Circle character = new Circle(x, y, size, color);
-	boolean collide;
+	boolean collide, collideRight, collideLeft;
 	double groundLvl;
 	double radius;
 	private boolean dir;
@@ -20,6 +20,8 @@ public class Character {
 		jumping = false;
 		walking = false;
 		collide = false;
+		collideLeft = false;
+		collideRight = false;
 		radius = size;
 		groundLvl = 280;
 		dir = true;
@@ -115,6 +117,22 @@ public class Character {
 	public void setCollide(boolean collide)
 	{
 		this.collide = collide;
+	}
+	public boolean getCollideLeft()
+	{
+		return collideLeft;
+	}
+	public void setCollideLeft(boolean collide)
+	{
+		this.collideLeft = collide;
+	}
+	public boolean getCollideRight()
+	{
+		return collideRight;
+	}
+	public void setCollideRight(boolean collide)
+	{
+		this.collideRight = collide;
 	}
 	public double getGroundLvl()
 	{

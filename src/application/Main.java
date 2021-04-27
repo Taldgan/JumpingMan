@@ -13,7 +13,6 @@ public class Main extends Application {
 	    	
 	    	game.processInput();
 	    	game.render(primaryStage);
-	    	
 	    	AnimationTimer timer = new AnimationTimer() {
 
 				@Override

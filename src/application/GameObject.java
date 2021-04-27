@@ -1,7 +1,6 @@
 package application;
 
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
@@ -14,7 +13,7 @@ public class GameObject extends InputFunctions{
 	String lvl1Set1 = "0100000110020301030100100000203020010000001";
 	String lvl1Set2 = "000000002000400000002";
 	String lvl1Set3 = "0001100";
-	String lvl1ESet = "03000000300405020501210001000201000222"; //Enemy set
+	String lvl1ESet = "03000010300405020501210001000201000222"; //Enemy set
 	
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
 	Rectangle background = new Rectangle(4000, 500, Color.LIGHTSKYBLUE);
@@ -22,6 +21,8 @@ public class GameObject extends InputFunctions{
 	//Obstacle ground = new Obstacle(2000, 100, Color.GREEN);
 	//Rectangle obstacleBox = new Rectangle(50, 50, Color.BROWN);
 	Obstacle obstacleBox = new Obstacle(50, 50, Color.BROWN);
+	//Rectangle obstacleBoxTop = new Rectangle(50, 5, Color.GREEN);
+	//Rectangle obstacleBoxBot = new Rectangle(50, 5, Color.BLACK);
 	Character ref = new Character(50, 50, 20, Color.YELLOW);
 	Character ref2 = new Character (300, 50, 20, Color.GREEN);
 	Character ref3 = new Character (500, 50, 20, Color.BLUE);
@@ -51,23 +52,30 @@ public class GameObject extends InputFunctions{
 	double gravity = 1;
 	
 	public GameObject() {
+		obstacleBox.setX(500);
+		obstacleBox.setY(250);
+		
+		/*obstacleBoxTop.setX(500);
+		obstacleBoxTop.setY(obstacleBox.getY());
+		obstacleBoxBot.setX(500);
+		obstacleBoxBot.setY(obstacleBox.getY()+obstacleBox.getHeight()-5);*/
+
+
+		pList1.add(obstacleBox);
 		group.setManaged(false);
 		
 		ground.setX(0);
 		ground.setY(300);
 		
-		obstacleBox.setX(500);
-		obstacleBox.setY(250);
 		
 		theVoid.setY(-2500);
 		theVoid.setX(-2500);
 		
-		mainGuy.setGroundLvl(100);
+		//mainGuy.setGroundLvl(100);
 		
 		
 		root.setPrefSize(500, 500);
 	}
-	
 	public void processInput() {
 		
 		this.scene.setOnKeyPressed(e ->{
@@ -81,38 +89,37 @@ public class GameObject extends InputFunctions{
 	}
 	
 	public void update() {
+		//System.out.println("Jumping: " + mainGuy.getJumping());
+		//System.out.println("MainGuy gety(): " + (int) mainGuy.gety() + " circleCenterY: " + (int) mainGuy.getCharacter().getCenterY());
 		//mainGuy.setGroundLvl(105);
 		//Troubleshooting output
-		System.out.println("center x = " + (mainGuy.getCharacter().getCenterX()));
-		System.out.println("character translate x = " + mainGuy.getCharacter().getTranslateX());
-		System.out.println("mainguy x: "+mainGuy.getx());
+		//System.out.println("center x = " + (mainGuy.getCharacter().getCenterX()));
+		//System.out.println("character translate x = " + mainGuy.getCharacter().getTranslateX());
+		//System.out.println("mainguy x: "+mainGuy.getx());
 		//System.out.println("group translate x = " + group.getTranslateX());
 		//System.out.println("dx = " + mainGuy.getdx());
 		//System.out.println("center x = " + (mainGuy.getCharacter().getCenterX())); /*+ mainGuy.getCharacter().getTranslateX()));
 		//System.out.println("character translate x = " + mainGuy.getCharacter().getTranslateX());
 		//System.out.println("group translate x = " + group.getTranslateX());
 		//System.out.println("dx = " + mainGuy.getdx());
-		System.out.println("Main guy y: "+mainGuy.gety());
-		System.out.println("Current ground level: "+mainGuy.getGroundLvl());
-		System.out.println("Main guy dy: "+mainGuy.getdy());
-		//System.out.println("obstacleBox x: " + obstacleBox.getX() + " y: " + obstacleBox.getY() + 
-				//" Colliding: " + pList1.get(pList1.size()-1).collide(mainGuy.getx(), mainGuy.gety(), mainGuy.getCharacter().getRadius(), mainGuy.getCharacter().getRadius()));
-		
+		//System.out.println("Main guy y: "+mainGuy.gety());
+		//System.out.println("Current ground level: "+mainGuy.getGroundLvl());
+		//System.out.println("Main guy dy: "+mainGuy.getdy());
+
+		//If main guy is colliding with nothing, he must be falling ('jumping')
+		if(!mainGuy.getCollide())
+			mainGuy.setJumping(true);
+
+
 		if (mainGuy.walking || mainGuy.jumping) {
 			mainGuy.move();
 			group.setTranslateX(group.getTranslateX() - mainGuy.getdx());
 			group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
 			if (mainGuy.jumping) {
 				mainGuy.setdy(mainGuy.getdy() + (gravity*calculate()));
-				//mainGuy.sety(mainGuy.gety() + mainGuy.getdy()*calculate());
 			}
 		}
 		
-		if (group.getTranslateY() != 0 && !mainGuy.jumping) {
-			group.setTranslateY(0);
-			mainGuy.getCharacter().setTranslateY(0);
-		}
-
 		if (mainGuy.getdx() > 5)
 			mainGuy.setdx(5);
 		if (mainGuy.getdx() < -5)
@@ -134,26 +141,12 @@ public class GameObject extends InputFunctions{
 			mainGuy.setJumping(false);
 			mainGuy.setdy(0);
 			
-			if(mainGuy.getCollide())
-			{
-				//mainGuy.getCharacter().setCenterY(mainGuy.gety());
-				//mainGuy.setGroundLvl(mainGuy.gety());
-			}
-			else
+			if(!mainGuy.getCollide())
 			{
 				mainGuy.getCharacter().setCenterY(280);
 				mainGuy.setGroundLvl(280);
 			}
 		}
-		
-		/*if (mainGuy.getCharacter().getCenterY() != 280) {
-			mainGuy.setCharacter(250, 280, 20, Color.YELLOW);
-		}
-		if (mainGuy.getCharacter().getCenterX() != 250) {
-			mainGuy.setCharacter(250, 280, 20, Color.ORANGE);
-		}*/
-
-		
 		
 		//=====================================================
 		//Update enemies
@@ -207,7 +200,7 @@ public class GameObject extends InputFunctions{
 				eList.get(x).getCharacter().setFill(eList.get(x).getColor());
 			
 			//Check collision with obstacles/platforms
-			checkCollision(eList.get(x));
+			checkCollision(eList.get(x)); 
 			
 		}
 
@@ -266,7 +259,6 @@ public class GameObject extends InputFunctions{
 		}
 		for(int x = 0; x < eList.size(); x++)
 		{
-			//System.out.println("Enemy added");
 			enemyGroup.getChildren().add(eList.get(x).getCharacter());
 		}
 			
@@ -300,56 +292,83 @@ public class GameObject extends InputFunctions{
 	
 	public void checkCollision(Character c)
 	{
-		for(int i = 0; i < pList1.size(); i++) {
-			if(pList1.get(i).collide(c.getx(), c.gety(), c.getCharacter().getRadius(), c.getCharacter().getRadius())) {
-				pList1.get(i).getPlat().setFill(Color.CORAL);
-				//c.getCharacter().setCenterY(c.gety());
-				//double temp = c.getdx();
-				//System.out.println("ground level set to: "+pList1.get(i).getY());
-				
+		//character bound variables for readability
+		double charTop = c.gety()-c.getCharacter().getRadius();
+		double charBot = c.gety()+c.getCharacter().getRadius();
+		double charLeft = c.getx()-c.getCharacter().getRadius();
+		double charRight = c.getx()+c.getCharacter().getRadius();
+		double charRad = c.getCharacter().getRadius();
+		int check = 0;
+
+		//Replaced with for:each, pList1.get(i) was getting tedious :P
+		for(Obstacle obstacle : pList1) {
+			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
+				obstacle.getPlat().setFill(Color.CORAL);
 				//On top of the platform
-				if(c.gety()+c.getCharacter().getRadius()-12 <= pList1.get(i).getY())
+				if(charBot-12 <= obstacle.getY())
 				{
 					c.setGroundLvl(c.gety());
 					c.setCollide(true);
-					//c.getCharacter().setCenterY(pList1.get(i).getY());
-					/*if(c.gety()+c.getCharacter().getRadius()> pList1.get(i).getY())
-					{
-						c.setdy(-.05);
-					}*/
-					//else
 					c.setdy(0);
-					
-					//Troubleshooting prints
-					//System.out.println("Main guy y + radius: "+(c.gety()+c.getCharacter().getRadius()));
-					//System.out.println("Platform's y:"+pList1.get(i).getY());
+					c.setJumping(false); //If on top of a platform, character is not jumping
+					if(c.getColor() == Color.RED)
+						System.out.println("Top collision");
+				}
+				
+				//Added 2 more checks for horizontal collision
+				//Left of platform collision:
+				//Added only main guy can proc this
+				else if(charRight <= obstacle.getX() && c.getColor() == Color.RED) {
+					c.setCollideRight(true);
+					if(c.getdx() > 0) {
+						c.setdx(0);
+						//c.setdy(1);
+						//c.setWalking(false);
+						System.out.println("Left Collision");
+					}
+				}
+				//Right of platform collision:
+				else if(charLeft >= obstacle.getX()+obstacle.getWidth() && c.getColor() == Color.RED) {
+					c.setCollideLeft(true);
+					if(c.getdx() < 0) {
+						System.out.println("Right collision");
+						//c.setdy(1);
+						c.setdx(0);
+					}
 				}
 				//If under the platform:
-				else if(c.gety()-c.getCharacter().getRadius() <= pList1.get(i).getY()+pList1.get(i).getHeight() ) //&&c.gety()-c.getCharacter().getRadius() >= pList1.get(i).getY()
-					
+				else if(charTop <= obstacle.getY())  //-pList1.get(i).getHeight() for fix
 				{
-					//c.setJumping(false);
+					//pList1.get(i).setY(c.gety()-c.getCharacter().getRadius()-pList1.get(i).getHeight());
 					c.setdy(1);
-					//c.setdy(0);
+					if(c.getColor() == Color.RED)
+						System.out.println("Under collision");
 				}
-				//c.setdx(temp);
+				if(c.getColor() == Color.RED)
+					check++;
 				//Break out of loop, since you can only be colliding with at most 2 things. It'll check the other remaining platforms and set
 				//collide to false if you don't do this.
-				i = pList1.size();
+				if(check > 1)
+				{
+					System.out.println("Check: "+check);
+					break;
+				}
 				
 			}
 			else {
 				c.setCollide(false);
-				pList1.get(i).getPlat().setFill(Color.DARKORCHID); //reset color if not touching
+				obstacle.getPlat().setFill(Color.DARKORCHID); //reset color if not touching
+				mainGuy.setCollideLeft(false);
+				mainGuy.setCollideRight(false);
 			}
 		}
-		if(obstacleBox.collide(c.getx(), c.gety(), c.getCharacter().getRadius(), c.getCharacter().getRadius())) {
+		if(obstacleBox.collide(c.getx(), c.gety(), charRad, charRad)) {
 			obstacleBox.getPlat().setFill(Color.CORAL);
+
 			c.swapDir(); //Boolean for the ai to swap directions if they touch an obstacle.
-			//c.setMinY(obstacleBox.getY()-c.getCharacter().getRadius()); //set minimum player Y to platform y
 		}
 		else {
-			obstacleBox.getPlat().setFill(Color.DARKORCHID); //reset color if not touching
+			obstacleBox.getPlat().setFill(Color.BROWN); //reset color if not touching
 		}
 	}
 	
