@@ -14,7 +14,7 @@ public class GameObject extends InputFunctions{
 	String lvl1Set1 = "0100000110020301030100100000203020010000001";
 	String lvl1Set2 = "000000002000400000002";
 	String lvl1Set3 = "0001100";
-	String lvl1ESet = "03000000300405020501210001000201000222";
+	String lvl1ESet = "03000000300405020501210001000201000222"; //Enemy set
 	
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
 	Rectangle background = new Rectangle(4000, 500, Color.LIGHTSKYBLUE);
@@ -146,14 +146,6 @@ public class GameObject extends InputFunctions{
 			}
 		}
 		
-		if (mainGuy.getdy() > 0) {
-			//mainGuy.jumping = false;
-			//mainGuy.setdy(gravity*calculate());
-			//mainGuy.setdy(0);
-		}
-		
-	
-		
 		/*if (mainGuy.getCharacter().getCenterY() != 280) {
 			mainGuy.setCharacter(250, 280, 20, Color.YELLOW);
 		}
@@ -165,11 +157,10 @@ public class GameObject extends InputFunctions{
 		
 		//=====================================================
 		//Update enemies
-		//System.out.println("Number of children: "+enemies.getChildren().size());
 		for(int x = 0; x < eList.size();x++)
 		{
 			//Blue enemies jump
-			if(eList.get(x).getColor() == Color.BLUE) //Made it to where every odd enemy added to the list might bounce.
+			if(eList.get(x).getColor() == Color.BLUE)
 			{
 				if(eList.get(x).getJumping())
 					eList.get(x).setdy(gravity*calculate()+eList.get(x).getdy());
@@ -187,9 +178,11 @@ public class GameObject extends InputFunctions{
 				}
 				
 			}
-			//Magenta enemies on platforms
+			//Dark Magenta enemies on platforms
 			if(eList.get(x).getColor() == Color.DARKMAGENTA)
 			{
+				//Swap directions if they're about to move off of their platform. Platform size is 90 rn, so they move 85 pixels left or right
+				//then swap.
 				if(eList.get(x).getx() >= eList.get(x).getInitialX()+85 || eList.get(x).getx() <= eList.get(x).getInitialX()-85)
 				{
 					eList.get(x).swapDir();
@@ -266,6 +259,7 @@ public class GameObject extends InputFunctions{
 			}
 			else if(eSet.charAt(x) >= '3' && eSet.charAt(x) <= '9')
 			{
+				//Starting at 3, spawn enemy on platforms. To match the platform height, I 
 				eList.add(new Enemies(250+(1+x)*90,
 						245-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA));
 			}
@@ -339,7 +333,8 @@ public class GameObject extends InputFunctions{
 					//c.setdy(0);
 				}
 				//c.setdx(temp);
-				//Break out of loop, since you can only be colliding with at most 2 things.
+				//Break out of loop, since you can only be colliding with at most 2 things. It'll check the other remaining platforms and set
+				//collide to false if you don't do this.
 				i = pList1.size();
 				
 			}
@@ -350,7 +345,7 @@ public class GameObject extends InputFunctions{
 		}
 		if(obstacleBox.collide(c.getx(), c.gety(), c.getCharacter().getRadius(), c.getCharacter().getRadius())) {
 			obstacleBox.getPlat().setFill(Color.CORAL);
-			c.swapDir();
+			c.swapDir(); //Boolean for the ai to swap directions if they touch an obstacle.
 			//c.setMinY(obstacleBox.getY()-c.getCharacter().getRadius()); //set minimum player Y to platform y
 		}
 		else {

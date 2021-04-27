@@ -5,7 +5,6 @@ import javafx.scene.shape.Circle;
 import java.util.Random;
 public class Enemies extends Character implements Collidable
 {
-	Circle enemy = new Circle(x, y, size, color);
 	private double initialY;
 	private boolean dir;
 	private boolean isCollidable;
