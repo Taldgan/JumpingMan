@@ -89,7 +89,7 @@ public class GameObject extends InputFunctions{
 	}
 	
 	public void update() {
-		System.out.println("Jumping: " + mainGuy.getJumping());
+		//System.out.println("Jumping: " + mainGuy.getJumping());
 		//System.out.println("MainGuy gety(): " + (int) mainGuy.gety() + " circleCenterY: " + (int) mainGuy.getCharacter().getCenterY());
 		//mainGuy.setGroundLvl(105);
 		//Troubleshooting output
@@ -206,7 +206,7 @@ public class GameObject extends InputFunctions{
 				eList.get(x).getCharacter().setFill(eList.get(x).getColor());
 			
 			//Check collision with obstacles/platforms
-			checkCollision(eList.get(x)); 
+//			checkCollision(eList.get(x)); 
 			
 		}
 
@@ -311,20 +311,22 @@ public class GameObject extends InputFunctions{
 				//On top of the platform
 				if(charBot-12 <= obstacle.getY())
 				{
+					System.out.println("collide top");
 					c.setGroundLvl(c.gety());
 					c.setCollide(true);
 					c.setdy(0);
 					c.setJumping(false); //If on top of a platform, character is not jumping
 				}
 				//If under the platform:
-				else if(charTop <= obstacle.getY()-obstacle.getHeight() )  //-pList1.get(i).getHeight() for fix
+				else if(charTop <= obstacle.getY()+obstacle.getHeight() && c.getdy() < 0 && !c.getCollideRight())  //-pList1.get(i).getHeight() for fix
 				{
-					//pList1.get(i).setY(c.gety()-c.getCharacter().getRadius()-pList1.get(i).getHeight());
+					System.out.println("collide bot");
 					c.setdy(1);
 				}
 				//Added 2 more checks for horizontal collision
 				//Left of platform collision:
-				else if(charLeft <= obstacle.getX()) {
+				if(charLeft <= obstacle.getX()) {
+					System.out.println("collide right");
 					mainGuy.setCollideRight(true);
 					if(mainGuy.getdx() > 0) {
 						mainGuy.setdx(0);
@@ -332,6 +334,7 @@ public class GameObject extends InputFunctions{
 				}
 				//Right of platform collision:
 				else if(charRight >= obstacle.getX()+obstacle.getWidth()) {
+					System.out.println("collide left");
 					mainGuy.setCollideLeft(true);
 					if(mainGuy.getdx() < 0) {
 						mainGuy.setdx(0);
