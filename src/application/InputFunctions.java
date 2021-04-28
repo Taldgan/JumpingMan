@@ -17,16 +17,15 @@ public class InputFunctions {
 			System.exit(0);
 		}
 
-		if (key == KeyCode.RIGHT && !character.getCollideRight()) {
+		if ((key == KeyCode.RIGHT || key == KeyCode.L) && !character.getCollideRight()) {
 			character.setdx(5);
-			//character.setColor(Color.BLACK);
 			character.walking = true;
 		}
-		if (key == KeyCode.LEFT && !character.getCollideLeft()) {
+		if ((key == KeyCode.LEFT || key == KeyCode.H) && !character.getCollideLeft()) {
 			character.setdx(-5);
 			character.walking = true;
 		}
-		if (key == KeyCode.SPACE || key == KeyCode.UP) {
+		if (key == KeyCode.SPACE || key == KeyCode.UP || key == KeyCode.K) {
 			if (!character.getJumping() || character.getCollide()) {
 				character.setGroundLvl(character.gety());
 				character.setdy(-5);
@@ -39,11 +38,11 @@ public class InputFunctions {
 		
 		KeyCode key = event.getCode();
 		
-		if (key == KeyCode.RIGHT) {
+		if (key == KeyCode.RIGHT || key == KeyCode.L) {
 			character.walking = false;
 			character.setdx(0);
 		}
-		if (key == KeyCode.LEFT) {
+		if (key == KeyCode.LEFT || key == KeyCode.H) {
 			character.walking = false;
 			character.setdx(0);
 		}
