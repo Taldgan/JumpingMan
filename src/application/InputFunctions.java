@@ -28,7 +28,7 @@ public class InputFunctions {
 		if (key == KeyCode.SPACE || key == KeyCode.UP || key == KeyCode.K) {
 			if (!character.getJumping() || character.getCollide()) {
 				character.setGroundLvl(character.gety());
-				character.setdy(-5);
+				character.setdy(-5.5); //Changed from 5, to accomodate raising the platforms
 				character.jumping = true;
 			}
 		}

@@ -10,13 +10,15 @@ import java.util.ArrayList;
 
 public class GameObject extends InputFunctions{
 	//String locations/types
-	String lvl1Set1 = "0100000110020301030100100000203020010000001";
+	String lvl1Set1 = "0000000110020301030100100000203020010000001";
 	String lvl1Set2 = "000000002000400000002";
-	String lvl1Set3 = "0001100";
-	String lvl1ESet = "03001010300405020501210001000201000222"; //Enemy set
-	String lvl1GSet1 = "11101001110111111111111111";
+	//String lvl1Set3 = "0001100";
+	//String lvl1Set1 = "0"; //Test version
+	//String lvl1Set2 = "0"; //Test version
+	String lvl1ESet = "00020010300405020501210001000201000222"; //Enemy set
+	String lvl1GSet1 = "11111001110111111111111111011111111111";
 
-	String lvl1OSet = "001001000020"; //Obstacle set, Make sure these dont clip into platforms .
+	String lvl1OSet = "01000000001000000000"; //Obstacle set, Make sure these dont clip into platforms .
 	
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
 	Rectangle background = new Rectangle(4000, 1200, Color.LIGHTSKYBLUE);
@@ -224,7 +226,7 @@ public class GameObject extends InputFunctions{
 			{
 				//Starting at 3, spawn enemy on platforms. To match the platform height, multiply the string value-2 by 40 and subtract that by 245
 				eList.add(new Enemies(250+(1+x)*90,
-						450-55-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA));
+						450-(45+20)-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA));
 			}
 		}
 		for(int x = 0; x < eList.size(); x++)
@@ -260,6 +262,7 @@ public class GameObject extends InputFunctions{
 		//Their position in the string will correlate to how far into the level they spawn. See below for the formula I used.
 		//Feel free to change whatever.
 		Group platG = new Group();
+		double groundLvlOffset = 450-45;
 		for(int x = 0; x < lvl.length();x++)
 		{
 			if(lvl.charAt(x) != '0') //If the current char is not 0, create a platform in that spot.
@@ -273,7 +276,7 @@ public class GameObject extends InputFunctions{
 				platG.getChildren().add(r.getPlatTop());
 				
 				r.setX(250+90*x+offsetX);
-				r.setY(415+Integer.parseInt(String.valueOf(lvl.charAt(x)))*45*-1-offsetY);
+				r.setY(groundLvlOffset+Integer.parseInt(String.valueOf(lvl.charAt(x)))*45*-1-offsetY);
 			}
 		}
 		return platG;
@@ -281,13 +284,14 @@ public class GameObject extends InputFunctions{
 	public Group spawnObstacles(String lvl, int sizeX, int sizeY, Color c, ArrayList<Obstacle> oList)
 	{
 		Group obsGroup = new Group();
+		double groundLevel = 450;
 		for(int x = 0; x < lvl. length(); x++)
 		{
 			if(lvl.charAt(x) != '0') //If the current char is not 0, create a platform in that spot.
 			{
 				Obstacle o = new Obstacle(sizeX,sizeY, c);
 				o.setX(250+90*x);
-				o.setY(450-(Integer.parseInt(String.valueOf(lvl.charAt(x))))*sizeY);
+				o.setY(groundLevel-(Integer.parseInt(String.valueOf(lvl.charAt(x))))*sizeY);
 				oList.add(o);
 				obsGroup.getChildren().add(o.getPlat());
 			}
@@ -313,16 +317,13 @@ public class GameObject extends InputFunctions{
 				if(charBot-12 <= obstacle.getY() && c.getdy() >= 0)
 				{
 					diff = group.getTranslateY() + (c.gety() - c.getPrevY());
-					c.setGroundLvl(c.gety());
 					c.setCollide(true);
-					
-					c.setJumping(false);
-					
 					if(c.getColor() == Color.RED)
 					{
+						c.setGroundLvl(c.gety());
 						c.setdy(-.025);
-							
-						System.out.println("collide top");
+						c.setJumping(false);
+						//System.out.println("collide with top of platform");
 						c.sety(c.getPrevY());
 						c.getCharacter().setTranslateY(mainGuy.getPrevTranslateY());
 						//group.setTranslateY(diff);
@@ -339,7 +340,7 @@ public class GameObject extends InputFunctions{
 					{
 						c.setx(c.getPrevX());
 						c.getCharacter().setTranslateX(mainGuy.getPrevTranslateX());
-						System.out.println("collide right");
+						System.out.println("collide with left side of platform");
 						group.setTranslateX(diff);
 					}
 					else
@@ -355,7 +356,7 @@ public class GameObject extends InputFunctions{
 					{
 						c.setx(c.getPrevX());
 						c.getCharacter().setTranslateX(mainGuy.getPrevTranslateX());
-						System.out.println("collide left");
+						System.out.println("collide with right side of platform");
 						group.setTranslateX(diff);
 					}
 					else
@@ -372,7 +373,7 @@ public class GameObject extends InputFunctions{
 					{
 						c.sety(c.getPrevY());
 						c.getCharacter().setTranslateY(mainGuy.getPrevTranslateY());
-						System.out.println("collide bot");
+						//System.out.println("collide with bottom of platform");
 						//group.setTranslateY(diff);
 					}
 				}

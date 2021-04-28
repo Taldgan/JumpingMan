@@ -5,25 +5,23 @@ import javafx.scene.shape.Circle;
 import java.util.Random;
 public class Enemies extends Character implements Collidable
 {
-	private double initialY;
+	
 	private boolean dir;
 	private boolean isCollidable;
 	private Color initColor;
 	private double initialX;
+	private double initialY;
 	public Enemies(double x, double y, double size, Color color) 
 	{
 		super(x, y, size, color);
-		initialY = y;
 		initialX = x;
+		initialY = y;
 		dir = true;
 		isCollidable = true;
 		initColor = color;
 	}
 
-	public double getInitY()
-	{
-		return initialY;
-	}
+	
 	
 	public void enemyMove()
 	{
@@ -54,7 +52,7 @@ public class Enemies extends Character implements Collidable
 			setJumping(true);
 			setdy(-3); //Up
 		}
-		if(gety() > 300)
+		if(gety() > 450) //Ground level
 		{
 			setJumping(false);
 			setdy(0);
@@ -109,6 +107,10 @@ public class Enemies extends Character implements Collidable
 	public void setInitialX(double x)
 	{
 		initialX = x;
+	}
+	public double getInitY()
+	{
+		return initialY;
 	}
 
 }

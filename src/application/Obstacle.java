@@ -32,7 +32,7 @@ public class Obstacle implements Collidable {
 		if(!collidable) 
 			return false;
 			
-		if((x+w >= this.x && x-w<= this.x+width) && (y+h >= this.y && y-h <= this.y+height))
+		if((x+w>= this.x && x-w <= this.x+width) && (y+h >= this.y && y-h <= this.y+height))
 			return true;
 		else 
 			return false;
