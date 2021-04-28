@@ -20,13 +20,16 @@ public class Obstacle implements Collidable {
 	//2nd constructor for adding topPlat color
 	public Obstacle(int w, int h, Color c, Color cTop) {
 		this.platform = new Rectangle(w, h, c);
-		this.platTop = new Rectangle(w, h*0.2, cTop);
+		this.platTop = new Rectangle(w, 5, cTop);
 		this.width = w;
 		this.height = h;
 	}
 
 	public boolean collide(double x, double y, double w, double h) {
 
+		if(!collidable) 
+			return false;
+			
 		if((x+w >= this.x && x-w<= this.x+width) && (y+h >= this.y && y-h <= this.y+height))
 			return true;
 		else 

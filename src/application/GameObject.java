@@ -14,10 +14,11 @@ public class GameObject extends InputFunctions{
 	String lvl1Set2 = "000000002000400000002";
 	String lvl1Set3 = "0001100";
 	String lvl1ESet = "03001010300405020501210001000201000222"; //Enemy set
+	String lvl1GSet1 = "11101001110111111111111111";
 	
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
-	Rectangle background = new Rectangle(4000, 500, Color.LIGHTSKYBLUE);
-	Obstacle ground = new Obstacle(4000, 100, Color.GREEN);
+	Rectangle background = new Rectangle(4000, 1200, Color.LIGHTSKYBLUE);
+	//Obstacle ground = new Obstacle(4000, 100, Color.GREEN);
 	Character ref = new Character(50, 50, 20, Color.YELLOW);
 	Character ref2 = new Character (300, 50, 20, Color.GREEN);
 	Character ref3 = new Character (500, 50, 20, Color.BLUE);
@@ -28,16 +29,18 @@ public class GameObject extends InputFunctions{
 	Group e1 = spawnEnemies(lvl1ESet);
 
 	//Platform vars
+	ArrayList<Obstacle> gList = new ArrayList<Obstacle>();
 	ArrayList<Obstacle> pList1 = new ArrayList<Obstacle>();
 	ArrayList<Obstacle> pList2 = new ArrayList<Obstacle>();
 	ArrayList<Obstacle> pList3 = new ArrayList<Obstacle>();
 	ArrayList<Obstacle> allObs = new ArrayList<Obstacle>();
-	Group platformSet1 = spawnPlatforms(lvl1Set1,0,0,Color.BROWN, Color.GREEN, pList1);
-	Group platformSet2 = spawnPlatforms(lvl1Set2,-50,50,Color.BROWN, Color.GREEN, pList2);
-	Character mainGuy = new Character(250, 300-25, 20, Color.RED);
+	Group platformSet1 = spawnPlatforms(lvl1Set1,0,0,Color.SADDLEBROWN, Color.GREEN, pList1);
+	Group platformSet2 = spawnPlatforms(lvl1Set2,-50,50, Color.SADDLEBROWN, Color.GREEN, pList2);
+	Group groundSet1 = spawnGround(lvl1GSet1, 0, 0,  Color.SADDLEBROWN, Color.GREEN, gList);
+	Character mainGuy = new Character(250, 450-25, 20, Color.RED);
 	
 	//Etc
-	Group group = new Group(theVoid, background, ground.getPlat(), ref.getCharacter(), ref2.getCharacter(), 
+	Group group = new Group(theVoid, background, groundSet1, ref.getCharacter(), ref2.getCharacter(), 
 			ref3.getCharacter(), ref4.getCharacter(), ref5.getCharacter(), mainGuy.getCharacter(),e1,platformSet1,platformSet2);
 	BorderPane root = new BorderPane(group);
 	Scene scene = new Scene(root);
@@ -51,10 +54,11 @@ public class GameObject extends InputFunctions{
 		
 		group.setManaged(false);
 		
-		ground.setX(0);
-		ground.setY(300);
+		//ground.setX(0);
+		//ground.setY(300);
 		
-		allObs.add(ground);
+		//allObs.add(ground);
+		allObs.addAll(gList);
 		allObs.addAll(pList1);
 		allObs.addAll(pList2);
 		allObs.addAll(pList3);
@@ -91,7 +95,7 @@ public class GameObject extends InputFunctions{
 		if (mainGuy.walking || mainGuy.jumping) {
 			mainGuy.move();
 			group.setTranslateX(group.getTranslateX() - mainGuy.getdx());
-			group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
+			//group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
 			if (mainGuy.jumping) {
 				mainGuy.setdy(mainGuy.getdy() + (gravity*calculate()));
 			}
@@ -110,7 +114,7 @@ public class GameObject extends InputFunctions{
 			if (mainGuy.getdx() < 0)
 				mainGuy.setdx(mainGuy.getdx()+0.25);
 			group.setTranslateX(group.getTranslateX() - mainGuy.getdx());
-			group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
+			//group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
 			mainGuy.move();
 		}
 		
@@ -233,6 +237,24 @@ public class GameObject extends InputFunctions{
 		return enemyGroup;
 	}
 	
+	public Group spawnGround(String lvl, int offsetX, int offsetY, Color c, Color cTop, ArrayList<Obstacle> gList) 
+	{
+		Group groundG = new Group();
+		for(int i = 0; i < lvl.length(); i++) {
+			if(lvl.charAt(i) != '0') {
+				Obstacle g = new Obstacle(100, 400, c, cTop);
+				gList.add(g);
+				groundG.getChildren().add(g.getPlat());
+				groundG.getChildren().add(g.getPlatTop());
+				
+				g.setX(100*i);
+				g.setY(450);
+			}
+		}
+		return groundG;
+
+	}
+
 	public Group spawnPlatforms(String lvl, int offsetX, int offsetY, Color c, Color cTop, ArrayList<Obstacle> pList) 
 	{
 		//lvl string: 
@@ -253,7 +275,7 @@ public class GameObject extends InputFunctions{
 				platG.getChildren().add(r.getPlatTop());
 				
 				r.setX(250+90*x+offsetX);
-				r.setY(265+Integer.parseInt(String.valueOf(lvl.charAt(x)))*40*-1-offsetY);
+				r.setY(415+Integer.parseInt(String.valueOf(lvl.charAt(x)))*40*-1-offsetY);
 			}
 		}
 		return platG;
@@ -291,7 +313,7 @@ public class GameObject extends InputFunctions{
 						System.out.println("collide top");
 						c.sety(c.getPrevY());
 						c.getCharacter().setTranslateY(mainGuy.getPrevTranslateY());
-						group.setTranslateY(diff);
+						//group.setTranslateY(diff);
 					}
 					
 				}
@@ -339,7 +361,7 @@ public class GameObject extends InputFunctions{
 						c.sety(c.getPrevY());
 						c.getCharacter().setTranslateY(mainGuy.getPrevTranslateY());
 						System.out.println("collide bot");
-						group.setTranslateY(diff);
+						//group.setTranslateY(diff);
 					}
 				}
 				if(c.getColor() == Color.RED)
