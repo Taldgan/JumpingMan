@@ -17,12 +17,7 @@ public class GameObject extends InputFunctions{
 	
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
 	Rectangle background = new Rectangle(4000, 500, Color.LIGHTSKYBLUE);
-	Rectangle ground = new Rectangle(4000, 100, Color.GREEN);
-	//Obstacle ground = new Obstacle(2000, 100, Color.GREEN);
-	//Rectangle obstacleBox = new Rectangle(50, 50, Color.BROWN);
-	Obstacle obstacleBox = new Obstacle(50, 50, Color.BLACK);
-	//Rectangle obstacleBoxTop = new Rectangle(50, 5, Color.GREEN);
-	//Rectangle obstacleBoxBot = new Rectangle(50, 5, Color.BLACK);
+	Obstacle ground = new Obstacle(4000, 100, Color.GREEN);
 	Character ref = new Character(50, 50, 20, Color.YELLOW);
 	Character ref2 = new Character (300, 50, 20, Color.GREEN);
 	Character ref3 = new Character (500, 50, 20, Color.BLUE);
@@ -36,12 +31,13 @@ public class GameObject extends InputFunctions{
 	ArrayList<Obstacle> pList1 = new ArrayList<Obstacle>();
 	ArrayList<Obstacle> pList2 = new ArrayList<Obstacle>();
 	ArrayList<Obstacle> pList3 = new ArrayList<Obstacle>();
+	ArrayList<Obstacle> allObs = new ArrayList<Obstacle>();
 	Group platformSet1 = spawnPlatforms(lvl1Set1,0,0,Color.DARKORCHID, pList1);
 	Group platformSet2 = spawnPlatforms(lvl1Set2,-50,50,Color.DARKOLIVEGREEN, pList2);
-	Character mainGuy = new Character(250, 300-20, 20, Color.RED);
+	Character mainGuy = new Character(250, 300-25, 20, Color.RED);
 	
 	//Etc
-	Group group = new Group(theVoid, background, ground, obstacleBox.getPlat(), ref.getCharacter(), ref2.getCharacter(), 
+	Group group = new Group(theVoid, background, ground.getPlat(), ref.getCharacter(), ref2.getCharacter(), 
 			ref3.getCharacter(), ref4.getCharacter(), ref5.getCharacter(), mainGuy.getCharacter(),e1,platformSet1,platformSet2);
 	BorderPane root = new BorderPane(group);
 	Scene scene = new Scene(root);
@@ -52,21 +48,16 @@ public class GameObject extends InputFunctions{
 	double gravity = 1;
 	
 	public GameObject() {
-		obstacleBox.setX(500);
-		obstacleBox.setY(250);
 		
-		/*obstacleBoxTop.setX(500);
-		obstacleBoxTop.setY(obstacleBox.getY());
-		obstacleBoxBot.setX(500);
-		obstacleBoxBot.setY(obstacleBox.getY()+obstacleBox.getHeight()-5);*/
-
-
-		pList1.add(obstacleBox);
 		group.setManaged(false);
 		
 		ground.setX(0);
 		ground.setY(300);
 		
+		allObs.add(ground);
+		allObs.addAll(pList1);
+		allObs.addAll(pList2);
+		allObs.addAll(pList3);
 		
 		theVoid.setY(-2500);
 		theVoid.setX(-2500);
@@ -90,28 +81,13 @@ public class GameObject extends InputFunctions{
 	}
 	
 	public void update() {
-		//System.out.println("Jumping: " + mainGuy.getJumping());
-		//System.out.println("MainGuy gety(): " + (int) mainGuy.gety() + " circleCenterY: " + (int) mainGuy.getCharacter().getCenterY());
-		//mainGuy.setGroundLvl(105);
-		//Troubleshooting output
-		//System.out.println("center x = " + (mainGuy.getCharacter().getCenterX()));
-		//System.out.println("character translate x = " + mainGuy.getCharacter().getTranslateX());
-		//System.out.println("mainguy x: "+mainGuy.getx());
-		//System.out.println("group translate x = " + group.getTranslateX());
-		//System.out.println("dx = " + mainGuy.getdx());
-		//System.out.println("center x = " + (mainGuy.getCharacter().getCenterX())); /*+ mainGuy.getCharacter().getTranslateX()));
-		//System.out.println("character translate x = " + mainGuy.getCharacter().getTranslateX());
-		//System.out.println("group translate x = " + group.getTranslateX());
-		//System.out.println("dx = " + mainGuy.getdx());
-		//System.out.println("Main guy y: "+mainGuy.gety());
-		//System.out.println("Current ground level: "+mainGuy.getGroundLvl());
-		//System.out.println("Main guy dy: "+mainGuy.getdy());
-		
 		checkCollision(mainGuy);
 
+		//If mainGuy is not touching top of platform, he must be jumping/falling
 		if(!mainGuy.getCollide())
 			mainGuy.setJumping(true);
 
+		//If he is jumping or walking, update his movement to match
 		if (mainGuy.walking || mainGuy.jumping) {
 			mainGuy.move();
 			group.setTranslateX(group.getTranslateX() - mainGuy.getdx());
@@ -121,11 +97,13 @@ public class GameObject extends InputFunctions{
 			}
 		}
 
+		//Prevent mainGuy from moving faster than 5 units left/right
 		if (mainGuy.getdx() > 5)
 			mainGuy.setdx(5);
 		if (mainGuy.getdx() < -5)
 			mainGuy.setdx(-5);
 		
+		//???
 		if (mainGuy.getdx() != 0 && !mainGuy.walking) {
 			if (mainGuy.getdx() > 0)
 				mainGuy.setdx(mainGuy.getdx()-0.25);
@@ -136,19 +114,7 @@ public class GameObject extends InputFunctions{
 			mainGuy.move();
 		}
 		
-		//Hard limit the ground
-		if(mainGuy.gety() > 280)
-		{
-			mainGuy.setJumping(false);
-			mainGuy.setdy(0);
-		
-			
-			if(!mainGuy.getCollide())
-			{
-				mainGuy.getCharacter().setCenterY(280);
-				mainGuy.setGroundLvl(280);
-			}
-		}
+		//TODO replace ground with obstacle
 		
 		//=====================================================
 		//Update enemies
@@ -303,7 +269,7 @@ public class GameObject extends InputFunctions{
 		int check = 0;
 
 		//Replaced with for:each, pList1.get(i) was getting tedious :P
-		for(Obstacle obstacle : pList1) {
+		for(Obstacle obstacle : allObs) {
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
 				obstacle.getPlat().setFill(Color.CORAL);
 				double diff;
@@ -361,7 +327,7 @@ public class GameObject extends InputFunctions{
 						c.swapDir();
 				}
 				//If under the platform:
-				else if(charTop <= obstacle.getY()+obstacle.getHeight() && c.getdy() < 0)  //-pList1.get(i).getHeight() for fix
+				else if(charTop <= obstacle.getY()+obstacle.getHeight() && c.getdy() < 0)
 				{
 					
 					diff = group.getTranslateY() + (c.gety() - c.getPrevY());
@@ -398,15 +364,6 @@ public class GameObject extends InputFunctions{
 				mainGuy.setCollideLeft(false);
 				mainGuy.setCollideRight(false);
 			}
-		}
-		if(obstacleBox.collide(c.getx(), c.gety(), charRad, charRad)) {
-			obstacleBox.getPlat().setFill(Color.CORAL);
-
-			c.swapDir(); //Boolean for the ai to swap directions if they touch an obstacle.
-			obstacleBox.getPlat().setFill(Color.BEIGE);
-		}
-		else {
-			obstacleBox.getPlat().setFill(Color.BLACK); //reset color if not touching
 		}
 	}
 	
