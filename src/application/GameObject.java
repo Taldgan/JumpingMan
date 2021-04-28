@@ -16,23 +16,11 @@ public class GameObject extends InputFunctions{
 	String lvl1ESet = "03001010300405020501210001000201000222"; //Enemy set
 	String lvl1GSet1 = "11101001110111111111111111";
 
-	String lvl1OSet = "000101000020"; //Obstacle set, Make sure these dont clip into platforms .
+	String lvl1OSet = "001001000020"; //Obstacle set, Make sure these dont clip into platforms .
 	
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
 	Rectangle background = new Rectangle(4000, 1200, Color.LIGHTSKYBLUE);
-	Rectangle ground = new Rectangle(4000, 100, Color.GREEN);
-	//Obstacle ground = new Obstacle(4000, 100, Color.GREEN);
-	//Obstacle ground = new Obstacle(2000, 100, Color.GREEN);
-	//Rectangle obstacleBox = new Rectangle(50, 50, Color.BROWN);
-	//Obstacle obstacleBox = new Obstacle(50, 50, Color.BLACK);
-	//Rectangle obstacleBoxTop = new Rectangle(50, 5, Color.GREEN);
-	//Rectangle obstacleBoxBot = new Rectangle(50, 5, Color.BLACK);
 
-	Character ref = new Character(50, 50, 20, Color.YELLOW);
-	Character ref2 = new Character (300, 50, 20, Color.GREEN);
-	Character ref3 = new Character (500, 50, 20, Color.BLUE);
-	Character ref4 = new Character (700, 50, 20, Color.ORANGE);
-	Character ref5 = new Character (900, 50, 20, Color.PURPLE);
 	//Enemy vars
 	ArrayList<Enemies> eList = new ArrayList<Enemies>();
 	Group e1 = spawnEnemies(lvl1ESet);
@@ -49,13 +37,15 @@ public class GameObject extends InputFunctions{
 
 	//Obstacle vars
 	ArrayList<Obstacle> oList1 = new ArrayList<Obstacle>();
+
+	Group obstacleSet1 = spawnObstacles(lvl1OSet, 50, 50, Color.DARKGREEN, oList1); //50x50 squares as obstacles, feel free to change the numbers
+
+	//List of All Collidable Objects
 	ArrayList<Obstacle> allObs = new ArrayList<Obstacle>();
-	Group obstacleSet1 = spawnObstacles(lvl1OSet,50,50,Color.BLACK,oList1); //50x50 squares as obstacles, feel free to change the numbers
 	
 	//Etc
 	Character mainGuy = new Character(250, 450-25, 20, Color.RED);
-	Group group = new Group(theVoid, background, groundSet1, ref.getCharacter(), ref2.getCharacter(), 
-		ref3.getCharacter(), ref4.getCharacter(), ref5.getCharacter(), mainGuy.getCharacter(),e1,platformSet1,platformSet2,obstacleSet1);
+	Group group = new Group(theVoid, background, groundSet1, mainGuy.getCharacter(), e1, platformSet1, platformSet2, obstacleSet1);
 
 	BorderPane root = new BorderPane(group);
 	Scene scene = new Scene(root);
@@ -69,20 +59,14 @@ public class GameObject extends InputFunctions{
 
 		group.setManaged(false);
 		
-		//ground.setX(0);
-		//ground.setY(300);
-		
-		//allObs.add(ground);
 		allObs.addAll(gList);
 		allObs.addAll(pList1);
 		allObs.addAll(pList2);
 		allObs.addAll(pList3);
+		allObs.addAll(oList1);
 		
 		theVoid.setY(-2500);
 		theVoid.setX(-2500);
-		
-		//mainGuy.setGroundLvl(100);
-		
 		
 		root.setPrefSize(500, 500);
 	}
@@ -133,12 +117,11 @@ public class GameObject extends InputFunctions{
 			mainGuy.move();
 		}
 		
-		//TODO replace ground with obstacle
-		
 		//=====================================================
 		//Update enemies
 		for(int x = 0; x < eList.size();x++)
 		{
+
 			//Blue enemies jump
 			if(eList.get(x).getColor() == Color.BLUE)
 			{
@@ -303,14 +286,10 @@ public class GameObject extends InputFunctions{
 			if(lvl.charAt(x) != '0') //If the current char is not 0, create a platform in that spot.
 			{
 				Obstacle o = new Obstacle(sizeX,sizeY, c);
-				oList.add(o);
-				obsGroup.getChildren().add(o.getPlat());
-				//As a heads up, this will also be added to first platform set, pList1
-				pList1.add(o);
-				
 				o.setX(250+90*x);
 				o.setY(450-(Integer.parseInt(String.valueOf(lvl.charAt(x))))*sizeY);
-				//o.setY(300);
+				oList.add(o);
+				obsGroup.getChildren().add(o.getPlat());
 			}
 		}
 		return obsGroup;
@@ -336,7 +315,6 @@ public class GameObject extends InputFunctions{
 					diff = group.getTranslateY() + (c.gety() - c.getPrevY());
 					c.setGroundLvl(c.gety());
 					c.setCollide(true);
-					
 					
 					c.setJumping(false);
 					
@@ -404,17 +382,6 @@ public class GameObject extends InputFunctions{
 				//obstacle.getPlat().setFill(Color.DARKORCHID); //reset color if not touching
 				mainGuy.setCollideLeft(false);
 				mainGuy.setCollideRight(false);
-			}
-		}
-
-		for(Obstacle obstacle : oList1)
-		{
-			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
-				c.swapDir(); //Boolean for the ai to swap directions if they touch an obstacle.
-				obstacle.getPlat().setFill(Color.BEIGE);
-			}
-			else {
-				obstacle.getPlat().setFill(obstacle.getColor()); //reset color if not touching
 			}
 		}
 	}
