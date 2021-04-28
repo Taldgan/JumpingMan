@@ -316,12 +316,13 @@ public class GameObject extends InputFunctions{
 					
 					
 					c.setJumping(false);
+					
 					if(c.getColor() == Color.RED)
 					{
-						c.setdy(0);
+						c.setdy(-.025);
+							
 						System.out.println("collide top");
 						c.sety(c.getPrevY());
-						System.out.println("collide top#2");
 						c.getCharacter().setTranslateY(mainGuy.getPrevTranslateY());
 						group.setTranslateY(diff);
 					}
@@ -374,9 +375,19 @@ public class GameObject extends InputFunctions{
 						group.setTranslateY(diff);
 					}
 				}
-				
-				
-				break;
+				if(c.getColor() == Color.RED)
+				{
+					check++;
+					//Break out of loop, since you can only be colliding with at most 2 things. It'll check the other remaining platforms and set
+					//collide to false if you don't do this.
+					if(check > 1)
+					{
+						System.out.println("Check: "+check);
+						break;
+					}
+				}
+				else
+					break;
 					
 				
 				
