@@ -15,8 +15,8 @@ public class GameObject extends InputFunctions{
 	//String lvl1Set3 = "0001100";
 	//String lvl1Set1 = "0"; //Test version
 	//String lvl1Set2 = "0"; //Test version
-	String lvl1ESet = "00020010300405020501210001000201000222"; //Enemy set
-	String lvl1GSet1 = "11111001110111111111111111011111111111";
+	String lvl1ESet = "00100010300405020501210001000201000222"; //Enemy set
+	String lvl1GSet1 = "1111100111011111111111111101111111111101";
 
 	String lvl1OSet = "01000000001000000000"; //Obstacle set, Make sure these dont clip into platforms .
 	
@@ -173,6 +173,7 @@ public class GameObject extends InputFunctions{
 			
 			//Check collision with obstacles/platforms
 			checkCollision(eList.get(x)); 
+			groundCheck(eList.get(x),lvl1GSet1);
 			
 		}
 
@@ -181,7 +182,6 @@ public class GameObject extends InputFunctions{
 		//That enemies can also collide with objects.
 
 		checkCollision(mainGuy);
-		
 	}
 	
 	public void render(Stage primaryStage) {
@@ -343,15 +343,18 @@ public class GameObject extends InputFunctions{
 						System.out.println("collide with left side of platform");
 						group.setTranslateX(diff);
 					}
-					else
+					//Swap enemy direction when touching an obstacle.
+					else if(c.getColor() != Color.RED && obstacle.getColor() == null) //Dont ask how, dont ask why. But it just works.
+					{
 						c.swapDir();
+					}
+						
 				}
 				//Right of platform collision:
 				else if(charRight >= obstacle.getX()+obstacle.getWidth()) {
-					
 					c.setCollideLeft(true);
 					diff = group.getTranslateX() + (c.getx() - c.getPrevX());
-					
+					//System.out.println("obstacle color: that you are colliding with: "+String.valueOf(obstacle.getColor()));
 					if(c.getColor() == Color.RED)
 					{
 						c.setx(c.getPrevX());
@@ -359,8 +362,12 @@ public class GameObject extends InputFunctions{
 						System.out.println("collide with right side of platform");
 						group.setTranslateX(diff);
 					}
-					else
+					else if(c.getColor() != Color.RED && obstacle.getColor() == null)
+					{
+						
 						c.swapDir();
+					}
+						
 				}
 				//If under the platform:
 				else if(charTop <= obstacle.getY()+obstacle.getHeight() && c.getdy() < 0)
@@ -387,4 +394,21 @@ public class GameObject extends InputFunctions{
 		}
 	}
 	
+	public void groundCheck(Enemies e, String holes)
+	{
+		for(int x = 0; x < holes.length(); x++)
+		{
+			if(holes.charAt(x) == '0')
+			{
+				double holeRight = 100*(x+1);
+				double holeLeft = 100*x;
+				double offset = 15;
+				if(e.getx() >= holeLeft-offset && e.getx() <= holeRight+offset && e.getColor() != Color.DARKMAGENTA)
+				{
+					e.swapDir();
+					break;
+				}
+			}
+		}
+	}
 }
