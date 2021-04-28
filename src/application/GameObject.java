@@ -16,7 +16,7 @@ public class GameObject extends InputFunctions{
 	String lvl1ESet = "03001010300405020501210001000201000222"; //Enemy set
 	String lvl1GSet1 = "11101001110111111111111111";
 
-	String lvl1OSet = "000101000020"; //Obstacle set, Make sure these dont clip into platforms
+	String lvl1OSet = "000101000020"; //Obstacle set, Make sure these dont clip into platforms .
 	
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
 	Rectangle background = new Rectangle(4000, 1200, Color.LIGHTSKYBLUE);
