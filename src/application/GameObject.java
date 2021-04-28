@@ -55,8 +55,8 @@ public class GameObject extends InputFunctions{
 	//Etc
 	Group group = new Group(theVoid, background, groundSet1, ref.getCharacter(), ref2.getCharacter(), 
 			ref3.getCharacter(), ref4.getCharacter(), ref5.getCharacter(), mainGuy.getCharacter(),e1,platformSet1,platformSet2);
-	BorderPane root = new BorderPane(group);
-	Scene scene = new Scene(root);
+	//BorderPane root = new BorderPane(group);
+	Scene scene;// = new Scene(root);
 	
 	
 	double lastTime = System.currentTimeMillis();
@@ -64,6 +64,8 @@ public class GameObject extends InputFunctions{
 	double gravity = 1;
 	
 	public GameObject() {
+		
+		gameState = State.MainMenu;
 		
 		group.setManaged(false);
 		
@@ -82,7 +84,7 @@ public class GameObject extends InputFunctions{
 		//mainGuy.setGroundLvl(100);
 		
 		
-		root.setPrefSize(500, 500);
+		//root.setPrefSize(500, 500);
 	}
 	
 	public void processInput() {
