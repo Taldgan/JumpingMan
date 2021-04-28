@@ -9,11 +9,13 @@ public class Obstacle implements Collidable {
 	private Rectangle platform;
 	private double width, height, x, y;
 	private boolean collided;
+	private Color initColor;
 	
 	public Obstacle(int w, int h, Color c) {
 		this.platform = new Rectangle(w, h, c);
 		this.width = w;
 		this.height = h;
+		this.initColor = c;
 	}
 
 	public boolean collide(double x, double y, double w, double h) {
@@ -82,6 +84,9 @@ public class Obstacle implements Collidable {
 	public void setY(double y) {
 		this.y = y;
 		this.platform.setY(y);
+	}
+	public Color getColor() {
+		return initColor;
 	}
 
 }

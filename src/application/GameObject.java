@@ -14,13 +14,14 @@ public class GameObject extends InputFunctions{
 	String lvl1Set2 = "000000002000400000002";
 	String lvl1Set3 = "0001100";
 	String lvl1ESet = "03001010300405020501210001000201000222"; //Enemy set
+	String lvl1OSet = "000101000020"; //Obstacle set, Make sure these dont clip into platforms
 	
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
 	Rectangle background = new Rectangle(4000, 500, Color.LIGHTSKYBLUE);
 	Rectangle ground = new Rectangle(4000, 100, Color.GREEN);
 	//Obstacle ground = new Obstacle(2000, 100, Color.GREEN);
 	//Rectangle obstacleBox = new Rectangle(50, 50, Color.BROWN);
-	Obstacle obstacleBox = new Obstacle(50, 50, Color.BLACK);
+	//Obstacle obstacleBox = new Obstacle(50, 50, Color.BLACK);
 	//Rectangle obstacleBoxTop = new Rectangle(50, 5, Color.GREEN);
 	//Rectangle obstacleBoxBot = new Rectangle(50, 5, Color.BLACK);
 	Character ref = new Character(50, 50, 20, Color.YELLOW);
@@ -38,11 +39,14 @@ public class GameObject extends InputFunctions{
 	ArrayList<Obstacle> pList3 = new ArrayList<Obstacle>();
 	Group platformSet1 = spawnPlatforms(lvl1Set1,0,0,Color.DARKORCHID, pList1);
 	Group platformSet2 = spawnPlatforms(lvl1Set2,-50,50,Color.DARKOLIVEGREEN, pList2);
-	Character mainGuy = new Character(250, 300-20, 20, Color.RED);
 	
+	//Obstacle vars
+	ArrayList<Obstacle> oList1 = new ArrayList<Obstacle>();
+	Group obstacleSet1 = spawnObstacles(lvl1OSet,50,50,Color.DARKGREEN,oList1); //50x50 squares as obstacles, feel free to change the numbers
 	//Etc
-	Group group = new Group(theVoid, background, ground, obstacleBox.getPlat(), ref.getCharacter(), ref2.getCharacter(), 
-			ref3.getCharacter(), ref4.getCharacter(), ref5.getCharacter(), mainGuy.getCharacter(),e1,platformSet1,platformSet2);
+	Character mainGuy = new Character(250, 300-20, 20, Color.RED);
+	Group group = new Group(theVoid, background, ground, ref.getCharacter(), ref2.getCharacter(), 
+			ref3.getCharacter(), ref4.getCharacter(), ref5.getCharacter(), mainGuy.getCharacter(),e1,platformSet1,platformSet2,obstacleSet1);
 	BorderPane root = new BorderPane(group);
 	Scene scene = new Scene(root);
 	
@@ -52,8 +56,8 @@ public class GameObject extends InputFunctions{
 	double gravity = 1;
 	
 	public GameObject() {
-		obstacleBox.setX(500);
-		obstacleBox.setY(250);
+		//obstacleBox.setX(500);
+		//obstacleBox.setY(250);
 		
 		/*obstacleBoxTop.setX(500);
 		obstacleBoxTop.setY(obstacleBox.getY());
@@ -61,7 +65,7 @@ public class GameObject extends InputFunctions{
 		obstacleBoxBot.setY(obstacleBox.getY()+obstacleBox.getHeight()-5);*/
 
 
-		pList1.add(obstacleBox);
+		//pList1.add(obstacleBox);
 		group.setManaged(false);
 		
 		ground.setX(0);
@@ -254,7 +258,7 @@ public class GameObject extends InputFunctions{
 			}
 			else if(eSet.charAt(x) >= '3' && eSet.charAt(x) <= '9')
 			{
-				//Starting at 3, spawn enemy on platforms. To match the platform height, I 
+				//Starting at 3, spawn enemy on platforms. To match the platform height, multiply the string value-2 by 40 and subtract that by 245
 				eList.add(new Enemies(250+(1+x)*90,
 						245-40*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA));
 			}
@@ -291,6 +295,26 @@ public class GameObject extends InputFunctions{
 		}
 		return platG;
 	}
+	public Group spawnObstacles(String lvl, int sizeX, int sizeY, Color c, ArrayList<Obstacle> oList)
+	{
+		Group obsGroup = new Group();
+		for(int x = 0; x < lvl. length(); x++)
+		{
+			if(lvl.charAt(x) != '0') //If the current char is not 0, create a platform in that spot.
+			{
+				Obstacle o = new Obstacle(sizeX,sizeY, c);
+				oList.add(o);
+				obsGroup.getChildren().add(o.getPlat());
+				//As a heads up, this will also be added to first platform set, pList1
+				pList1.add(o);
+				
+				o.setX(250+90*x);
+				o.setY(300-(Integer.parseInt(String.valueOf(lvl.charAt(x))))*sizeY);
+				//o.setY(300);
+			}
+		}
+		return obsGroup;
+	}
 	
 	public void checkCollision(Character c)
 	{
@@ -300,7 +324,6 @@ public class GameObject extends InputFunctions{
 		double charLeft = c.getx()+c.getCharacter().getRadius();
 		double charRight = c.getx()-c.getCharacter().getRadius();
 		double charRad = c.getCharacter().getRadius();
-		int check = 0;
 
 		//Replaced with for:each, pList1.get(i) was getting tedious :P
 		for(Obstacle obstacle : pList1) {
@@ -375,22 +398,6 @@ public class GameObject extends InputFunctions{
 						group.setTranslateY(diff);
 					}
 				}
-				if(c.getColor() == Color.RED)
-				{
-					check++;
-					//Break out of loop, since you can only be colliding with at most 2 things. It'll check the other remaining platforms and set
-					//collide to false if you don't do this.
-					if(check > 1)
-					{
-						System.out.println("Check: "+check);
-						break;
-					}
-				}
-				else
-					break;
-					
-				
-				
 			}
 			else {
 				c.setCollide(false);
@@ -399,7 +406,7 @@ public class GameObject extends InputFunctions{
 				mainGuy.setCollideRight(false);
 			}
 		}
-		if(obstacleBox.collide(c.getx(), c.gety(), charRad, charRad)) {
+		/*if(obstacleBox.collide(c.getx(), c.gety(), charRad, charRad)) {
 			obstacleBox.getPlat().setFill(Color.CORAL);
 
 			c.swapDir(); //Boolean for the ai to swap directions if they touch an obstacle.
@@ -407,6 +414,18 @@ public class GameObject extends InputFunctions{
 		}
 		else {
 			obstacleBox.getPlat().setFill(Color.BLACK); //reset color if not touching
+		}*/
+		for(Obstacle obstacle : oList1)
+		{
+			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
+				obstacle.getPlat().setFill(Color.CORAL);
+
+				c.swapDir(); //Boolean for the ai to swap directions if they touch an obstacle.
+				obstacle.getPlat().setFill(Color.BEIGE);
+			}
+			else {
+				obstacle.getPlat().setFill(obstacle.getColor()); //reset color if not touching
+			}
 		}
 	}
 	
