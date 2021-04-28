@@ -6,12 +6,21 @@ import javafx.scene.shape.Rectangle;
 public class Obstacle implements Collidable {
 	
 	private boolean collidable = true;
-	private Rectangle platform;
+	private Rectangle platform, platTop;
 	private double width, height, x, y;
 	private boolean collided;
 	
 	public Obstacle(int w, int h, Color c) {
 		this.platform = new Rectangle(w, h, c);
+		this.platTop = new Rectangle(w, h*0.2, c);
+		this.width = w;
+		this.height = h;
+	}
+
+	//2nd constructor for adding topPlat color
+	public Obstacle(int w, int h, Color c, Color cTop) {
+		this.platform = new Rectangle(w, h, c);
+		this.platTop = new Rectangle(w, h*0.2, cTop);
 		this.width = w;
 		this.height = h;
 	}
@@ -66,6 +75,11 @@ public class Obstacle implements Collidable {
 		return this.platform;
 	}
 	
+
+	public Rectangle getPlatTop() {
+		return this.platTop;
+	}
+	
 	public void setWidth(double w) {
 		this.width = w;
 	}
@@ -77,11 +91,13 @@ public class Obstacle implements Collidable {
 	public void setX(double x) {
 		this.x = x;
 		this.platform.setX(x);
+		this.platTop.setX(x);
 	}
 
 	public void setY(double y) {
 		this.y = y;
 		this.platform.setY(y);
+		this.platTop.setY(y);
 	}
 
 }

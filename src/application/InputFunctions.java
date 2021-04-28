@@ -19,7 +19,6 @@ public class InputFunctions {
 
 		if ((key == KeyCode.RIGHT || key == KeyCode.L) && !character.getCollideRight()) {
 			character.setdx(5);
-			//character.setColor(Color.BLACK);
 			character.walking = true;
 		}
 		if ((key == KeyCode.LEFT || key == KeyCode.H) && !character.getCollideLeft()) {

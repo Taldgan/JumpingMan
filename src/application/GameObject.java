@@ -32,8 +32,8 @@ public class GameObject extends InputFunctions{
 	ArrayList<Obstacle> pList2 = new ArrayList<Obstacle>();
 	ArrayList<Obstacle> pList3 = new ArrayList<Obstacle>();
 	ArrayList<Obstacle> allObs = new ArrayList<Obstacle>();
-	Group platformSet1 = spawnPlatforms(lvl1Set1,0,0,Color.DARKORCHID, pList1);
-	Group platformSet2 = spawnPlatforms(lvl1Set2,-50,50,Color.DARKOLIVEGREEN, pList2);
+	Group platformSet1 = spawnPlatforms(lvl1Set1,0,0,Color.BROWN, Color.GREEN, pList1);
+	Group platformSet2 = spawnPlatforms(lvl1Set2,-50,50,Color.BROWN, Color.GREEN, pList2);
 	Character mainGuy = new Character(250, 300-25, 20, Color.RED);
 	
 	//Etc
@@ -233,7 +233,7 @@ public class GameObject extends InputFunctions{
 		return enemyGroup;
 	}
 	
-	public Group spawnPlatforms(String lvl, int offsetX, int offsetY, Color c, ArrayList<Obstacle> pList) 
+	public Group spawnPlatforms(String lvl, int offsetX, int offsetY, Color c, Color cTop, ArrayList<Obstacle> pList) 
 	{
 		//lvl string: 
 		//0's mean no platform, and then the varying numbers mean a platform will spawn at that level of height.
@@ -247,9 +247,10 @@ public class GameObject extends InputFunctions{
 				//Spawn platform based off of char's location in string
 				//Each char will be 90 pixels of space, and will spawn at a height of 265-(y*45)
 
-				Obstacle r = new Obstacle(90,25,c); //Platforms are 90x25
+				Obstacle r = new Obstacle(90,25,c, cTop); //Platforms are 90x25
 				pList.add(r);
 				platG.getChildren().add(r.getPlat());
+				platG.getChildren().add(r.getPlatTop());
 				
 				r.setX(250+90*x+offsetX);
 				r.setY(265+Integer.parseInt(String.valueOf(lvl.charAt(x)))*40*-1-offsetY);
@@ -271,7 +272,7 @@ public class GameObject extends InputFunctions{
 		//Replaced with for:each, pList1.get(i) was getting tedious :P
 		for(Obstacle obstacle : allObs) {
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
-				obstacle.getPlat().setFill(Color.CORAL);
+				//obstacle.getPlat().setFill(Color.CORAL);
 				double diff;
 				//On top of the platform
 				if(charBot-12 <= obstacle.getY() && c.getdy() >= 0)
@@ -360,7 +361,7 @@ public class GameObject extends InputFunctions{
 			}
 			else {
 				c.setCollide(false);
-				obstacle.getPlat().setFill(Color.DARKORCHID); //reset color if not touching
+				//obstacle.getPlat().setFill(Color.DARKORCHID); //reset color if not touching
 				mainGuy.setCollideLeft(false);
 				mainGuy.setCollideRight(false);
 			}
