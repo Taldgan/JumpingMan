@@ -1,14 +1,27 @@
 package application;
 
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class GameObject extends InputFunctions{
+	
+	enum State {
+		MainMenu, Level1, Level2, Pause, YouDied, YouWon
+	}
+	public State gameState;
+	
 	//String locations/types
 	String lvl1Set1 = "0100000110020301030100100000203020010000001";
 	String lvl1Set2 = "000000002000400000002";
@@ -73,15 +86,16 @@ public class GameObject extends InputFunctions{
 	}
 	
 	public void processInput() {
-		
-		this.scene.setOnKeyPressed(e ->{
-	    	keyPressed(e, mainGuy);
-		});
-	    
-	    this.scene.setOnKeyReleased(e ->{
-	    	keyReleased(e, mainGuy);
-	    });
-	    
+		System.out.println(getState());
+		if (getState() == State.Level1 || getState() == State.Level2) {
+			this.scene.setOnKeyPressed(e ->{
+		    	keyPressed(e, mainGuy);
+			});
+		    
+		    this.scene.setOnKeyReleased(e ->{
+		    	keyReleased(e, mainGuy);
+		    });
+		}
 	}
 	
 	public void update() {
@@ -184,10 +198,25 @@ public class GameObject extends InputFunctions{
 		
 	}
 	
-	public void render(Stage primaryStage) {
+	@FXML public void newGame(ActionEvent e) throws IOException {
+		setState(State.Level1);
+		this.gameState = State.Level1;
 		
-		primaryStage.setScene(this.scene);
-	    primaryStage.show();
+		this.scene = new Scene(this.group, 500, 500);
+		Stage stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+		stage.setScene(this.scene);
+		stage.show();
+	}
+	
+	public void render(Stage primaryStage) throws IOException{
+		
+		if (this.gameState == State.MainMenu) {
+			Parent view = FXMLLoader.load(getClass().getResource("/application/MainMenu.fxml"));
+			this.scene = new Scene(view);
+			primaryStage.setScene(this.scene);
+		}
+		
+		primaryStage.show();
 	}
 	
 	 public double calculate() {
@@ -388,6 +417,13 @@ public class GameObject extends InputFunctions{
 				mainGuy.setCollideRight(false);
 			}
 		}
+	}
+	
+	public void setState(State state) {
+		this.gameState = state;
+	}
+	public State getState() {
+		return this.gameState;
 	}
 	
 }
