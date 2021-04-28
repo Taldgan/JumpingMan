@@ -13,14 +13,14 @@ public class GameObject extends InputFunctions{
 	String lvl1Set1 = "0100000110020301030100100000203020010000001";
 	String lvl1Set2 = "000000002000400000002";
 	String lvl1Set3 = "0001100";
-	String lvl1ESet = "03000010300405020501210001000201000222"; //Enemy set
+	String lvl1ESet = "03001010300405020501210001000201000222"; //Enemy set
 	
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
 	Rectangle background = new Rectangle(4000, 500, Color.LIGHTSKYBLUE);
 	Rectangle ground = new Rectangle(4000, 100, Color.GREEN);
 	//Obstacle ground = new Obstacle(2000, 100, Color.GREEN);
 	//Rectangle obstacleBox = new Rectangle(50, 50, Color.BROWN);
-	Obstacle obstacleBox = new Obstacle(50, 50, Color.BROWN);
+	Obstacle obstacleBox = new Obstacle(50, 50, Color.BLACK);
 	//Rectangle obstacleBoxTop = new Rectangle(50, 5, Color.GREEN);
 	//Rectangle obstacleBoxBot = new Rectangle(50, 5, Color.BLACK);
 	Character ref = new Character(50, 50, 20, Color.YELLOW);
@@ -76,6 +76,7 @@ public class GameObject extends InputFunctions{
 		
 		root.setPrefSize(500, 500);
 	}
+	
 	public void processInput() {
 		
 		this.scene.setOnKeyPressed(e ->{
@@ -105,11 +106,11 @@ public class GameObject extends InputFunctions{
 		//System.out.println("Main guy y: "+mainGuy.gety());
 		//System.out.println("Current ground level: "+mainGuy.getGroundLvl());
 		//System.out.println("Main guy dy: "+mainGuy.getdy());
+		
+		checkCollision(mainGuy);
 
-		//If main guy is colliding with nothing, he must be falling ('jumping')
 		if(!mainGuy.getCollide())
 			mainGuy.setJumping(true);
-
 
 		if (mainGuy.walking || mainGuy.jumping) {
 			mainGuy.move();
@@ -119,7 +120,7 @@ public class GameObject extends InputFunctions{
 				mainGuy.setdy(mainGuy.getdy() + (gravity*calculate()));
 			}
 		}
-		
+
 		if (mainGuy.getdx() > 5)
 			mainGuy.setdx(5);
 		if (mainGuy.getdx() < -5)
@@ -140,6 +141,7 @@ public class GameObject extends InputFunctions{
 		{
 			mainGuy.setJumping(false);
 			mainGuy.setdy(0);
+		
 			
 			if(!mainGuy.getCollide())
 			{
@@ -174,9 +176,9 @@ public class GameObject extends InputFunctions{
 			//Dark Magenta enemies on platforms
 			if(eList.get(x).getColor() == Color.DARKMAGENTA)
 			{
-				//Swap directions if they're about to move off of their platform. Platform size is 90 rn, so they move 85 pixels left or right
+				//Swap directions if they're about to move off of their platform. Platform size is 90 rn, so they move 70 pixels left or right
 				//then swap.
-				if(eList.get(x).getx() >= eList.get(x).getInitialX()+85 || eList.get(x).getx() <= eList.get(x).getInitialX()-85)
+				if(eList.get(x).getx() >= eList.get(x).getInitialX()+70 || eList.get(x).getx() <= eList.get(x).getInitialX()-70)
 				{
 					eList.get(x).swapDir();
 					eList.get(x).setInitialX(eList.get(x).getx());
@@ -207,7 +209,7 @@ public class GameObject extends InputFunctions{
 		//=====================================================
 		//Update platforms, testing collision. Moved down to a method at the bottom so
 		//That enemies can also collide with objects.
-		
+
 		checkCollision(mainGuy);
 		
 	}
@@ -254,7 +256,7 @@ public class GameObject extends InputFunctions{
 			{
 				//Starting at 3, spawn enemy on platforms. To match the platform height, I 
 				eList.add(new Enemies(250+(1+x)*90,
-						245-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA));
+						245-40*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA));
 			}
 		}
 		for(int x = 0; x < eList.size(); x++)
@@ -284,7 +286,7 @@ public class GameObject extends InputFunctions{
 				platG.getChildren().add(r.getPlat());
 				
 				r.setX(250+90*x+offsetX);
-				r.setY(265+Integer.parseInt(String.valueOf(lvl.charAt(x)))*45*-1-offsetY);
+				r.setY(265+Integer.parseInt(String.valueOf(lvl.charAt(x)))*40*-1-offsetY);
 			}
 		}
 		return platG;
@@ -295,8 +297,8 @@ public class GameObject extends InputFunctions{
 		//character bound variables for readability
 		double charTop = c.gety()-c.getCharacter().getRadius();
 		double charBot = c.gety()+c.getCharacter().getRadius();
-		double charLeft = c.getx()-c.getCharacter().getRadius();
-		double charRight = c.getx()+c.getCharacter().getRadius();
+		double charLeft = c.getx()+c.getCharacter().getRadius();
+		double charRight = c.getx()-c.getCharacter().getRadius();
 		double charRad = c.getCharacter().getRadius();
 		int check = 0;
 
@@ -304,55 +306,79 @@ public class GameObject extends InputFunctions{
 		for(Obstacle obstacle : pList1) {
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
 				obstacle.getPlat().setFill(Color.CORAL);
+				double diff;
 				//On top of the platform
-				if(charBot-12 <= obstacle.getY())
+				if(charBot-12 <= obstacle.getY() && c.getdy() >= 0)
 				{
+					diff = group.getTranslateY() + (c.gety() - c.getPrevY());
 					c.setGroundLvl(c.gety());
 					c.setCollide(true);
-					c.setdy(0);
-					c.setJumping(false); //If on top of a platform, character is not jumping
+					
+					
+					c.setJumping(false);
 					if(c.getColor() == Color.RED)
-						System.out.println("Top collision");
+					{
+						c.setdy(0);
+						System.out.println("collide top");
+						c.sety(c.getPrevY());
+						System.out.println("collide top#2");
+						c.getCharacter().setTranslateY(mainGuy.getPrevTranslateY());
+						group.setTranslateY(diff);
+					}
+					
 				}
-				
 				//Added 2 more checks for horizontal collision
 				//Left of platform collision:
-				//Added only main guy can proc this
-				else if(charRight <= obstacle.getX() && c.getColor() == Color.RED) {
+				if(charLeft <= obstacle.getX()) {
+					
 					c.setCollideRight(true);
-					if(c.getdx() > 0) {
-						c.setdx(0);
-						//c.setdy(1);
-						//c.setWalking(false);
-						System.out.println("Left Collision");
+					diff = group.getTranslateX() + (c.getx() - c.getPrevX());
+					if(c.getColor() == Color.RED)
+					{
+						c.setx(c.getPrevX());
+						c.getCharacter().setTranslateX(mainGuy.getPrevTranslateX());
+						System.out.println("collide right");
+						group.setTranslateX(diff);
 					}
+					else
+						c.swapDir();
 				}
 				//Right of platform collision:
-				else if(charLeft >= obstacle.getX()+obstacle.getWidth() && c.getColor() == Color.RED) {
+				else if(charRight >= obstacle.getX()+obstacle.getWidth()) {
+					
 					c.setCollideLeft(true);
-					if(c.getdx() < 0) {
-						System.out.println("Right collision");
-						//c.setdy(1);
-						c.setdx(0);
+					diff = group.getTranslateX() + (c.getx() - c.getPrevX());
+					
+					if(c.getColor() == Color.RED)
+					{
+						c.setx(c.getPrevX());
+						c.getCharacter().setTranslateX(mainGuy.getPrevTranslateX());
+						System.out.println("collide left");
+						group.setTranslateX(diff);
 					}
+					else
+						c.swapDir();
 				}
 				//If under the platform:
-				else if(charTop <= obstacle.getY())  //-pList1.get(i).getHeight() for fix
+				else if(charTop <= obstacle.getY()+obstacle.getHeight() && c.getdy() < 0)  //-pList1.get(i).getHeight() for fix
 				{
-					//pList1.get(i).setY(c.gety()-c.getCharacter().getRadius()-pList1.get(i).getHeight());
+					
+					diff = group.getTranslateY() + (c.gety() - c.getPrevY());
+					
 					c.setdy(1);
 					if(c.getColor() == Color.RED)
-						System.out.println("Under collision");
+					{
+						c.sety(c.getPrevY());
+						c.getCharacter().setTranslateY(mainGuy.getPrevTranslateY());
+						System.out.println("collide bot");
+						group.setTranslateY(diff);
+					}
 				}
-				if(c.getColor() == Color.RED)
-					check++;
-				//Break out of loop, since you can only be colliding with at most 2 things. It'll check the other remaining platforms and set
-				//collide to false if you don't do this.
-				if(check > 1)
-				{
-					System.out.println("Check: "+check);
-					break;
-				}
+				
+				
+				break;
+					
+				
 				
 			}
 			else {
@@ -366,9 +392,10 @@ public class GameObject extends InputFunctions{
 			obstacleBox.getPlat().setFill(Color.CORAL);
 
 			c.swapDir(); //Boolean for the ai to swap directions if they touch an obstacle.
+			obstacleBox.getPlat().setFill(Color.BEIGE);
 		}
 		else {
-			obstacleBox.getPlat().setFill(Color.BROWN); //reset color if not touching
+			obstacleBox.getPlat().setFill(Color.BLACK); //reset color if not touching
 		}
 	}
 	

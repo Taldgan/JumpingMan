@@ -23,6 +23,12 @@ public class Obstacle implements Collidable {
 		else 
 			return false;
 	}
+	//Return true if the character is over the platform. Return false if they are under.
+	/*public boolean isOver()
+	{
+		
+	}*/
+
 	public void setCollidable(boolean isCollidable) {
 		this.collidable = isCollidable;
 	}
