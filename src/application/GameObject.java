@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -56,9 +57,9 @@ public class GameObject extends InputFunctions{
 	Character mainGuy = new Character(250, 450-25, 20, Color.RED);
 	Group group = new Group(theVoid, background, groundSet1, mainGuy.getCharacter(), e1, platformSet1, platformSet2, obstacleSet1);
 
-	BorderPane root = new BorderPane(group);
+	BorderPane root;
 	Scene menuScene;
-	Scene gameScene = new Scene(root);
+	Scene gameScene;
 	
 	
 	
@@ -81,7 +82,6 @@ public class GameObject extends InputFunctions{
 		theVoid.setY(-2500);
 		theVoid.setX(-2500);
 		
-		root.setPrefSize(500, 500);
 	}
 	
 	public void processInput() {
@@ -134,6 +134,7 @@ public class GameObject extends InputFunctions{
 		//Update enemies
 		for(int x = 0; x < eList.size();x++)
 		{
+			System.out.println(eList.get(x).getx());
 			//Blue enemies jump
 			if(eList.get(x).getColor() == Color.BLUE)
 			{
@@ -191,13 +192,16 @@ public class GameObject extends InputFunctions{
 		checkCollision(mainGuy);
 	}
 	
-	@FXML 
-	public void newGame(ActionEvent event) {
-		System.out.println("newGame called");
-		StateManager.gameState = State.LEVEL1;
-		//render(); TODO: call render while getting primary stage??
-		System.out.println(StateManager.gameState);
-	}
+@FXML 
+public void newGame(ActionEvent event) {
+	StateManager.gameState = State.LEVEL1;
+	try {
+		render((Stage) ((Node) event.getSource()).getScene().getWindow());
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} //TODO: call render while getting primary stage??
+}
 	
 	@FXML
 	public void exitGame() {
@@ -212,6 +216,8 @@ public class GameObject extends InputFunctions{
 			primaryStage.setScene(this.menuScene);
 		}
 		else if(StateManager.gameState == State.LEVEL1) {
+			this.root = new BorderPane(this.group);
+			root.setPrefSize(500, 500);
 			this.gameScene = new Scene(root);
 			primaryStage.setScene(this.gameScene);
 		}
