@@ -37,7 +37,7 @@ public class Character {
 	
 	public State dead() {
 		
-		if (gety() > 600){
+		if (gety() > 700){
 			System.out.println("dead called");
 			this.lives -= 1;
 			if (lives < 0) {
