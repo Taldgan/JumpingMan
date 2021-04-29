@@ -226,6 +226,12 @@ public void render(Stage primaryStage) throws IOException {
 			this.gameScene = new Scene(root);
 			primaryStage.setScene(this.gameScene);
 			break;
+		case LEVEL2:
+			break;
+		case YOUDIED:
+			break;
+		case YOUWON:
+			break;
 	}
 	primaryStage.show();
 }
