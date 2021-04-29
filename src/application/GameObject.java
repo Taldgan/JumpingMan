@@ -15,10 +15,10 @@ public class GameObject extends InputFunctions{
 	//String lvl1Set3 = "0001100";
 	//String lvl1Set1 = "0"; //Test version
 	//String lvl1Set2 = "0"; //Test version
-	String lvl1ESet = "00100010300405020501210001000201000222"; //Enemy set
-	String lvl1GSet1 = "1111100111011111111111111101111111111101";
+	String lvl1ESet = "00100010300425020501210001000251000222"; //Enemy set
+	String lvl1GSet1 = "11111001110111111111111111011111111111011";
 
-	String lvl1OSet = "01000000001000000000"; //Obstacle set, Make sure these dont clip into platforms .
+	String lvl1OSet = "0100000000100000010000000000001000300000"; //Obstacle set, Make sure these dont clip into platforms .
 	
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
 	Rectangle background = new Rectangle(4000, 1200, Color.LIGHTSKYBLUE);
@@ -123,7 +123,6 @@ public class GameObject extends InputFunctions{
 		//Update enemies
 		for(int x = 0; x < eList.size();x++)
 		{
-
 			//Blue enemies jump
 			if(eList.get(x).getColor() == Color.BLUE)
 			{
@@ -155,13 +154,11 @@ public class GameObject extends InputFunctions{
 				}
 			}
 			//Chance for an enemy to swap directions (5/1000 chance) per frame refresh.
-			//This works, but let's not have this be a thing
+			//Perhaps we can have this be a new enemy type?
 			/*int ran = eList.get(x).getRNG(1000);
 			if(ran >= 0 && ran <= 5)
 				eList.get(x).swapDir();*/
-			
 			eList.get(x).enemyMove();
-			
 			//Check collision with the player
 			if(eList.get(x).collide(mainGuy.getx(),mainGuy.gety(),mainGuy.getRadius(),mainGuy.getRadius()))
 			{
@@ -173,14 +170,13 @@ public class GameObject extends InputFunctions{
 			
 			//Check collision with obstacles/platforms
 			checkCollision(eList.get(x)); 
-			groundCheck(eList.get(x),lvl1GSet1);
+			groundCheck(eList.get(x),lvl1GSet1); //Swap enemy direction when close to a hole.
 			
 		}
 
 		//=====================================================
 		//Update platforms, testing collision. Moved down to a method at the bottom so
 		//That enemies can also collide with objects.
-
 		checkCollision(mainGuy);
 	}
 	
@@ -207,7 +203,6 @@ public class GameObject extends InputFunctions{
 	 
 	public Group spawnEnemies(String eSet)
 	{
-		
 		//1 is a normal enemy
 		//2 is a jumping enemy
 		//3 Is a normal enemy on a platform
@@ -224,7 +219,8 @@ public class GameObject extends InputFunctions{
 			}
 			else if(eSet.charAt(x) >= '3' && eSet.charAt(x) <= '9')
 			{
-				//Starting at 3, spawn enemy on platforms. To match the platform height, multiply the string value-2 by 40 and subtract that by 245
+				//Starting at 3, spawn enemy on platforms. To match the platform height, multiply the string value-2 by 45 and subtract that by
+				//The ground level, 450. Finally, substract in an offset of 20 to account for the circle's bottom.
 				eList.add(new Enemies(250+(1+x)*90,
 						450-(45+20)-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA));
 			}
@@ -281,6 +277,7 @@ public class GameObject extends InputFunctions{
 		}
 		return platG;
 	}
+	
 	public Group spawnObstacles(String lvl, int sizeX, int sizeY, Color c, ArrayList<Obstacle> oList)
 	{
 		Group obsGroup = new Group();
@@ -321,7 +318,7 @@ public class GameObject extends InputFunctions{
 					if(c.getColor() == Color.RED)
 					{
 						c.setGroundLvl(c.gety());
-						c.setdy(-.025);
+						c.setdy(-.05);
 						c.setJumping(false);
 						//System.out.println("collide with top of platform");
 						c.sety(c.getPrevY());
@@ -340,7 +337,7 @@ public class GameObject extends InputFunctions{
 					{
 						c.setx(c.getPrevX());
 						c.getCharacter().setTranslateX(mainGuy.getPrevTranslateX());
-						System.out.println("collide with left side of platform");
+						//System.out.println("collide with left side of platform");
 						group.setTranslateX(diff);
 					}
 					//Swap enemy direction when touching an obstacle.
@@ -359,12 +356,11 @@ public class GameObject extends InputFunctions{
 					{
 						c.setx(c.getPrevX());
 						c.getCharacter().setTranslateX(mainGuy.getPrevTranslateX());
-						System.out.println("collide with right side of platform");
+						//System.out.println("collide with right side of platform");
 						group.setTranslateX(diff);
 					}
 					else if(c.getColor() != Color.RED && obstacle.getColor() == null)
 					{
-						
 						c.swapDir();
 					}
 						
@@ -394,6 +390,7 @@ public class GameObject extends InputFunctions{
 		}
 	}
 	
+	//Method for enemies to turn around if they are next to a hole.
 	public void groundCheck(Enemies e, String holes)
 	{
 		for(int x = 0; x < holes.length(); x++)
