@@ -16,6 +16,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class GameObject extends InputFunctions{
+	//Ground Level
+	int groundLevel = 450;
 	//String locations/types
 	String lvl1Set1 = "0000000110020301030100100000203020010000001";
 	String lvl1Set2 = "000000002000400000002";
@@ -34,8 +36,10 @@ public class GameObject extends InputFunctions{
 	ArrayList<Enemies> eList = new ArrayList<Enemies>();
 	Group e1 = spawnEnemies(lvl1ESet);
 
-	//Platform vars
+	//Ground Vars
 	ArrayList<Obstacle> gList = new ArrayList<Obstacle>();
+
+	//Platform vars
 	ArrayList<Obstacle> pList1 = new ArrayList<Obstacle>();
 	ArrayList<Obstacle> pList2 = new ArrayList<Obstacle>();
 	ArrayList<Obstacle> pList3 = new ArrayList<Obstacle>();
@@ -52,16 +56,15 @@ public class GameObject extends InputFunctions{
 	//List of All Collidable Objects
 	ArrayList<Obstacle> allObs = new ArrayList<Obstacle>();
 
-	//Game State
-	//Etc
-	Character mainGuy = new Character(250, 450-25, 20, Color.RED);
-	Group group = new Group(theVoid, background, groundSet1, mainGuy.getCharacter(), e1, platformSet1, platformSet2, obstacleSet1);
 
+	//Scenes
 	BorderPane root;
 	Scene menuScene;
 	Scene gameScene;
 
-
+	//Etc
+	Character mainGuy = new Character(250, groundLevel-25, 20, Color.RED);
+	Group group = new Group(theVoid, background, groundSet1, mainGuy.getCharacter(), e1, platformSet1, platformSet2, obstacleSet1);
 
 	double lastTime = System.currentTimeMillis();
 	double delta;
@@ -81,7 +84,6 @@ public class GameObject extends InputFunctions{
 
 		theVoid.setY(-2500);
 		theVoid.setX(-2500);
-
 	}
 
 	public void processInput() {
@@ -260,18 +262,18 @@ public void render(Stage primaryStage) throws IOException {
 		{
 			if(eSet.charAt(x) == '1')
 			{
-				eList.add(new Enemies(250+x*90,450-20,20,Color.MAGENTA));
+				eList.add(new Enemies(250+x*90,groundLevel-20,20,Color.MAGENTA));
 			}
 			else if(eSet.charAt(x) == '2')
 			{
-				eList.add(new Enemies(250+x*90,450-20,20,Color.BLUE));
+				eList.add(new Enemies(250+x*90,groundLevel-20,20,Color.BLUE));
 			}
 			else if(eSet.charAt(x) >= '3' && eSet.charAt(x) <= '9')
 			{
 				//Starting at 3, spawn enemy on platforms. To match the platform height, multiply the string value-2 by 45 and subtract that by
-				//The ground level, 450. Finally, substract in an offset of 20 to account for the circle's bottom.
+				//The ground level, groundLevel. Finally, substract in an offset of 20 to account for the circle's bottom.
 				eList.add(new Enemies(250+(1+x)*90,
-						450-(45+20)-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA));
+						groundLevel-(45+20)-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA));
 			}
 		}
 		for(int x = 0; x < eList.size(); x++)
@@ -287,13 +289,13 @@ public void render(Stage primaryStage) throws IOException {
 		Group groundG = new Group();
 		for(int i = 0; i < lvl.length(); i++) {
 			if(lvl.charAt(i) != '0') {
-				Obstacle g = new Obstacle(100, 400, c, cTop);
+				Obstacle g = new Obstacle(100, groundLevel-50, c, cTop);
 				gList.add(g);
 				groundG.getChildren().add(g.getPlat());
 				groundG.getChildren().add(g.getPlatTop());
 
 				g.setX(100*i);
-				g.setY(450);
+				g.setY(groundLevel);
 			}
 		}
 		return groundG;
@@ -307,7 +309,7 @@ public void render(Stage primaryStage) throws IOException {
 		//Their position in the string will correlate to how far into the level they spawn. See below for the formula I used.
 		//Feel free to change whatever.
 		Group platG = new Group();
-		double groundLvlOffset = 450-45;
+		double groundLvlOffset = groundLevel-45;
 		for(int x = 0; x < lvl.length();x++)
 		{
 			if(lvl.charAt(x) != '0') //If the current char is not 0, create a platform in that spot.
@@ -330,7 +332,6 @@ public void render(Stage primaryStage) throws IOException {
 	public Group spawnObstacles(String lvl, int sizeX, int sizeY, Color c, ArrayList<Obstacle> oList)
 	{
 		Group obsGroup = new Group();
-		double groundLevel = 450;
 		for(int x = 0; x < lvl. length(); x++)
 		{
 			if(lvl.charAt(x) != '0') //If the current char is not 0, create a platform in that spot.
