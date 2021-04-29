@@ -7,7 +7,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-	
+
 	private boolean menuLoaded = true;
 	private boolean gameLoaded = false;
 
@@ -15,6 +15,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		primaryStage.setWidth(1000);
 		primaryStage.setHeight(800);
+		primaryStage.setTitle("Jumping Man");
 		try {
 			GameObject game = new GameObject();
 
@@ -25,16 +26,16 @@ public class Main extends Application {
 				public void handle(long arg0) {
 					if(StateManager.gameState != State.MAINMENU && StateManager.gameState != State.PAUSE) {
 						game.update();
-						try {
-							if(!gameLoaded) {
+						if(!gameLoaded) {
+							try {
 								game.render(primaryStage);
 								gameLoaded = true;
 								menuLoaded = false;
+							} catch (IOException e) {
+								e.printStackTrace();
 							}
-						} catch (IOException e) {
-							e.printStackTrace();
+							game.processInput();
 						}
-						game.processInput();
 					}
 					else if(!menuLoaded){
 						try {
@@ -46,7 +47,7 @@ public class Main extends Application {
 						menuLoaded = true;
 						gameLoaded = false;
 					}
-						
+
 				}
 			};
 			timer.start();

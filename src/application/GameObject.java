@@ -27,7 +27,7 @@ public class GameObject extends InputFunctions{
 	//String lvl1Set1 = "0"; //Test version
 	//String lvl1Set2 = "0"; //Test version
 	String lvl1ESet = "00100010300425020501210001000251000222"; //Enemy set
-	String lvl1GSet1 = "11111001110111111111111111011111111111011";
+	String lvl1GSet1 = "12111001110111111111111111011111111111011";
 
 	String lvl1OSet = "0100000000100000010000000000001000300000"; //Obstacle set, Make sure these dont clip into platforms .
 
@@ -40,6 +40,7 @@ public class GameObject extends InputFunctions{
 
 	//Ground Vars
 	ArrayList<Obstacle> gList = new ArrayList<Obstacle>();
+	ArrayList<Integer> gListOffsets = new ArrayList<Integer>();
 
 	//Platform vars
 	ArrayList<Obstacle> pList1 = new ArrayList<Obstacle>();
@@ -307,7 +308,11 @@ public void render(Stage primaryStage) throws IOException {
 				groundG.getChildren().add(g.getPlatTop());
 
 				g.setX(100*i);
-				g.setY(groundLevel);
+				int offsetVal = Integer.parseInt(String.valueOf(lvl.charAt(i)));
+				if(offsetVal > 1)
+					g.setY(groundLevel-20*Integer.parseInt(String.valueOf(lvl.charAt(i))));
+				else
+					g.setY(groundLevel);
 			}
 		}
 		return groundG;
