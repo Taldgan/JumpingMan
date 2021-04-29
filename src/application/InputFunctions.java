@@ -15,7 +15,7 @@ public class InputFunctions {
 		
 		if (key == KeyCode.ESCAPE) {
 			//System.exit(0);
-			StateManager.gameState = State.MAINMENU;
+			StateManager.gameState = State.PAUSE;
 		}
 
 		if ((key == KeyCode.RIGHT || key == KeyCode.L) && !character.getCollideRight()) {

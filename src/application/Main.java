@@ -20,7 +20,7 @@ public class Main extends Application {
 
 				@Override
 				public void handle(long arg0) {
-					if(StateManager.gameState != State.MAINMENU) {
+					if(StateManager.gameState != State.MAINMENU && StateManager.gameState != State.PAUSE) {
 						game.update();
 						try {
 							game.render(primaryStage);

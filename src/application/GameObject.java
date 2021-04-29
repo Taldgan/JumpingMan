@@ -203,24 +203,31 @@ public class GameObject extends InputFunctions{
 
 	@FXML
 	public void exitGame() {
-		System.out.println("exitGame called");
 		System.exit(0);
 	}
 
-	public void render(Stage primaryStage) throws IOException {
-		if (StateManager.gameState == State.MAINMENU) {
-			Parent view = FXMLLoader.load(getClass().getResource("/application/MainMenu.fxml"));
+public void render(Stage primaryStage) throws IOException {
+	Parent view;
+	switch(StateManager.gameState) {
+		case MAINMENU:
+			view = FXMLLoader.load(getClass().getResource("/application/MainMenu.fxml"));
 			this.menuScene = new Scene(view);
 			primaryStage.setScene(this.menuScene);
-		}
-		else if(StateManager.gameState == State.LEVEL1) {
+			break;
+		case PAUSE:
+			view = FXMLLoader.load(getClass().getResource("/application/PauseMenu.fxml"));
+			this.menuScene = new Scene(view);
+			primaryStage.setScene(this.menuScene);
+			break;
+		case LEVEL1:
 			this.root = new BorderPane(this.group);
 			root.setPrefSize(500, 500);
 			this.gameScene = new Scene(root);
 			primaryStage.setScene(this.gameScene);
-		}
-		primaryStage.show();
+			break;
 	}
+	primaryStage.show();
+}
 
 	public double calculate() {
 		double current = System.currentTimeMillis();
