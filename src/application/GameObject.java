@@ -98,6 +98,7 @@ public class GameObject extends InputFunctions{
 
 	public void update() {
 		checkCollision(mainGuy);
+		mainGuy.dead();
 
 		//If mainGuy is not touching top of platform, he must be jumping/falling
 		if(!mainGuy.getCollide())
