@@ -8,10 +8,13 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 	
-	private boolean loaded = true;
+	private boolean menuLoaded = true;
+	private boolean gameLoaded = false;
 
 	@Override
 	public void start(Stage primaryStage) {
+		primaryStage.setWidth(1000);
+		primaryStage.setHeight(800);
 		try {
 			GameObject game = new GameObject();
 
@@ -23,21 +26,25 @@ public class Main extends Application {
 					if(StateManager.gameState != State.MAINMENU && StateManager.gameState != State.PAUSE) {
 						game.update();
 						try {
-							game.render(primaryStage);
-							loaded = false;
+							if(!gameLoaded) {
+								game.render(primaryStage);
+								gameLoaded = true;
+								menuLoaded = false;
+							}
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
 						game.processInput();
 					}
-					else if(!loaded){
+					else if(!menuLoaded){
 						try {
 							game.render(primaryStage);
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						loaded = true;
+						menuLoaded = true;
+						gameLoaded = false;
 					}
 						
 				}
