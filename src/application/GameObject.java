@@ -26,7 +26,7 @@ public class GameObject extends InputFunctions{
 	String lvl1GSet1 = "11111001110111111111111111011111111111011";
 
 	String lvl1OSet = "0100000000100000010000000000001000300000"; //Obstacle set, Make sure these dont clip into platforms .
-	
+
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
 	Rectangle background = new Rectangle(4000, 1200, Color.LIGHTSKYBLUE);
 
@@ -51,7 +51,7 @@ public class GameObject extends InputFunctions{
 
 	//List of All Collidable Objects
 	ArrayList<Obstacle> allObs = new ArrayList<Obstacle>();
-	
+
 	//Game State
 	//Etc
 	Character mainGuy = new Character(250, 450-25, 20, Color.RED);
@@ -60,42 +60,42 @@ public class GameObject extends InputFunctions{
 	BorderPane root;
 	Scene menuScene;
 	Scene gameScene;
-	
-	
-	
+
+
+
 	double lastTime = System.currentTimeMillis();
 	double delta;
 	double gravity = 1;
-	
+
 	public GameObject() {
 
 		StateManager.gameState = State.MAINMENU;
 
 		group.setManaged(false);
-		
+
 		allObs.addAll(gList);
 		allObs.addAll(pList1);
 		allObs.addAll(pList2);
 		allObs.addAll(pList3);
 		allObs.addAll(oList1);
-		
+
 		theVoid.setY(-2500);
 		theVoid.setX(-2500);
-		
+
 	}
-	
+
 	public void processInput() {
-		
+
 		this.gameScene.setOnKeyPressed(e ->{
-	    	keyPressed(e, mainGuy);
+			keyPressed(e, mainGuy);
 		});
-	    
-	    this.gameScene.setOnKeyReleased(e ->{
-	    	keyReleased(e, mainGuy);
-	    });
-	    
+
+		this.gameScene.setOnKeyReleased(e ->{
+			keyReleased(e, mainGuy);
+		});
+
 	}
-	
+
 	public void update() {
 		checkCollision(mainGuy);
 
@@ -118,7 +118,7 @@ public class GameObject extends InputFunctions{
 			mainGuy.setdx(5);
 		if (mainGuy.getdx() < -5)
 			mainGuy.setdx(-5);
-		
+
 		//???
 		if (mainGuy.getdx() != 0 && !mainGuy.walking) {
 			if (mainGuy.getdx() > 0)
@@ -129,7 +129,7 @@ public class GameObject extends InputFunctions{
 			//group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
 			mainGuy.move();
 		}
-		
+
 		//=====================================================
 		//Update enemies
 		for(int x = 0; x < eList.size();x++)
@@ -139,7 +139,7 @@ public class GameObject extends InputFunctions{
 			{
 				if(eList.get(x).getJumping())
 					eList.get(x).setdy(gravity*calculate()+eList.get(x).getdy());
-				
+
 				if(eList.get(x).getJumping() && eList.get(x).gety() > eList.get(x).getInitY())
 				{
 					//System.out.println("Enemy not jumping");
@@ -151,7 +151,7 @@ public class GameObject extends InputFunctions{
 				{
 					eList.get(x).enemyJump();
 				}
-				
+
 			}
 			//Dark Magenta enemies on platforms
 			if(eList.get(x).getColor() == Color.DARKMAGENTA)
@@ -178,11 +178,11 @@ public class GameObject extends InputFunctions{
 			}
 			else
 				eList.get(x).getCharacter().setFill(eList.get(x).getColor());
-			
+
 			//Check collision with obstacles/platforms
 			checkCollision(eList.get(x)); 
 			groundCheck(eList.get(x),lvl1GSet1); //Swap enemy direction when close to a hole.
-			
+
 		}
 
 		//=====================================================
@@ -190,17 +190,17 @@ public class GameObject extends InputFunctions{
 		//That enemies can also collide with objects.
 		checkCollision(mainGuy);
 	}
-	
-@FXML 
-public void newGame(ActionEvent event) {
-	StateManager.gameState = State.LEVEL1;
-	try {
-		render((Stage) ((Node) event.getSource()).getScene().getWindow());
-	} catch (IOException e) {
-		e.printStackTrace();
-	} 
-}
-	
+
+	@FXML 
+	public void newGame(ActionEvent event) {
+		StateManager.gameState = State.LEVEL1;
+		try {
+			render((Stage) ((Node) event.getSource()).getScene().getWindow());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+	}
+
 	@FXML
 	public void exitGame() {
 		System.out.println("exitGame called");
@@ -219,24 +219,24 @@ public void newGame(ActionEvent event) {
 			this.gameScene = new Scene(root);
 			primaryStage.setScene(this.gameScene);
 		}
-	    primaryStage.show();
+		primaryStage.show();
 	}
-	
-	 public double calculate() {
-		 double current = System.currentTimeMillis();
-		 delta += (current-lastTime);
-		 lastTime = current;
-		 //frameCount++;
-		          
-		 if (delta > 0.15) {
-			 delta = 0.15;
-		 	 //frameRate = String.format("FPS %s", frameCount);
-		 	 //frameCount = 0;
-		 }
-		 
-		 return delta;
+
+	public double calculate() {
+		double current = System.currentTimeMillis();
+		delta += (current-lastTime);
+		lastTime = current;
+		//frameCount++;
+
+		if (delta > 0.15) {
+			delta = 0.15;
+			//frameRate = String.format("FPS %s", frameCount);
+			//frameCount = 0;
+		}
+
+		return delta;
 	}
-	 
+
 	public Group spawnEnemies(String eSet)
 	{
 		//1 is a normal enemy
@@ -265,10 +265,10 @@ public void newGame(ActionEvent event) {
 		{
 			enemyGroup.getChildren().add(eList.get(x).getCharacter());
 		}
-			
+
 		return enemyGroup;
 	}
-	
+
 	public Group spawnGround(String lvl, int offsetX, int offsetY, Color c, Color cTop, ArrayList<Obstacle> gList) 
 	{
 		Group groundG = new Group();
@@ -278,7 +278,7 @@ public void newGame(ActionEvent event) {
 				gList.add(g);
 				groundG.getChildren().add(g.getPlat());
 				groundG.getChildren().add(g.getPlatTop());
-				
+
 				g.setX(100*i);
 				g.setY(450);
 			}
@@ -306,14 +306,14 @@ public void newGame(ActionEvent event) {
 				pList.add(r);
 				platG.getChildren().add(r.getPlat());
 				platG.getChildren().add(r.getPlatTop());
-				
+
 				r.setX(250+90*x+offsetX);
 				r.setY(groundLvlOffset+Integer.parseInt(String.valueOf(lvl.charAt(x)))*45*-1-offsetY);
 			}
 		}
 		return platG;
 	}
-	
+
 	public Group spawnObstacles(String lvl, int sizeX, int sizeY, Color c, ArrayList<Obstacle> oList)
 	{
 		Group obsGroup = new Group();
@@ -331,7 +331,7 @@ public void newGame(ActionEvent event) {
 		}
 		return obsGroup;
 	}
-	
+
 	public void checkCollision(Character c)
 	{
 		//character bound variables for readability
@@ -361,12 +361,12 @@ public void newGame(ActionEvent event) {
 						c.getCharacter().setTranslateY(mainGuy.getPrevTranslateY());
 						//group.setTranslateY(diff);
 					}
-					
+
 				}
 				//Added 2 more checks for horizontal collision
 				//Left of platform collision:
 				if(charLeft <= obstacle.getX()) {
-					
+
 					c.setCollideRight(true);
 					diff = group.getTranslateX() + (c.getx() - c.getPrevX());
 					if(c.getColor() == Color.RED)
@@ -381,7 +381,7 @@ public void newGame(ActionEvent event) {
 					{
 						c.swapDir();
 					}
-						
+
 				}
 				//Right of platform collision:
 				else if(charRight >= obstacle.getX()+obstacle.getWidth()) {
@@ -399,14 +399,14 @@ public void newGame(ActionEvent event) {
 					{
 						c.swapDir();
 					}
-						
+
 				}
 				//If under the platform:
 				else if(charTop <= obstacle.getY()+obstacle.getHeight() && c.getdy() < 0)
 				{
-					
+
 					diff = group.getTranslateY() + (c.gety() - c.getPrevY());
-					
+
 					c.setdy(1);
 					if(c.getColor() == Color.RED)
 					{
@@ -425,7 +425,7 @@ public void newGame(ActionEvent event) {
 			}
 		}
 	}
-	
+
 	//Method for enemies to turn around if they are next to a hole.
 	public void groundCheck(Enemies e, String holes)
 	{
