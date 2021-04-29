@@ -134,7 +134,6 @@ public class GameObject extends InputFunctions{
 		//Update enemies
 		for(int x = 0; x < eList.size();x++)
 		{
-			System.out.println(eList.get(x).getx());
 			//Blue enemies jump
 			if(eList.get(x).getColor() == Color.BLUE)
 			{
@@ -198,9 +197,8 @@ public void newGame(ActionEvent event) {
 	try {
 		render((Stage) ((Node) event.getSource()).getScene().getWindow());
 	} catch (IOException e) {
-		// TODO Auto-generated catch block
 		e.printStackTrace();
-	} //TODO: call render while getting primary stage??
+	} 
 }
 	
 	@FXML
