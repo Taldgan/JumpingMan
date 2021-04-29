@@ -12,7 +12,9 @@ public class Main extends Application {
 	    	GameObject game = new GameObject();
 	    	
 	    	game.processInput();
+	    	System.out.println("processInput()");
 	    	game.render(primaryStage);
+	    	System.out.println("render()");
 	    	AnimationTimer timer = new AnimationTimer() {
 
 				@Override

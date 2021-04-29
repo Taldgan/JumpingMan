@@ -1,12 +1,18 @@
 package application;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import java.util.ArrayList;
 
 public class GameObject extends InputFunctions{
 	//String locations/types
@@ -45,12 +51,15 @@ public class GameObject extends InputFunctions{
 	//List of All Collidable Objects
 	ArrayList<Obstacle> allObs = new ArrayList<Obstacle>();
 	
+	//Game State
 	//Etc
 	Character mainGuy = new Character(250, 450-25, 20, Color.RED);
 	Group group = new Group(theVoid, background, groundSet1, mainGuy.getCharacter(), e1, platformSet1, platformSet2, obstacleSet1);
 
 	BorderPane root = new BorderPane(group);
-	Scene scene = new Scene(root);
+	Scene menuScene;
+	Scene gameScene = new Scene(root);
+	
 	
 	
 	double lastTime = System.currentTimeMillis();
@@ -58,6 +67,8 @@ public class GameObject extends InputFunctions{
 	double gravity = 1;
 	
 	public GameObject() {
+
+		StateManager.gameState = State.MAINMENU;
 
 		group.setManaged(false);
 		
@@ -75,11 +86,11 @@ public class GameObject extends InputFunctions{
 	
 	public void processInput() {
 		
-		this.scene.setOnKeyPressed(e ->{
+		this.gameScene.setOnKeyPressed(e ->{
 	    	keyPressed(e, mainGuy);
 		});
 	    
-	    this.scene.setOnKeyReleased(e ->{
+	    this.gameScene.setOnKeyReleased(e ->{
 	    	keyReleased(e, mainGuy);
 	    });
 	    
@@ -180,9 +191,30 @@ public class GameObject extends InputFunctions{
 		checkCollision(mainGuy);
 	}
 	
-	public void render(Stage primaryStage) {
-		
-		primaryStage.setScene(this.scene);
+	@FXML 
+	public void newGame(ActionEvent event) {
+		System.out.println("newGame called");
+		StateManager.gameState = State.LEVEL1;
+		//render(); TODO: call render while getting primary stage??
+		System.out.println(StateManager.gameState);
+	}
+	
+	@FXML
+	public void exitGame() {
+		System.out.println("exitGame called");
+		System.exit(0);
+	}
+
+	public void render(Stage primaryStage) throws IOException {
+		if (StateManager.gameState == State.MAINMENU) {
+			Parent view = FXMLLoader.load(getClass().getResource("/application/MainMenu.fxml"));
+			this.menuScene = new Scene(view);
+			primaryStage.setScene(this.menuScene);
+		}
+		else if(StateManager.gameState == State.LEVEL1) {
+			this.gameScene = new Scene(root);
+			primaryStage.setScene(this.gameScene);
+		}
 	    primaryStage.show();
 	}
 	
