@@ -10,14 +10,16 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class GameObject extends InputFunctions{
 	//Ground Level
-	int groundLevel = 450;
+	int groundLevel = 700;
 	//String locations/types
 	String lvl1Set1 = "0000000110020301030100100000203020010000001";
 	String lvl1Set2 = "000000002000400000002";
@@ -65,6 +67,8 @@ public class GameObject extends InputFunctions{
 	//Etc
 	Character mainGuy = new Character(250, groundLevel-25, 20, Color.RED);
 	Group group = new Group(theVoid, background, groundSet1, mainGuy.getCharacter(), e1, platformSet1, platformSet2, obstacleSet1);
+	
+	Label pauseLabel = new Label("PAUSED\n(Q)UIT");
 
 	double lastTime = System.currentTimeMillis();
 	double delta;
@@ -73,6 +77,9 @@ public class GameObject extends InputFunctions{
 	public GameObject() {
 
 		StateManager.gameState = State.MAINMENU;
+		
+		pauseLabel.setTranslateY(groundLevel-400);
+		pauseLabel.setFont(new Font("Arial", 30));
 
 		group.setManaged(false);
 
@@ -196,6 +203,7 @@ public class GameObject extends InputFunctions{
 	@FXML 
 	public void newGame(ActionEvent event) {
 		StateManager.gameState = State.LEVEL1;
+		StateManager.currLevel = State.LEVEL1;
 		try {
 			render((Stage) ((Node) event.getSource()).getScene().getWindow());
 		} catch (IOException e) {
@@ -217,14 +225,18 @@ public void render(Stage primaryStage) throws IOException {
 			primaryStage.setScene(this.menuScene);
 			break;
 		case PAUSE:
-			view = FXMLLoader.load(getClass().getResource("/application/PauseMenu.fxml"));
-			this.menuScene = new Scene(view);
-			primaryStage.setScene(this.menuScene);
+			//view = FXMLLoader.load(getClass().getResource("/application/PauseMenu.fxml"));
+			//this.menuScene = new Scene(view);
+			//primaryStage.setScene(this.menuScene);
+			pauseLabel.setTranslateX(mainGuy.getCharacter().getTranslateX()+450);
+			group.getChildren().add(pauseLabel);
 			break;
 		case LEVEL1:
 			this.root = new BorderPane(this.group);
 			root.setPrefSize(500, 500);
 			this.gameScene = new Scene(root);
+			if(group.getChildren().contains(pauseLabel))
+				group.getChildren().remove(pauseLabel);
 			primaryStage.setScene(this.gameScene);
 			break;
 		case LEVEL2:

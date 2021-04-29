@@ -14,9 +14,15 @@ public class InputFunctions {
 		KeyCode key = event.getCode();
 		
 		if (key == KeyCode.ESCAPE) {
-			//System.exit(0);
-			StateManager.gameState = State.PAUSE;
+			if(StateManager.gameState == State.PAUSE) 
+				StateManager.gameState = StateManager.currLevel;
+			else
+				StateManager.gameState = State.PAUSE;
+
 		}
+		
+		if(key == KeyCode.Q && StateManager.gameState == State.PAUSE)
+			System.exit(0);
 
 		if ((key == KeyCode.RIGHT || key == KeyCode.L) && !character.getCollideRight()) {
 			character.setdx(5);
