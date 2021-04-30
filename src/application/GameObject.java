@@ -28,7 +28,7 @@ public class GameObject extends InputFunctions{
 	//String lvl1Set3 = "0001100";
 	//String lvl1Set1 = "0"; //Test version
 	//String lvl1Set2 = "0"; //Test version
-	String lvl1ESet = "00100010300425020501210001000251000222"; //Enemy set
+	String lvl1ESet = "0010000031042502050121000100025100022"; //Enemy set
 	String lvl1GSet1 = "11111001110111111111111111011111111111011";
 
 	String lvl1OSet = "0100000000100000010000000000001000300000"; //Obstacle set, Make sure these dont clip into platforms .
@@ -116,14 +116,16 @@ public class GameObject extends InputFunctions{
 //		System.out.println(mainGuy.getLives());
 //		System.out.println(mainGuy.getDead());
 //		System.out.println(mainGuy.gety());
-		System.out.println(StateManager.gameState);
+		/*System.out.println(StateManager.gameState);
 		System.out.println(mainGuy.gety());
-		System.out.println(mainGuy.getx());
+		System.out.println(mainGuy.getx());*/
 		
 		checkCollision(mainGuy);
 		
 		if (!mainGuy.getDead())
 			mainGuy.dead();
+		else
+			StateManager.gameState = State.YOUDIED;
 
 		//If mainGuy is not touching top of platform, he must be jumping/falling
 		if(!mainGuy.getCollide())
@@ -202,6 +204,10 @@ public class GameObject extends InputFunctions{
 			{
 				//Player got hit, go to game over screen or whatever. For now, change the enemy's color.
 				eList.get(x).getCharacter().setFill(Color.YELLOW);
+				mainGuy.setDead(true);
+				eList.get(x).getCharacter().setCenterY(-1000);
+				eList.remove(x);
+				mainGuy.setdx(0);
 			}
 			else
 				eList.get(x).getCharacter().setFill(eList.get(x).getColor());
@@ -313,21 +319,22 @@ public class GameObject extends InputFunctions{
 		//2 is a jumping enemy
 		//3 Is a normal enemy on a platform
 		Group enemyGroup = new Group();
+		int tileSize = 90;
 		for(int x = 0; x < eSet.length(); x++)
 		{
 			if(eSet.charAt(x) == '1')
 			{
-				eList.add(new Enemies(250+x*90,groundLevel-20,20,Color.MAGENTA));
+				eList.add(new Enemies(250+x*tileSize,groundLevel-20,20,Color.MAGENTA));
 			}
 			else if(eSet.charAt(x) == '2')
 			{
-				eList.add(new Enemies(250+x*90,groundLevel-20,20,Color.BLUE));
+				eList.add(new Enemies(250+x*tileSize,groundLevel-20,20,Color.BLUE));
 			}
 			else if(eSet.charAt(x) >= '3' && eSet.charAt(x) <= '9')
 			{
 				//Starting at 3, spawn enemy on platforms. To match the platform height, multiply the string value-2 by 45 and subtract that by
 				//The ground level, groundLevel. Finally, substract in an offset of 20 to account for the circle's bottom.
-				eList.add(new Enemies(250+(1+x)*90,
+				eList.add(new Enemies(250+(1+x)*tileSize,
 						groundLevel-(45+20)-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA));
 			}
 		}
@@ -342,19 +349,35 @@ public class GameObject extends InputFunctions{
 	public Group spawnGround(String lvl, int offsetX, int offsetY, Color c, Color cTop, ArrayList<Obstacle> gList) 
 	{
 		Group groundG = new Group();
+		int tileSize = 90; //Changed from 100 because everything else is 90
+		int offset = 250;
+		//Spawn some ground behind the player
+		Obstacle g0 = new Obstacle(tileSize, groundLevel-50, c, cTop);
+		Obstacle g1 = new Obstacle(tileSize, groundLevel-50, c, cTop);
+		
+		gList.add(g0);
+		gList.add(g1);
+		groundG.getChildren().add(g0.getPlat());
+		groundG.getChildren().add(g0.getPlatTop());
+		groundG.getChildren().add(g1.getPlat());
+		groundG.getChildren().add(g1.getPlatTop());
+		
+		g0.setX(offset-2*tileSize);
+		g0.setY(groundLevel);
+		g1.setX(offset-1*tileSize);
+		g1.setY(groundLevel);
 		for(int i = 0; i < lvl.length(); i++) {
 			if(lvl.charAt(i) != '0') {
-				Obstacle g = new Obstacle(100, groundLevel-50, c, cTop);
+				Obstacle g = new Obstacle(tileSize, groundLevel-50, c, cTop);
 				gList.add(g);
 				groundG.getChildren().add(g.getPlat());
 				groundG.getChildren().add(g.getPlatTop());
 
-				g.setX(100*i);
+				g.setX(offset+tileSize*i);
 				g.setY(groundLevel);
 			}
 		}
 		return groundG;
-
 	}
 
 	public Group spawnPlatforms(String lvl, int offsetX, int offsetY, Color c, Color cTop, ArrayList<Obstacle> pList) 
@@ -498,14 +521,16 @@ public class GameObject extends InputFunctions{
 	//Method for enemies to turn around if they are next to a hole.
 	public void groundCheck(Enemies e, String holes)
 	{
+		int tileSize = 90;
+		int offset = 250;
 		for(int x = 0; x < holes.length(); x++)
 		{
 			if(holes.charAt(x) == '0')
 			{
-				double holeRight = 100*(x+1);
-				double holeLeft = 100*x;
-				double offset = 15;
-				if(e.getx() >= holeLeft-offset && e.getx() <= holeRight+offset && e.getColor() != Color.DARKMAGENTA)
+				double holeRight = offset+tileSize*(x+1);
+				double holeLeft = offset+tileSize*x;
+				double proximity = 15;
+				if(e.getx() >= holeLeft-proximity && e.getx() <= holeRight+proximity && e.getColor() != Color.DARKMAGENTA)
 				{
 					e.swapDir();
 					break;
