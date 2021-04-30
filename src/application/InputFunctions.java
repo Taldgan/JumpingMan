@@ -39,6 +39,11 @@ public class InputFunctions {
 				character.jumping = true;
 			}
 		}
+		
+		//temporary
+		if (key == KeyCode.W) {
+			character.setdy(-5);
+		}
 	}
 	
 	public void keyReleased(KeyEvent event, Character character) {

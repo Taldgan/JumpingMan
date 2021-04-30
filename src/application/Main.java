@@ -23,7 +23,8 @@ public class Main extends Application {
 
 				@Override
 				public void handle(long arg0) {
-					if(StateManager.gameState != State.MAINMENU && StateManager.gameState != State.PAUSE) {
+					//game.update();
+					if(StateManager.gameState != State.MAINMENU && StateManager.gameState != State.PAUSE && StateManager.gameState != State.YOUDIED && StateManager.gameState != State.GAMEOVER) {
 						game.update();
 						try {
 							if(!gameLoaded) {
@@ -45,7 +46,14 @@ public class Main extends Application {
 						}
 						menuLoaded = true;
 						gameLoaded = false;
-					}
+					} /*else if (game.mainGuy.getDead()) {
+						try {
+							game.render(primaryStage);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}*/
 						
 				}
 			};

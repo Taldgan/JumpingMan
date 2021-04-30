@@ -18,6 +18,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class GameObject extends InputFunctions{
+	
+	@FXML Label livesRemaining;
 	//Ground Level
 	int groundLevel = 700;
 	//String locations/types
@@ -63,9 +65,12 @@ public class GameObject extends InputFunctions{
 	BorderPane root;
 	Scene menuScene;
 	Scene gameScene;
-
+	Scene deadScene;
+	Scene gameOverScene;
+	
 	//Etc
-	Character mainGuy = new Character(250, groundLevel-25, 20, Color.RED);
+	int spawnX = 250, spawnY = groundLevel - 25;
+	Character mainGuy = new Character(spawnX, spawnY, 20, Color.RED);
 	Group group = new Group(theVoid, background, groundSet1, mainGuy.getCharacter(), e1, platformSet1, platformSet2, obstacleSet1);
 	
 	Label pauseLabel = new Label("PAUSED\n(Q)UIT");
@@ -76,6 +81,8 @@ public class GameObject extends InputFunctions{
 
 	public GameObject() {
 
+		
+		//livesRemaining.setText("test");
 		StateManager.gameState = State.MAINMENU;
 		
 		pauseLabel.setTranslateY(groundLevel-400);
@@ -106,8 +113,17 @@ public class GameObject extends InputFunctions{
 	}
 
 	public void update() {
+//		System.out.println(mainGuy.getLives());
+//		System.out.println(mainGuy.getDead());
+//		System.out.println(mainGuy.gety());
+		System.out.println(StateManager.gameState);
+		System.out.println(mainGuy.gety());
+		System.out.println(mainGuy.getx());
+		
 		checkCollision(mainGuy);
-		mainGuy.dead();
+		
+		if (!mainGuy.getDead())
+			mainGuy.dead();
 
 		//If mainGuy is not touching top of platform, he must be jumping/falling
 		if(!mainGuy.getCollide())
@@ -139,6 +155,7 @@ public class GameObject extends InputFunctions{
 			//group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
 			mainGuy.move();
 		}
+		
 
 		//=====================================================
 		//Update enemies
@@ -201,15 +218,30 @@ public class GameObject extends InputFunctions{
 		checkCollision(mainGuy);
 	}
 
+	@FXML public void mainMenu(ActionEvent e) {
+		StateManager.gameState = State.MAINMENU;
+	}
+	
 	@FXML 
 	public void newGame(ActionEvent event) {
+
+		
+		mainGuy.setDead(false);
+
 		StateManager.gameState = State.LEVEL1;
 		StateManager.currLevel = State.LEVEL1;
-		try {
+		/*try {
 			render((Stage) ((Node) event.getSource()).getScene().getWindow());
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
+		} */
+	}
+	
+	@FXML public void playAgain(ActionEvent e) {
+		StateManager.gameState = State.LEVEL1;
+		StateManager.currLevel = State.LEVEL1;
+		
+		mainGuy.setDead(false);
 	}
 
 	@FXML
@@ -217,38 +249,48 @@ public class GameObject extends InputFunctions{
 		System.exit(0);
 	}
 
-public void render(Stage primaryStage) throws IOException {
-	Parent view;
-	switch(StateManager.gameState) {
-		case MAINMENU:
-			view = FXMLLoader.load(getClass().getResource("/application/MainMenu.fxml"));
-			this.menuScene = new Scene(view);
-			primaryStage.setScene(this.menuScene);
-			break;
-		case PAUSE:
-			//view = FXMLLoader.load(getClass().getResource("/application/PauseMenu.fxml"));
-			//this.menuScene = new Scene(view);
-			//primaryStage.setScene(this.menuScene);
-			pauseLabel.setTranslateX(mainGuy.getCharacter().getTranslateX()+450);
-			group.getChildren().add(pauseLabel);
-			break;
-		case LEVEL1:
-			this.root = new BorderPane(this.group);
-			root.setPrefSize(500, 500);
-			this.gameScene = new Scene(root);
-			if(group.getChildren().contains(pauseLabel))
-				group.getChildren().remove(pauseLabel);
-			primaryStage.setScene(this.gameScene);
-			break;
-		case LEVEL2:
-			break;
-		case YOUDIED:
-			break;
-		case YOUWON:
-			break;
+	public void render(Stage primaryStage) throws IOException {
+		Parent view;
+		switch(StateManager.gameState) {
+			case MAINMENU:
+				view = FXMLLoader.load(getClass().getResource("/application/MainMenu.fxml"));
+				this.menuScene = new Scene(view);
+				primaryStage.setScene(this.menuScene);
+				break;
+			case PAUSE:
+				//view = FXMLLoader.load(getClass().getResource("/application/PauseMenu.fxml"));
+				//this.menuScene = new Scene(view);
+				//primaryStage.setScene(this.menuScene);
+				pauseLabel.setTranslateX(mainGuy.getCharacter().getTranslateX()+450);
+				group.getChildren().add(pauseLabel);
+				break;
+			case LEVEL1:
+				//group.setManaged(false);
+				this.root = new BorderPane(this.group);
+				//root.setPrefSize(500, 500);
+				this.gameScene = new Scene(root);
+				if(group.getChildren().contains(pauseLabel))
+					group.getChildren().remove(pauseLabel);
+				primaryStage.setScene(this.gameScene);
+				break;
+			case LEVEL2:
+				break;
+			case YOUDIED:
+				view = FXMLLoader.load(getClass().getResource("/application/YouDied.fxml"));
+				this.deadScene = new Scene(view);
+				primaryStage.setScene(this.deadScene);
+				//livesRemaining.setText("" + mainGuy.getLives());
+				break;
+			case GAMEOVER:
+				view = FXMLLoader.load(getClass().getResource("/application/GameOver.fxml"));
+				this.gameOverScene = new Scene(view);
+				primaryStage.setScene(this.gameOverScene);
+				break;
+			case YOUWON:
+				break;
+		}
+		primaryStage.show();
 	}
-	primaryStage.show();
-}
 
 	public double calculate() {
 		double current = System.currentTimeMillis();
