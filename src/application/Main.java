@@ -11,8 +11,8 @@ public class Main extends Application {
 	    try {
 	    	GameObject game = new GameObject();
 	    	
-	    	game.processInput();
 	    	game.render(primaryStage);
+	    	game.processInput();
 	    	AnimationTimer timer = new AnimationTimer() {
 
 				@Override
