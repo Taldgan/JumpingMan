@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.scene.shape.Circle;
 
 public class GameObject extends InputFunctions{
 	
@@ -26,8 +27,6 @@ public class GameObject extends InputFunctions{
 	String lvl1Set1 = "0000000110020301030100100000203020010000001";
 	String lvl1Set2 = "000000002000400000002";
 	//String lvl1Set3 = "0001100";
-	//String lvl1Set1 = "0"; //Test version
-	//String lvl1Set2 = "0"; //Test version
 	String lvl1ESet = "0010000031042502050121000100025100022"; //Enemy set
 	String lvl1GSet1 = "11111001110111111111111111011111111111011";
 
@@ -59,7 +58,6 @@ public class GameObject extends InputFunctions{
 
 	//List of All Collidable Objects
 	ArrayList<Obstacle> allObs = new ArrayList<Obstacle>();
-
 
 	//Scenes
 	BorderPane root;
@@ -116,10 +114,10 @@ public class GameObject extends InputFunctions{
 //		System.out.println(mainGuy.getLives());
 //		System.out.println(mainGuy.getDead());
 //		System.out.println(mainGuy.gety());
-		/*System.out.println(StateManager.gameState);
+		/*System.out.println(StateManager.gameState);*/
+		System.out.println(mainGuy.getx());
 		System.out.println(mainGuy.gety());
-		System.out.println(mainGuy.getx());*/
-		
+		System.out.println("Main guy center y: "+mainGuy.getCharacter().getCenterY());
 		checkCollision(mainGuy);
 		
 		if (!mainGuy.getDead())
@@ -208,9 +206,15 @@ public class GameObject extends InputFunctions{
 				eList.get(x).getCharacter().setCenterY(-1000);
 				eList.remove(x);
 				mainGuy.setdx(0);
+
+				/*eList.get(x).sety(eList.get(x).gety()-75);
+				eList.get(x).getCharacter().setCenterY(eList.get(x).gety()-75);*/
 			}
 			else
+			{
 				eList.get(x).getCharacter().setFill(eList.get(x).getColor());
+			}
+				
 
 			//Check collision with obstacles/platforms
 			checkCollision(eList.get(x)); 
@@ -230,7 +234,6 @@ public class GameObject extends InputFunctions{
 	
 	@FXML 
 	public void newGame(ActionEvent event) {
-
 		
 		mainGuy.setDead(false);
 
@@ -262,6 +265,7 @@ public class GameObject extends InputFunctions{
 				view = FXMLLoader.load(getClass().getResource("/application/MainMenu.fxml"));
 				this.menuScene = new Scene(view);
 				primaryStage.setScene(this.menuScene);
+				Sounds.sPlayer.stopSong();
 				break;
 			case PAUSE:
 				//view = FXMLLoader.load(getClass().getResource("/application/PauseMenu.fxml"));
@@ -272,6 +276,7 @@ public class GameObject extends InputFunctions{
 				break;
 			case LEVEL1:
 				//group.setManaged(false);
+				Sounds.sPlayer.playSong(0);
 				this.root = new BorderPane(this.group);
 				//root.setPrefSize(500, 500);
 				this.gameScene = new Scene(root);
@@ -282,6 +287,8 @@ public class GameObject extends InputFunctions{
 			case LEVEL2:
 				break;
 			case YOUDIED:
+				Sounds.sPlayer.stopSong();
+				Sounds.sPlayer.playSFX(1);
 				view = FXMLLoader.load(getClass().getResource("/application/YouDied.fxml"));
 				this.deadScene = new Scene(view);
 				primaryStage.setScene(this.deadScene);
@@ -354,7 +361,6 @@ public class GameObject extends InputFunctions{
 		//Spawn some ground behind the player
 		Obstacle g0 = new Obstacle(tileSize, groundLevel-50, c, cTop);
 		Obstacle g1 = new Obstacle(tileSize, groundLevel-50, c, cTop);
-		
 		gList.add(g0);
 		gList.add(g1);
 		groundG.getChildren().add(g0.getPlat());
@@ -366,6 +372,8 @@ public class GameObject extends InputFunctions{
 		g0.setY(groundLevel);
 		g1.setX(offset-1*tileSize);
 		g1.setY(groundLevel);
+		
+		//Spawn ground based off of the passed in lvl string
 		for(int i = 0; i < lvl.length(); i++) {
 			if(lvl.charAt(i) != '0') {
 				Obstacle g = new Obstacle(tileSize, groundLevel-50, c, cTop);
