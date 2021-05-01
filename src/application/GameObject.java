@@ -20,35 +20,34 @@ import javafx.stage.Stage;
 public class GameObject extends InputFunctions{
 	//Ground Level
 	int groundLevel = 700;
+	int tileWidth = 125;
 	//String locations/types
-	String lvl1Set1 = "0000000110020301030100100000203020010000001";
-	String lvl1Set2 = "000000002000400000002";
-	//String lvl1Set3 = "0001100";
-	//String lvl1Set1 = "0"; //Test version
-	//String lvl1Set2 = "0"; //Test version
-	String lvl1ESet = "00100010300425020501210001000251000222"; //Enemy set
-	String lvl1GSet1 = "11111001110111111111111111011111111111011";
-
-	String lvl1OSet = "0100000000100000010000000000001000300000"; //Obstacle set, Make sure these dont clip into platforms .
+	String lvl1Set1 =  "0000000000000000000000000000000000000000000";
+	String lvl1Set2 =  "0000000000000000000000000000000000000000000";
+	String lvl1GSet1 = "1111111111111111111111111111111111111111111";
+	String lvl1ESet =  "0000000000000000000000000000000000000000000"; //Enemies
+	String lvl1OSet =  "0000000000000000000000000000000000000000000"; //Obstacles
 
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
-	Rectangle background = new Rectangle(4000, 1200, Color.LIGHTSKYBLUE);
+	Rectangle background = new Rectangle(lvl1GSet1.length()*tileWidth, 1200, Color.LIGHTSKYBLUE);
 
-	//Enemy vars
-	ArrayList<Enemies> eList = new ArrayList<Enemies>();
-	Group e1 = spawnEnemies(lvl1ESet);
 
 	//Ground Vars
 	ArrayList<Obstacle> gList = new ArrayList<Obstacle>();
+	ArrayList<Integer> gListOffsets = new ArrayList<Integer>();
 
 	//Platform vars
 	ArrayList<Obstacle> pList1 = new ArrayList<Obstacle>();
 	ArrayList<Obstacle> pList2 = new ArrayList<Obstacle>();
 	ArrayList<Obstacle> pList3 = new ArrayList<Obstacle>();
 
+	Group groundSet1 = spawnGround(lvl1GSet1, 0, 0,  Color.SADDLEBROWN, Color.GREEN, gList);
 	Group platformSet1 = spawnPlatforms(lvl1Set1,0,0,Color.SADDLEBROWN, Color.GREEN, pList1);
 	Group platformSet2 = spawnPlatforms(lvl1Set2,-50,50, Color.SADDLEBROWN, Color.GREEN, pList2);
-	Group groundSet1 = spawnGround(lvl1GSet1, 0, 0,  Color.SADDLEBROWN, Color.GREEN, gList);
+
+	//Enemy vars
+	ArrayList<Enemies> eList = new ArrayList<Enemies>();
+	Group e1 = spawnEnemies(lvl1ESet);
 
 	//Obstacle vars
 	ArrayList<Obstacle> oList1 = new ArrayList<Obstacle>();
@@ -168,7 +167,7 @@ public class GameObject extends InputFunctions{
 			{
 				//Swap directions if they're about to move off of their platform. Platform size is 90 rn, so they move 70 pixels left or right
 				//then swap.
-				if(eList.get(x).getx() >= eList.get(x).getInitialX()+70 || eList.get(x).getx() <= eList.get(x).getInitialX()-70)
+				if(eList.get(x).getx() >= eList.get(x).getInitialX()+tileWidth-20 || eList.get(x).getx() <= eList.get(x).getInitialX()-tileWidth)
 				{
 					eList.get(x).swapDir();
 					eList.get(x).setInitialX(eList.get(x).getx());
@@ -271,23 +270,30 @@ public void render(Stage primaryStage) throws IOException {
 		//2 is a jumping enemy
 		//3 Is a normal enemy on a platform
 		Group enemyGroup = new Group();
+		int groundOffset;
 		for(int x = 0; x < eSet.length(); x++)
 		{
+			groundOffset = gListOffsets.get(x);
 			if(eSet.charAt(x) == '1')
 			{
-				eList.add(new Enemies(250+x*90,groundLevel-20,20,Color.MAGENTA));
+				eList.add(new Enemies(x*tileWidth,groundLevel-groundOffset-20,20,Color.MAGENTA));
 			}
 			else if(eSet.charAt(x) == '2')
 			{
-				eList.add(new Enemies(250+x*90,groundLevel-20,20,Color.BLUE));
+				eList.add(new Enemies(x*tileWidth,groundLevel-groundOffset-20,20,Color.BLUE));
 			}
-			else if(eSet.charAt(x) >= '3' && eSet.charAt(x) <= '9')
-			{
+			else if(eSet.charAt(x) >= '3' && eSet.charAt(x) <= '9') {
+				eList.add(new Enemies(x*tileWidth, groundLevel-groundOffset-20-45-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA));
+			}
+
+			//else if(eSet.charAt(x) >= '3' && eSet.charAt(x) <= '9')
+			//{
 				//Starting at 3, spawn enemy on platforms. To match the platform height, multiply the string value-2 by 45 and subtract that by
-				//The ground level, groundLevel. Finally, substract in an offset of 20 to account for the circle's bottom.
-				eList.add(new Enemies(250+(1+x)*90,
-						groundLevel-(45+20)-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA));
-			}
+				//The ground level, groundLevel, groundLevel offset gListOffsets.get(x). 
+				//Finally, substract in an offset of 20 to account for the circle's bottom.
+				//eList.add(new Enemies((1+x)*tileWidth,
+						//groundLevel-groundOffset-(45+20)-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA));
+			//}
 		}
 		for(int x = 0; x < eList.size(); x++)
 		{
@@ -299,17 +305,26 @@ public void render(Stage primaryStage) throws IOException {
 
 	public Group spawnGround(String lvl, int offsetX, int offsetY, Color c, Color cTop, ArrayList<Obstacle> gList) 
 	{
+		int gOffset;
 		Group groundG = new Group();
 		for(int i = 0; i < lvl.length(); i++) {
+			gOffset = 0;
 			if(lvl.charAt(i) != '0') {
-				Obstacle g = new Obstacle(100, groundLevel-50, c, cTop);
+				Obstacle g = new Obstacle(tileWidth, groundLevel-50, c, cTop);
 				gList.add(g);
 				groundG.getChildren().add(g.getPlat());
 				groundG.getChildren().add(g.getPlatTop());
 
-				g.setX(100*i);
-				g.setY(groundLevel);
+				g.setX(tileWidth*i);
+				int offsetVal = Integer.parseInt(String.valueOf(lvl.charAt(i)));
+				if(offsetVal > 1) {
+					gOffset = 60*Integer.parseInt(String.valueOf(lvl.charAt(i)));
+					g.setY(groundLevel-gOffset);
+				}
+				else
+					g.setY(groundLevel);
 			}
+			gListOffsets.add(gOffset);
 		}
 		return groundG;
 
@@ -330,13 +345,13 @@ public void render(Stage primaryStage) throws IOException {
 				//Spawn platform based off of char's location in string
 				//Each char will be 90 pixels of space, and will spawn at a height of 265-(y*45)
 
-				Obstacle r = new Obstacle(90,25,c, cTop); //Platforms are 90x25
+				Obstacle r = new Obstacle((int) (tileWidth),25,c, cTop); //Platforms are 90x25
 				pList.add(r);
 				platG.getChildren().add(r.getPlat());
 				platG.getChildren().add(r.getPlatTop());
 
-				r.setX(250+90*x+offsetX);
-				r.setY(groundLvlOffset+Integer.parseInt(String.valueOf(lvl.charAt(x)))*45*-1-offsetY);
+				r.setX(tileWidth*x+offsetX);
+				r.setY(groundLvlOffset-gListOffsets.get(x)+Integer.parseInt(String.valueOf(lvl.charAt(x)))*45*-1-offsetY);
 			}
 		}
 		return platG;
@@ -350,8 +365,8 @@ public void render(Stage primaryStage) throws IOException {
 			if(lvl.charAt(x) != '0') //If the current char is not 0, create a platform in that spot.
 			{
 				Obstacle o = new Obstacle(sizeX,sizeY, c);
-				o.setX(250+90*x);
-				o.setY(groundLevel-(Integer.parseInt(String.valueOf(lvl.charAt(x))))*sizeY);
+				o.setX(tileWidth*x);
+				o.setY(groundLevel-gListOffsets.get(x)-(Integer.parseInt(String.valueOf(lvl.charAt(x))))*sizeY);
 				oList.add(o);
 				obsGroup.getChildren().add(o.getPlat());
 			}
@@ -460,8 +475,8 @@ public void render(Stage primaryStage) throws IOException {
 		{
 			if(holes.charAt(x) == '0')
 			{
-				double holeRight = 100*(x+1);
-				double holeLeft = 100*x;
+				double holeRight = tileWidth*(x+1);
+				double holeLeft = tileWidth*x;
 				double offset = 15;
 				if(e.getx() >= holeLeft-offset && e.getx() <= holeRight+offset && e.getColor() != Color.DARKMAGENTA)
 				{
