@@ -20,17 +20,16 @@ import javafx.stage.Stage;
 public class GameObject extends InputFunctions{
 	//Ground Level
 	int groundLevel = 700;
-	int tileWidth = 200;
+	int tileWidth = 125;
 	//String locations/types
-	String lvl1Set1 =  "0000000110020301030100100000203020010000001";
-	String lvl1Set2 =  "0000000020004000000020000000000000000000000";
-	String lvl1ESet =  "0000010001030042502050121000100025100022200"; //Enemy set
-	String lvl1GSet1 = "1111000111011111111111111101111111111101100";
-
-	String lvl1OSet =  "0000100000000100000010000000000001000300000"; //Obstacle set, Make sure these dont clip into platforms .
+	String lvl1Set1 =  "0000000000000000000000000000000000000000000";
+	String lvl1Set2 =  "0000000000000000000000000000000000000000000";
+	String lvl1GSet1 = "1111111111111111111111111111111111111111111";
+	String lvl1ESet =  "0000000000000000000000000000000000000000000"; //Enemies
+	String lvl1OSet =  "0000000000000000000000000000000000000000000"; //Obstacles
 
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
-	Rectangle background = new Rectangle(4000, 1200, Color.LIGHTSKYBLUE);
+	Rectangle background = new Rectangle(lvl1GSet1.length()*tileWidth, 1200, Color.LIGHTSKYBLUE);
 
 
 	//Ground Vars
@@ -167,7 +166,7 @@ public class GameObject extends InputFunctions{
 			{
 				//Swap directions if they're about to move off of their platform. Platform size is 90 rn, so they move 70 pixels left or right
 				//then swap.
-				if(eList.get(x).getx() >= eList.get(x).getInitialX()+70 || eList.get(x).getx() <= eList.get(x).getInitialX()-70)
+				if(eList.get(x).getx() >= eList.get(x).getInitialX()+tileWidth-20 || eList.get(x).getx() <= eList.get(x).getInitialX()-tileWidth)
 				{
 					eList.get(x).swapDir();
 					eList.get(x).setInitialX(eList.get(x).getx());
@@ -282,10 +281,15 @@ public void render(Stage primaryStage) throws IOException {
 			{
 				eList.add(new Enemies(x*tileWidth,groundLevel-groundOffset-20,20,Color.BLUE));
 			}
+			else if(eSet.charAt(x) >= '3' && eSet.charAt(x) <= '9') {
+				eList.add(new Enemies(x*tileWidth, groundLevel-groundOffset-20-45-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA));
+			}
+
 			//else if(eSet.charAt(x) >= '3' && eSet.charAt(x) <= '9')
 			//{
 				//Starting at 3, spawn enemy on platforms. To match the platform height, multiply the string value-2 by 45 and subtract that by
-				//The ground level, groundLevel. Finally, substract in an offset of 20 to account for the circle's bottom.
+				//The ground level, groundLevel, groundLevel offset gListOffsets.get(x). 
+				//Finally, substract in an offset of 20 to account for the circle's bottom.
 				//eList.add(new Enemies((1+x)*tileWidth,
 						//groundLevel-groundOffset-(45+20)-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA));
 			//}
@@ -313,7 +317,7 @@ public void render(Stage primaryStage) throws IOException {
 				g.setX(tileWidth*i);
 				int offsetVal = Integer.parseInt(String.valueOf(lvl.charAt(i)));
 				if(offsetVal > 1) {
-					gOffset = 40*Integer.parseInt(String.valueOf(lvl.charAt(i)));
+					gOffset = 60*Integer.parseInt(String.valueOf(lvl.charAt(i)));
 					g.setY(groundLevel-gOffset);
 				}
 				else

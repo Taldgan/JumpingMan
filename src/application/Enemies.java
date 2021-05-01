@@ -16,7 +16,7 @@ public class Enemies extends Character implements Collidable
 		super(x, y, size, color);
 		initialX = x;
 		initialY = y;
-		dir = true;
+		dir = false;
 		isCollidable = true;
 		initColor = color;
 	}
