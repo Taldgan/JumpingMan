@@ -41,7 +41,6 @@ public class Main extends Application {
 						try {
 							game.render(primaryStage);
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						menuLoaded = true;
