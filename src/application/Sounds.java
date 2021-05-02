@@ -53,6 +53,7 @@ public class Sounds
     		sfx.start();
     		//soundEffect.loop(Clip.LOOP_CONTINUOUSLY);
     	}
+
 	}
 	
 	public void playSong(int num)

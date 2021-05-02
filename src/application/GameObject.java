@@ -7,7 +7,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -24,7 +23,7 @@ public class GameObject extends InputFunctions{
 	int groundLevel = 700;
 	int tileWidth = 125;
 	//String locations/types
-	String lvl1Set1 =  "0000000000000000000000000000000000000000000";
+	String lvl1Set1 =  "0009000000000000000000000000000000000000000";
 	String lvl1Set2 =  "0000000000000000000000000000000000000000000";
 	String lvl1GSet1 = "1110111111111111111111111111111111111111111";
 	String lvl1ESet =  "0000111000000000000000000000000000000000000"; //Enemies
@@ -371,7 +370,7 @@ public class GameObject extends InputFunctions{
 		double groundLvlOffset = groundLevel-45;
 		for(int x = 0; x < lvl.length();x++)
 		{
-			if(lvl.charAt(x) != '0') //If the current char is not 0, create a platform in that spot.
+			if(lvl.charAt(x) != '0' && lvl.charAt(x) != '9') //If the current char is not 0, create a platform in that spot.
 			{
 				//Spawn platform based off of char's location in string
 				//Each char will be 90 pixels of space, and will spawn at a height of 265-(y*45)
@@ -383,6 +382,16 @@ public class GameObject extends InputFunctions{
 
 				r.setX(tileWidth*x+offsetX);
 				r.setY(groundLvlOffset-gListOffsets.get(x)+Integer.parseInt(String.valueOf(lvl.charAt(x)))*45*-1-offsetY);
+			}
+			else if(lvl.charAt(x) == '9') { //For use for the victory platform
+				int width = tileWidth;
+				int height = 20;
+				Obstacle r = new Obstacle(width, height, Color.DARKSLATEGRAY, cTop);
+				pList.add(r);
+				platG.getChildren().add(r.getPlat());
+				
+				r.setX(tileWidth*x);
+				r.setY(groundLvlOffset-gListOffsets.get(x)-45);
 			}
 		}
 		return platG;
@@ -417,6 +426,9 @@ public class GameObject extends InputFunctions{
 		//Replaced with for:each, pList1.get(i) was getting tedious :P
 		for(Obstacle obstacle : allObs) {
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
+				//Win if on last obstacle
+				if(obstacle.getColor() == Color.DARKSLATEGRAY) //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
+					System.out.println("You win :^)");
 				//obstacle.getPlat().setFill(Color.CORAL);
 				double diff;
 				//On top of the platform
