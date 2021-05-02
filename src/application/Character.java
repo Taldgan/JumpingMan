@@ -5,6 +5,8 @@ import javafx.scene.shape.Circle;
 
 public class Character {
 
+	int lives;
+	static Boolean dead;
 	Boolean jumping, walking;
 	double dx, dy;
 	double x, y, minY = 280;
@@ -18,6 +20,8 @@ public class Character {
 	private boolean dir;
 	
 	public Character(double x, double y, double size, Color color) {
+		lives = 3;
+		dead = false;
 		jumping = false;
 		walking = false;
 		collide = false;
@@ -31,6 +35,20 @@ public class Character {
 		setSize(size);
 		setColor(color);
 		setCharacter(x, y, size, color);
+	}
+	
+	public void dead() {
+		
+		if (gety() > 800){
+			System.out.println("dead called");
+			setDead(true);
+			setLives(getLives() - 1);
+			if (getLives() < 0) {
+				StateManager.gameState = State.GAMEOVER;
+			} else {
+				StateManager.gameState = State.YOUDIED;
+			}
+		}
 	}
 	
 	public void move() {
@@ -192,5 +210,19 @@ public class Character {
 
 	public void setPrevTranslateY(double prevTranslateY) {
 		this.prevTranslateY = prevTranslateY;
+	}
+	
+	public void setLives(int lives) {
+		this.lives = lives;
+	}
+	public int getLives() {
+		return this.lives;
+	}
+	
+	public void setDead(Boolean dead) {
+		Character.dead = dead;
+	}
+	public Boolean getDead() {
+		return Character.dead;
 	}
 }

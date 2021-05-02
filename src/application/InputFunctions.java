@@ -14,26 +14,35 @@ public class InputFunctions {
 		KeyCode key = event.getCode();
 		
 		if (key == KeyCode.ESCAPE) {
-			System.exit(0);
+			if(StateManager.gameState == State.PAUSE) 
+				StateManager.gameState = StateManager.currLevel;
+			else
+				StateManager.gameState = State.PAUSE;
+
 		}
+		
+		if(key == KeyCode.Q && StateManager.gameState == State.PAUSE)
+			System.exit(0);
 
 		if ((key == KeyCode.RIGHT || key == KeyCode.L) && !character.getCollideRight()) {
 			character.setdx(5);
 			character.walking = true;
-			System.out.println("HERE3333");
 		}
 		if ((key == KeyCode.LEFT || key == KeyCode.H) && !character.getCollideLeft()) {
 			character.setdx(-5);
 			character.walking = true;
-			System.out.println("HERE222");
 		}
 		if (key == KeyCode.SPACE || key == KeyCode.UP || key == KeyCode.K) {
-			System.out.println("HERE");
 			if (!character.getJumping() || character.getCollide()) {
 				character.setGroundLvl(character.gety());
 				character.setdy(-5.5); //Changed from 5, to accomodate raising the platforms
 				character.jumping = true;
 			}
+		}
+		
+		//temporary
+		if (key == KeyCode.W) {
+			character.setdy(-5);
 		}
 	}
 	

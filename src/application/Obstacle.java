@@ -26,7 +26,7 @@ public class Obstacle implements Collidable {
 		this.height = h;
 		this.initColor = c;
 	}
-
+	
 	public boolean collide(double x, double y, double w, double h) {
 
 		if(!collidable) 
