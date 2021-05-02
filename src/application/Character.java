@@ -1,5 +1,6 @@
 package application;
 
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
@@ -37,7 +38,7 @@ public class Character {
 		setCharacter(x, y, size, color);
 	}
 	
-	public void dead() {
+	public void dead(Group group, int respawnX) {
 		if (gety() > 800 || dead){
 			System.out.println("dead called");
 			setDead(true);
@@ -47,7 +48,29 @@ public class Character {
 			}
 			else {
 				StateManager.gameState = State.YOUDIED;
-				this.dx = 0;
+				if (gety() > 800)
+				{
+					//If player fell down hole
+					if(getCharacter().getCenterY() > 250)
+					{
+						getCharacter().setCenterY(150);
+					}
+					else
+						getCharacter().setCenterY(getCharacter().getCenterY()-550);
+					setdy(0);
+					setdx(0);
+					/*mainGuy.getCharacter().setCenterX(mainGuy.getCharacter().getCenterX()-25);
+					mainGuy.setx(mainGuy.getx()-25);
+					group.setTranslateX(group.getTranslateX()+25);*/
+					sety(getCharacter().getCenterY());
+					double offset = getx() - respawnX;
+					System.out.println("Moving camera "+offset+" pixels");
+					System.out.println("Moving x from "+getx()+" to "+respawnX);
+					getCharacter().setCenterX(getCharacter().getCenterX()-offset);
+					setx(respawnX);
+					group.setTranslateX(group.getTranslateX()+(offset));
+				}
+				//this.dx = 0;
 			}
 		}
 	}

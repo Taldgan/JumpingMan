@@ -85,7 +85,6 @@ public class Sounds
 	    		played = true;
 	    	}
 		}
-		
 	}
 	
 	public void stopSong()
@@ -95,6 +94,5 @@ public class Sounds
 			song.stop();
 			played = false;
 		}
-			
 	}
 }

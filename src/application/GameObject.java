@@ -30,7 +30,6 @@ public class GameObject extends InputFunctions{
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
 	Rectangle background = new Rectangle(lvl1GSet1.length()*tileWidth, 1200, Color.LIGHTSKYBLUE);
 
-
 	//Ground Vars
 	ArrayList<Obstacle> gList = new ArrayList<Obstacle>();
 	ArrayList<Integer> gListOffsets = new ArrayList<Integer>();
@@ -63,15 +62,16 @@ public class GameObject extends InputFunctions{
 	Scene gameScene;
 	Scene deadScene;
 	Scene gameOverScene;
-
+		
 	//Etc
 	int spawnX = 250, spawnY = groundLevel-25;
 	Character mainGuy = new Character(spawnX, spawnY, 20, Color.RED);
-	Group group = new Group(theVoid, background, groundSet1, mainGuy.getCharacter(), e1, platformSet1, platformSet2, obstacleSet1);
-
+	
 	//Labels
 	Label pauseLabel = new Label("PAUSED\n(Q)UIT");
 	Label livesRemaining = new Label("Lives " + mainGuy.getLives());
+		
+	Group group = new Group(theVoid, background, groundSet1, mainGuy.getCharacter(), e1, platformSet1, platformSet2, obstacleSet1);
 
 	double lastTime = System.currentTimeMillis();
 	double delta;
@@ -115,8 +115,9 @@ public class GameObject extends InputFunctions{
 
 	public void update() {
 
-		mainGuy.dead();
-
+		if(mainGuy.getDead() || mainGuy.gety() > 800)
+			mainGuy.dead(group,findNearestHole(lvl1GSet1));
+		System.out.println("Main guy x: "+mainGuy.getx()+ ", Main guy centerx: "+mainGuy.getCharacter().getCenterX());
 		//If mainGuy is not touching top of platform, he must be jumping/falling
 		if(!mainGuy.getCollide())
 			mainGuy.setJumping(true);
@@ -197,10 +198,16 @@ public class GameObject extends InputFunctions{
 			{
 				//Player got hit, go to game over screen or whatever. For now, change the enemy's color.
 				eList.get(x).getCharacter().setFill(Color.YELLOW);
-				mainGuy.setDead(true);
+				/*mainGuy.setDead(true);
 				eList.get(x).getCharacter().setCenterY(-1000);
 				eList.remove(x);
-				mainGuy.setdx(0);
+				mainGuy.setdx(0);*/
+				//System.out.println("Center x1: "+mainGuy.getCharacter().getCenterX());
+				//System.out.println("actual x1: "+mainGuy.getx());
+
+				//System.out.println("Center x2: "+mainGuy.getCharacter().getCenterX());
+				//System.out.println("actual x2: "+mainGuy.getx());
+				
 			}
 			else
 				eList.get(x).getCharacter().setFill(eList.get(x).getColor());
@@ -280,6 +287,7 @@ public class GameObject extends InputFunctions{
 			primaryStage.setScene(this.deadScene);
 			break;
 		case GAMEOVER:
+			Sounds.sPlayer.stopSong();
 			view = FXMLLoader.load(getClass().getResource("/application/GameOver.fxml"));
 			this.gameOverScene = new Scene(view);
 			primaryStage.setScene(this.gameOverScene);
@@ -472,7 +480,7 @@ public class GameObject extends InputFunctions{
 					{
 						c.setx(c.getPrevX());
 						c.getCharacter().setTranslateX(mainGuy.getPrevTranslateX());
-						System.out.println("collide with left side of platform");
+						//System.out.println("collide with left side of platform");
 						group.setTranslateX(diff);
 					}
 					//Swap enemy direction when touching an obstacle.
@@ -491,7 +499,7 @@ public class GameObject extends InputFunctions{
 					{
 						c.setx(c.getPrevX());
 						c.getCharacter().setTranslateX(mainGuy.getPrevTranslateX());
-						System.out.println("collide with right side of platform");
+						//System.out.println("collide with right side of platform");
 						group.setTranslateX(diff);
 					}
 					else if(c.getColor() != Color.RED && obstacle.getColor() == null)
@@ -542,5 +550,22 @@ public class GameObject extends InputFunctions{
 				}
 			}
 		}
+	}
+	
+	public int findNearestHole(String holes)
+	{
+		int pos = (int)mainGuy.getx()/125-1; //position in string
+		System.out.println("pos: "+pos);
+		for(int x = pos; x >= 0; x--)
+		{
+			System.out.println(x+": current char: "+holes.charAt(x));
+			if(holes.charAt(x) != '0')
+			{
+				int spawnPoint = (x+1)*125-20;
+				System.out.println("Spawn found, "+holes.charAt(x)+" at "+ spawnPoint);
+				return spawnPoint;
+			}
+		}
+		return 250; //Should never reach here.
 	}
 }
