@@ -17,6 +17,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class GameObject extends InputFunctions{
+	
 	//Ground Level
 	int groundLevel = 700;
 	int tileWidth = 125;
@@ -232,6 +233,7 @@ public class GameObject extends InputFunctions{
 			e.printStackTrace();
 		} 
 		 */
+		//mainGuy.startTime();
 	}
 
 	@FXML
@@ -239,6 +241,7 @@ public class GameObject extends InputFunctions{
 		StateManager.gameState = State.LEVEL1;
 		StateManager.currLevel = State.LEVEL1;
 		mainGuy.setDead(false);
+		//mainGuy.startTime();
 	}
 
 	@FXML
@@ -438,8 +441,11 @@ public class GameObject extends InputFunctions{
 		for(Obstacle obstacle : allObs) {
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
 				//Win if on last obstacle
-				if(obstacle.getColor() == Color.DARKSLATEGRAY) //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
+				if(obstacle.getColor() == Color.DARKSLATEGRAY) { //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
 					System.out.println("You win :^)");
+//					score.stop(mainGuy.getLives());
+//					System.out.println("Score: " + score.calculateScore(mainGuy.getLives()));
+				}
 				//obstacle.getPlat().setFill(Color.CORAL);
 				double diff;
 				//On top of the platform

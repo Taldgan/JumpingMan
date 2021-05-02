@@ -19,6 +19,9 @@ public class Character {
 	double radius;
 	private boolean dir;
 	
+	int test;
+	Score score = new Score();
+	
 	public Character(double x, double y, double size, Color color) {
 		lives = 3;
 		dead = false;
@@ -39,10 +42,11 @@ public class Character {
 	
 	public void dead() {
 		if (gety() > 800 || dead){
-			System.out.println("dead called");
+			score.stop(getLives());
+			System.out.println("Score: " + score.calculateScore(getLives()));
 			setDead(true);
 			setLives(getLives() - 1);
-			if(getLives() < 0) {
+			if(getLives() < 1) {
 				StateManager.gameState = State.GAMEOVER;
 			}
 			else {
@@ -50,6 +54,18 @@ public class Character {
 				this.dx = 0;
 			}
 		}
+		
+		// this causes the start to time continually reset
+		// (start time will not be equal to time when actually started)
+		// but calling the below method startTime in newGame and playAgain
+		//  doesnt allow you to die twice (no fucking clue why)
+		if (!getDead()) {
+			score.start(getLives());
+		}
+	}
+	
+	public void startTime() {
+		score.start(getLives());
 	}
 	
 	public void move() {
@@ -222,10 +238,10 @@ public class Character {
 	}
 	
 	public void setDead(Boolean dead) {
-		this.dead = dead;
+		Character.dead = dead;
 	}
 	
 	public Boolean getDead() {
-		return this.dead;
+		return Character.dead;
 	}
 }
