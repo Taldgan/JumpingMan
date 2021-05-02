@@ -18,14 +18,16 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class GameObject extends InputFunctions{
+	@FXML
+	Label livesRemaining;
 	//Ground Level
 	int groundLevel = 700;
 	int tileWidth = 125;
 	//String locations/types
 	String lvl1Set1 =  "0000000000000000000000000000000000000000000";
 	String lvl1Set2 =  "0000000000000000000000000000000000000000000";
-	String lvl1GSet1 = "1111111111111111111111111111111111111111111";
-	String lvl1ESet =  "0000000000000000000000000000000000000000000"; //Enemies
+	String lvl1GSet1 = "1110111111111111111111111111111111111111111";
+	String lvl1ESet =  "0000111000000000000000000000000000000000000"; //Enemies
 	String lvl1OSet =  "0000000000000000000000000000000000000000000"; //Obstacles
 
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
@@ -62,11 +64,14 @@ public class GameObject extends InputFunctions{
 	BorderPane root;
 	Scene menuScene;
 	Scene gameScene;
+	Scene deadScene;
+	Scene gameOverScene;
 
 	//Etc
-	Character mainGuy = new Character(250, groundLevel-25, 20, Color.RED);
+	int spawnX = 250, spawnY = groundLevel-25;
+	Character mainGuy = new Character(spawnX, spawnY, 20, Color.RED);
 	Group group = new Group(theVoid, background, groundSet1, mainGuy.getCharacter(), e1, platformSet1, platformSet2, obstacleSet1);
-	
+
 	Label pauseLabel = new Label("PAUSED\n(Q)UIT");
 
 	double lastTime = System.currentTimeMillis();
@@ -76,7 +81,7 @@ public class GameObject extends InputFunctions{
 	public GameObject() {
 
 		StateManager.gameState = State.MAINMENU;
-		
+
 		pauseLabel.setTranslateY(groundLevel-400);
 		pauseLabel.setFont(new Font("Arial", 30));
 
@@ -105,7 +110,7 @@ public class GameObject extends InputFunctions{
 	}
 
 	public void update() {
-		checkCollision(mainGuy);
+
 		mainGuy.dead();
 
 		//If mainGuy is not touching top of platform, he must be jumping/falling
@@ -184,6 +189,10 @@ public class GameObject extends InputFunctions{
 			{
 				//Player got hit, go to game over screen or whatever. For now, change the enemy's color.
 				eList.get(x).getCharacter().setFill(Color.YELLOW);
+				mainGuy.setDead(true);
+				eList.get(x).getCharacter().setCenterY(-1000);
+				eList.remove(x);
+				mainGuy.setdx(0);
 			}
 			else
 				eList.get(x).getCharacter().setFill(eList.get(x).getColor());
@@ -200,15 +209,29 @@ public class GameObject extends InputFunctions{
 		checkCollision(mainGuy);
 	}
 
+	@FXML
+	public void mainMenu(ActionEvent e) {
+		StateManager.gameState = State.MAINMENU;
+	}
+
 	@FXML 
 	public void newGame(ActionEvent event) {
+		mainGuy.setDead(false);
 		StateManager.gameState = State.LEVEL1;
 		StateManager.currLevel = State.LEVEL1;
-		try {
+		/*try {
 			render((Stage) ((Node) event.getSource()).getScene().getWindow());
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
+		 */
+	}
+
+	@FXML
+	public void playAgain(ActionEvent e) {
+		StateManager.gameState = State.LEVEL1;
+		StateManager.currLevel = State.LEVEL1;
+		mainGuy.setDead(false);
 	}
 
 	@FXML
@@ -216,24 +239,22 @@ public class GameObject extends InputFunctions{
 		System.exit(0);
 	}
 
-public void render(Stage primaryStage) throws IOException {
-	Parent view;
-	switch(StateManager.gameState) {
+	public void render(Stage primaryStage) throws IOException {
+		Parent view;
+		switch(StateManager.gameState) {
 		case MAINMENU:
 			view = FXMLLoader.load(getClass().getResource("/application/MainMenu.fxml"));
 			this.menuScene = new Scene(view);
 			primaryStage.setScene(this.menuScene);
+			Sounds.sPlayer.stopSong();
 			break;
 		case PAUSE:
-			//view = FXMLLoader.load(getClass().getResource("/application/PauseMenu.fxml"));
-			//this.menuScene = new Scene(view);
-			//primaryStage.setScene(this.menuScene);
 			pauseLabel.setTranslateX(mainGuy.getCharacter().getTranslateX()+450);
 			group.getChildren().add(pauseLabel);
 			break;
 		case LEVEL1:
+			Sounds.sPlayer.playSong(0);
 			this.root = new BorderPane(this.group);
-			root.setPrefSize(500, 500);
 			this.gameScene = new Scene(root);
 			if(group.getChildren().contains(pauseLabel))
 				group.getChildren().remove(pauseLabel);
@@ -242,12 +263,22 @@ public void render(Stage primaryStage) throws IOException {
 		case LEVEL2:
 			break;
 		case YOUDIED:
+			Sounds.sPlayer.stopSong();
+			Sounds.sPlayer.playSFX(1);
+			view = FXMLLoader.load(getClass().getResource("/application/YouDied.fxml"));
+			this.deadScene = new Scene(view);
+			primaryStage.setScene(this.deadScene);
+			break;
+		case GAMEOVER:
+			view = FXMLLoader.load(getClass().getResource("/application/GameOver.fxml"));
+			this.gameOverScene = new Scene(view);
+			primaryStage.setScene(this.gameOverScene);
 			break;
 		case YOUWON:
 			break;
+		}
+		primaryStage.show();
 	}
-	primaryStage.show();
-}
 
 	public double calculate() {
 		double current = System.currentTimeMillis();
@@ -288,11 +319,11 @@ public void render(Stage primaryStage) throws IOException {
 
 			//else if(eSet.charAt(x) >= '3' && eSet.charAt(x) <= '9')
 			//{
-				//Starting at 3, spawn enemy on platforms. To match the platform height, multiply the string value-2 by 45 and subtract that by
-				//The ground level, groundLevel, groundLevel offset gListOffsets.get(x). 
-				//Finally, substract in an offset of 20 to account for the circle's bottom.
-				//eList.add(new Enemies((1+x)*tileWidth,
-						//groundLevel-groundOffset-(45+20)-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA));
+			//Starting at 3, spawn enemy on platforms. To match the platform height, multiply the string value-2 by 45 and subtract that by
+			//The ground level, groundLevel, groundLevel offset gListOffsets.get(x). 
+			//Finally, substract in an offset of 20 to account for the circle's bottom.
+			//eList.add(new Enemies((1+x)*tileWidth,
+			//groundLevel-groundOffset-(45+20)-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA));
 			//}
 		}
 		for(int x = 0; x < eList.size(); x++)
