@@ -24,7 +24,7 @@ public class GameObject extends InputFunctions{
 	//Ground Level
 	int groundLevel = 700;
 	//String locations/types
-	String lvl1Set1 = "0000000110020301030100100000203020010000001";
+	String lvl1Set1 = "00000001100203010301001000002030200100000019";
 	String lvl1Set2 = "000000002000400000002";
 	//String lvl1Set3 = "0001100";
 	String lvl1ESet = "0010000031042502050121000100025100022"; //Enemy set
@@ -398,7 +398,7 @@ public class GameObject extends InputFunctions{
 		double groundLvlOffset = groundLevel-45;
 		for(int x = 0; x < lvl.length();x++)
 		{
-			if(lvl.charAt(x) != '0') //If the current char is not 0, create a platform in that spot.
+			if(lvl.charAt(x) != '0' && lvl.charAt(x) != '9') //If the current char is not 0, create a platform in that spot.
 			{
 				//Spawn platform based off of char's location in string
 				//Each char will be 90 pixels of space, and will spawn at a height of 265-(y*45)
@@ -410,6 +410,19 @@ public class GameObject extends InputFunctions{
 
 				r.setX(250+90*x+offsetX);
 				r.setY(groundLvlOffset+Integer.parseInt(String.valueOf(lvl.charAt(x)))*45*-1-offsetY);
+			}
+			else if(lvl.charAt(x) == '9') //For use for the victory platform
+			{
+				int sizeX = 75;
+				int sizeY = 20;
+				//If you wanna change the color for the winning platform, then make sure to change it in the check collision method too
+				Obstacle r = new Obstacle(sizeX,sizeY,Color.DARKSLATEGRAY, cTop); //Platforms are 90x25
+				pList.add(r);
+				platG.getChildren().add(r.getPlat());
+				
+				//r.setX(250+90*x+50); //<- This is the proper formula to use, but i just stuck it at the beginning for testing purposes.
+				r.setX(500);
+				r.setY(groundLevel-sizeY-15);
 			}
 		}
 		return platG;
@@ -444,6 +457,11 @@ public class GameObject extends InputFunctions{
 		//Replaced with for:each, pList1.get(i) was getting tedious :P
 		for(Obstacle obstacle : allObs) {
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
+				//Win if on last obstacle
+				if(obstacle.getColor() == Color.DARKSLATEGRAY) //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
+				{
+					System.out.println("You Win :^)");
+				}
 				//obstacle.getPlat().setFill(Color.CORAL);
 				double diff;
 				//On top of the platform
