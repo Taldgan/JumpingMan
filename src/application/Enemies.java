@@ -11,7 +11,8 @@ public class Enemies extends Character implements Collidable
 	private Color initColor;
 	private double initialX;
 	private double initialY;
-	public Enemies(double x, double y, double size, Color color) 
+	private int zoneCode;
+	public Enemies(double x, double y, double size, Color color, int zoneC) 
 	{
 		super(x, y, size, color);
 		initialX = x;
@@ -19,6 +20,7 @@ public class Enemies extends Character implements Collidable
 		dir = true;
 		isCollidable = true;
 		initColor = color;
+		zoneCode = zoneC;
 	}
 
 	
@@ -111,6 +113,10 @@ public class Enemies extends Character implements Collidable
 	public double getInitY()
 	{
 		return initialY;
+	}
+	public int getZoneCode()
+	{
+		return zoneCode;
 	}
 
 }

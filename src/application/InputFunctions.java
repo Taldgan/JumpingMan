@@ -4,9 +4,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class InputFunctions {
-	
+	Sounds s;
 	public InputFunctions() {
-		
+		s = new Sounds();
 	}
 	
 	public void keyPressed (KeyEvent event, Character character) {
@@ -37,6 +37,7 @@ public class InputFunctions {
 				character.setGroundLvl(character.gety());
 				character.setdy(-5.5); //Changed from 5, to accomodate raising the platforms
 				character.jumping = true;
+				s.playSFX(0);
 			}
 		}
 		
