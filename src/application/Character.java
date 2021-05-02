@@ -45,8 +45,10 @@ public class Character {
 			if(getLives() < 0) {
 				StateManager.gameState = State.GAMEOVER;
 			}
-			else
+			else {
 				StateManager.gameState = State.YOUDIED;
+				this.dx = 0;
+			}
 		}
 	}
 	

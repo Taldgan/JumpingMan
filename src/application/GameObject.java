@@ -17,8 +17,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class GameObject extends InputFunctions{
-	@FXML
-	Label livesRemaining;
 	//Ground Level
 	int groundLevel = 700;
 	int tileWidth = 125;
@@ -71,7 +69,9 @@ public class GameObject extends InputFunctions{
 	Character mainGuy = new Character(spawnX, spawnY, 20, Color.RED);
 	Group group = new Group(theVoid, background, groundSet1, mainGuy.getCharacter(), e1, platformSet1, platformSet2, obstacleSet1);
 
+	//Labels
 	Label pauseLabel = new Label("PAUSED\n(Q)UIT");
+	Label livesRemaining = new Label("Lives " + mainGuy.getLives());
 
 	double lastTime = System.currentTimeMillis();
 	double delta;
@@ -81,8 +81,13 @@ public class GameObject extends InputFunctions{
 
 		StateManager.gameState = State.MAINMENU;
 
+		//Labels
 		pauseLabel.setTranslateY(groundLevel-400);
-		pauseLabel.setFont(new Font("Arial", 30));
+		pauseLabel.setFont(new Font("Blocky Font", 50));
+		
+		livesRemaining.setTranslateY(groundLevel - 700);
+		livesRemaining.setFont(new Font("Blocky Font", 40));
+		
 
 		group.setManaged(false);
 
@@ -206,6 +211,9 @@ public class GameObject extends InputFunctions{
 		//Update platforms, testing collision. Moved down to a method at the bottom so
 		//That enemies can also collide with objects.
 		checkCollision(mainGuy);
+
+		livesRemaining.setText("Lives " + mainGuy.getLives());
+		livesRemaining.setTranslateX(mainGuy.getCharacter().getTranslateX()+20);
 	}
 
 	@FXML
@@ -248,10 +256,13 @@ public class GameObject extends InputFunctions{
 			Sounds.sPlayer.stopSong();
 			break;
 		case PAUSE:
-			pauseLabel.setTranslateX(mainGuy.getCharacter().getTranslateX()+450);
+			pauseLabel.setTranslateX(mainGuy.getCharacter().getTranslateX()+400);
 			group.getChildren().add(pauseLabel);
 			break;
 		case LEVEL1:
+			livesRemaining.setTranslateX(mainGuy.getCharacter().getTranslateX());
+			if(!group.getChildren().contains(livesRemaining))
+				group.getChildren().add(livesRemaining);
 			Sounds.sPlayer.playSong(0);
 			this.root = new BorderPane(this.group);
 			this.gameScene = new Scene(root);
