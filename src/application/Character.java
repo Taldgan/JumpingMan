@@ -39,7 +39,7 @@ public class Character {
 	
 	public void dead() {
 		
-		if (gety() > 800){
+		if (gety() > 800 || dead){
 			System.out.println("dead called");
 			setDead(true);
 			setLives(getLives() - 1);

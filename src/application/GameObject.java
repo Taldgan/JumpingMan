@@ -118,13 +118,10 @@ public class GameObject extends InputFunctions{
 		System.out.println(mainGuy.getx());
 		System.out.println(mainGuy.gety());
 		System.out.println("Main guy center y: "+mainGuy.getCharacter().getCenterY());
-		checkCollision(mainGuy);
+		//checkCollision(mainGuy);
 		
-		if (!mainGuy.getDead())
-			mainGuy.dead();
-		else
-			StateManager.gameState = State.YOUDIED;
-
+		mainGuy.dead();
+		
 		//If mainGuy is not touching top of platform, he must be jumping/falling
 		if(!mainGuy.getCollide())
 			mainGuy.setJumping(true);
@@ -416,7 +413,7 @@ public class GameObject extends InputFunctions{
 				int sizeX = 75;
 				int sizeY = 20;
 				//If you wanna change the color for the winning platform, then make sure to change it in the check collision method too
-				Obstacle r = new Obstacle(sizeX,sizeY,Color.DARKSLATEGRAY, cTop); //Platforms are 90x25
+				Obstacle r = new Obstacle(sizeX,sizeY,Color.DARKSLATEGRAY, cTop);
 				pList.add(r);
 				platG.getChildren().add(r.getPlat());
 				
@@ -457,8 +454,8 @@ public class GameObject extends InputFunctions{
 		//Replaced with for:each, pList1.get(i) was getting tedious :P
 		for(Obstacle obstacle : allObs) {
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
-				//Win if on last obstacle
-				if(obstacle.getColor() == Color.DARKSLATEGRAY) //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
+				//Win if on win platform
+				if(obstacle.getColor() == Color.DARKSLATEGRAY && c.getColor() == Color.RED) //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
 				{
 					System.out.println("You Win :^)");
 				}
