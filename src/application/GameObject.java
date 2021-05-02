@@ -24,7 +24,7 @@ public class GameObject extends InputFunctions{
 	String lvl1Set1 =  "0000012030000000040400000090000000000000000";
 	String lvl1Set2 =  "0000000000000001005000000000000000000000000";
 	String lvl1GSet1 = "9110110000223234000033111111111111111111111";
-	String lvl1ESet =  "0000010050001110060600000000000000000000000"; //Enemies
+	String lvl1ESet =  "0000020050001210060600000000000000000000000"; //Enemies
 	String lvl1OSet =  "0000000000000000000000000000000000000000000"; //Obstacles
 
 	Rectangle theVoid = new Rectangle(5000, 5000, Color.BLACK);
@@ -312,21 +312,22 @@ public class GameObject extends InputFunctions{
 		//3 Is a normal enemy on a platform
 		Group enemyGroup = new Group();
 		int groundOffset;
+		int spawnOffset = 10;
 		for(int x = 0; x < eSet.length(); x++)
 		{
 			groundOffset = gListOffsets.get(x);
 			if(eSet.charAt(x) == '1')
 			{
-				eList.add(new Enemies(x*tileWidth+10,groundLevel-groundOffset-20,20,Color.MAGENTA, groundSet.charAt(x)));
+				eList.add(new Enemies(x*tileWidth+spawnOffset,groundLevel-groundOffset-20,20,Color.MAGENTA, groundSet.charAt(x),groundLevel));
 			}
 			else if(eSet.charAt(x) == '2')
 			{
-				eList.add(new Enemies(x*tileWidth,groundLevel-groundOffset-20,20,Color.BLUE, groundSet.charAt(x)));
+				eList.add(new Enemies(x*tileWidth+spawnOffset,groundLevel-groundOffset-20,20,Color.BLUE, groundSet.charAt(x),groundLevel));
 			}
 			else if(eSet.charAt(x) >= '3' && eSet.charAt(x) <= '9') {
 				eList.add(new Enemies((x+1)*tileWidth,
 						groundLevel-groundOffset-20-45-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA,
-						groundSet.charAt(x)));
+						groundSet.charAt(x),groundLevel));
 			}
 
 			//else if(eSet.charAt(x) >= '3' && eSet.charAt(x) <= '9')
@@ -491,7 +492,6 @@ public class GameObject extends InputFunctions{
 						c.setx(c.getPrevX());
 						c.getCharacter().setTranslateX(mainGuy.getPrevTranslateX());
 						System.out.println("collide with right side of platform");
-						System.out.println("Platform's color1: "+obstacle.getColor());
 						group.setTranslateX(diff);
 					}
 					else if(c.getColor() != Color.RED && obstacle.getColor() == null)

@@ -12,7 +12,8 @@ public class Enemies extends Character implements Collidable
 	private double initialX;
 	private double initialY;
 	private int zoneCode;
-	public Enemies(double x, double y, double size, Color color, int zoneC) 
+	private int groundLevel;
+	public Enemies(double x, double y, double size, Color color, int zoneC,int gl) 
 	{
 		super(x, y, size, color);
 		initialX = x;
@@ -21,6 +22,7 @@ public class Enemies extends Character implements Collidable
 		isCollidable = true;
 		initColor = color;
 		zoneCode = zoneC;
+		this.groundLevel = gl;
 	}
 
 	
@@ -54,7 +56,7 @@ public class Enemies extends Character implements Collidable
 			setJumping(true);
 			setdy(-3); //Up
 		}
-		if(gety() > 450) //Ground level
+		if(gety() > groundLevel) //Ground level
 		{
 			setJumping(false);
 			setdy(0);
@@ -117,6 +119,10 @@ public class Enemies extends Character implements Collidable
 	public int getZoneCode()
 	{
 		return zoneCode;
+	}
+	public int getGL()
+	{
+		return groundLevel;
 	}
 
 }
