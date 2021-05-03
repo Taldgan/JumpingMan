@@ -48,16 +48,18 @@ public class Score {
 	}
 	
 	public int calculateScore(int livesRemaining) {
-		if (livesRemaining == 3) {
-			return ((int) (live3stop.getTime() - live3start.getTime()))/1000;
-		} else if (livesRemaining == 2) {
-			return ((int) (live3stop.getTime() - live3start.getTime()) + 
-					(int)(live2stop.getTime() - live2start.getTime()))/1000;
+		if (livesRemaining == 2) {
+			return ((int) (live3stop.getTime() - live3start.getTime()))/1000;// + 
+					//(int)(live2stop.getTime() - live2start.getTime()))/1000;
 		} else if (livesRemaining == 1) {
+			return ((int) (live3stop.getTime() - live3start.getTime()) + 
+					(int)(live2stop.getTime() - live2start.getTime()))/1000;// +
+					//(int)(live1stop.getTime() - live1start.getTime()))/1000;
+		} else if (livesRemaining == 0) {
 			return ((int) (live3stop.getTime() - live3start.getTime()) + 
 					(int)(live2stop.getTime() - live2start.getTime()) +
 					(int)(live1stop.getTime() - live1start.getTime()))/1000;
-		}  else {
+		} else {
 			System.out.println("error getting score");
 			return 0;
 		}

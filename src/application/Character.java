@@ -68,6 +68,7 @@ public class Character {
 				}
 			}
 		}
+		System.out.println("Score: " + score.calculateScore(getLives()));
 	}
 
 	public void move() {
