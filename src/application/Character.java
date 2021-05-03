@@ -71,7 +71,6 @@ public class Character {
 		setx(this.character.getCenterX() + this.character.getTranslateX());
 		this.character.setTranslateY(this.character.getTranslateY() + getdy());
 		sety(this.character.getCenterY() + this.character.getTranslateY());
-		// the background game objects are scrolled accordingly in the GameObject class
 	}
 
 	public Circle getCharacter() {

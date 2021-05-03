@@ -17,6 +17,7 @@ public class Main extends Application {
 		primaryStage.setHeight(800);
 		primaryStage.setTitle("Jumping Man");
 		StateManager.gameState = State.MAINMENU;
+		StateManager.currentLevel = Level.LEVEL1;
 		try {
 			GameObject game = new GameObject();
 
@@ -24,7 +25,7 @@ public class Main extends Application {
 			AnimationTimer timer = new AnimationTimer() {
 				@Override
 				public void handle(long arg0) {
-					System.out.println("IN LOOP State: " + StateManager.gameState);
+					//System.out.println("IN LOOP State: " + StateManager.gameState);
 					if(StateManager.gameState == State.PLAYING) {
 						game.update();
 						if(!gameLoaded) {

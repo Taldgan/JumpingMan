@@ -1,59 +1,102 @@
 package application;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import javafx.scene.Group;
+import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 
 public class LevelManager {
 
 	//Level/Object Size integers
-	private static int groundLevel = 700;
-	private static int tileWidth = 125;
+	public static int groundLevel = 700;
+	public static int tileWidth = 125;
 	private static int obstacleWidth = 50;
 	private static int obstacleHeight = 50;
 
 	//Level Strings for Obstacle x/y locations in level
-	private static String groundString, lowerPlatString, upperPlatString, 
+	static String groundString, lowerPlatString, upperPlatString, 
 	obstacleString, enemyString; 
 
 	//Group vars, for altering level object positions
 	static Group ground, lowerPlatforms, upperPlatforms, level, obstacles, enemies;
 	
 	//List vars, lists of objects containing location data
-	static ArrayList<Obstacle> groundList = new ArrayList<Obstacle>();
-	static ArrayList<Integer> groundOffsets = new ArrayList<Integer>();
-	static ArrayList<Obstacle> lowerPlatList = new ArrayList<Obstacle>();
-	static ArrayList<Obstacle> upperPlatList = new ArrayList<Obstacle>();
-	static ArrayList<Obstacle> obstacleList = new ArrayList<Obstacle>();
-	static ArrayList<Obstacle> allObjects = new ArrayList<Obstacle>();
-	static ArrayList<Enemies> enemyList = new ArrayList<Enemies>();
-
+	static ArrayList<Obstacle> groundList;
+	static ArrayList<Integer> groundOffsets;
+	static ArrayList<Obstacle> lowerPlatList;
+	static ArrayList<Obstacle> upperPlatList;
+	static ArrayList<Obstacle> obstacleList;
+	static ArrayList<Obstacle> allObjects;
+	static ArrayList<Enemies> enemyList;
 	
+	//Void and Background
+	static Rectangle background;
+
+	//Main character variables
+	private static int spawnX = 250, spawnY = LevelManager.groundLevel-25;
+	static Character mainGuy;
+	
+	//Labels
+	static Label pauseLabel = new Label("PAUSED\n(Q)UIT");
+	static Label livesRemaining = new Label("Lives ");
+
+
 	public static void loadLevel() {
 		//Read in level data to strings
-		Scanner levelReader = new Scanner("levels/" + StateManager.currentLevel + ".lvl");
-		groundString = levelReader.nextLine();
-		lowerPlatString = levelReader.nextLine();
-		upperPlatString = levelReader.nextLine();
-		obstacleString = levelReader.nextLine();
-		enemyString = levelReader.nextLine();
-		levelReader.close();
+		System.out.println(StateManager.currentLevel.ordinal());
+		try {
+			BufferedReader levelReader = new BufferedReader(new FileReader("src/application/levels/level" + StateManager.currentLevel.ordinal() + ".lvl"));
+			groundString = levelReader.readLine();
+			lowerPlatString = levelReader.readLine();
+			upperPlatString = levelReader.readLine();
+			obstacleString = levelReader.readLine();
+			enemyString = levelReader.readLine();
+			levelReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Level Load failed");
+			System.exit(1);
+		}
+		//Initialize lists, main character
+		groundList = new ArrayList<Obstacle>();
+		groundOffsets = new ArrayList<Integer>();
+		lowerPlatList = new ArrayList<Obstacle>();
+		upperPlatList = new ArrayList<Obstacle>();
+		obstacleList = new ArrayList<Obstacle>();
+		allObjects = new ArrayList<Obstacle>();
+		enemyList = new ArrayList<Enemies>();
+
+		mainGuy = new Character(spawnX, spawnY, 20, Color.RED);
+
 
 		//Assign groups using spawn methods
+		background = new Rectangle(groundString.length()*tileWidth, 5000, Color.LIGHTSKYBLUE);
 		ground = spawnGround(groundString, 0, 0,  Color.SADDLEBROWN, Color.GREEN, groundList);
 		lowerPlatforms = spawnPlatforms(lowerPlatString,0,0,Color.SADDLEBROWN, Color.GREEN, lowerPlatList);
 		upperPlatforms = spawnPlatforms(upperPlatString,0,0,Color.SADDLEBROWN, Color.GREEN, lowerPlatList);
 		obstacles = spawnObstacles(obstacleString, obstacleWidth, obstacleHeight, Color.DARKGREEN, obstacleList);
 		enemies = spawnEnemies(enemyString, groundString);
-		level = new Group(ground, lowerPlatforms, upperPlatforms, obstacles, enemies);
+		level = new Group(background, ground, lowerPlatforms, upperPlatforms, obstacles, enemies, mainGuy.getCharacter());
+		level.setManaged(false);
 
 		//Add all object lists to allObjects for easier collision
 		allObjects.addAll(groundList);
 		allObjects.addAll(lowerPlatList);
 		allObjects.addAll(upperPlatList);
 		allObjects.addAll(obstacleList);
+		
+		//Lastly, set labels
+		pauseLabel.setTranslateY(LevelManager.groundLevel-400);
+		pauseLabel.setFont(new Font("Blocky Font", 50));
+		livesRemaining.setTranslateY(LevelManager.groundLevel - 700);
+		livesRemaining.setFont(new Font("Blocky Font", 40));
+
 	}
 
 	private static Group spawnEnemies(String eSet, String groundSet)
