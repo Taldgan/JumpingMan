@@ -43,34 +43,25 @@ public class Character {
 			System.out.println("dead called");
 			setDead(true);
 			setLives(getLives() - 1);
-			if(getLives() < 0) {
+			if(getLives() <= 0) {
 				StateManager.gameState = State.GAMEOVER;
 			}
 			else {
 				StateManager.gameState = State.YOUDIED;
+				//If player fell down hole
 				if (gety() > 800)
 				{
-					//If player fell down hole
-					if(getCharacter().getCenterY() > 250)
-					{
-						getCharacter().setCenterY(150);
-					}
-					else
-						getCharacter().setCenterY(getCharacter().getCenterY()-550);
 					setdy(0);
 					setdx(0);
-					/*mainGuy.getCharacter().setCenterX(mainGuy.getCharacter().getCenterX()-25);
-					mainGuy.setx(mainGuy.getx()-25);
-					group.setTranslateX(group.getTranslateX()+25);*/
-					sety(getCharacter().getCenterY());
-					double offset = getx() - respawnX;
-					System.out.println("Moving camera "+offset+" pixels");
-					System.out.println("Moving x from "+getx()+" to "+respawnX);
-					getCharacter().setCenterX(getCharacter().getCenterX()-offset);
+					this.getCharacter().setTranslateY(-500);
+					System.out.println("Previous x: " + this.getx());
+					int oldX = (int) getx();
 					setx(respawnX);
-					group.setTranslateX(group.getTranslateX()+(offset));
+					int newX = (int) getx();
+					this.getCharacter().setTranslateX(this.getCharacter().getTranslateX()-(oldX-newX));
+					System.out.println("New x: " + this.getx());
+					group.setTranslateX(group.getTranslateX() + (oldX-newX));
 				}
-				//this.dx = 0;
 			}
 		}
 	}

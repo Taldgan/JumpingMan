@@ -117,7 +117,10 @@ public class GameObject extends InputFunctions{
 
 		if(mainGuy.getDead() || mainGuy.gety() > 800)
 			mainGuy.dead(group,findNearestHole(lvl1GSet1));
-		System.out.println("Main guy x: "+mainGuy.getx()+ ", Main guy centerx: "+mainGuy.getCharacter().getCenterX());
+		//System.out.println("Main guy x: "+mainGuy.getx()+ ", Main guy centerx: "+mainGuy.getCharacter().getCenterX());
+		//System.out.println("Main guy y: "+String.format("%.2f",mainGuy.gety())+ ", Main guy centery: "+mainGuy.getCharacter().getCenterY());
+		//System.out.println("Main guy Translate X: " + mainGuy.getCharacter().getTranslateX());
+		//System.out.println("Main guy Translate Y: " + mainGuy.getCharacter().getTranslateY());
 		//If mainGuy is not touching top of platform, he must be jumping/falling
 		if(!mainGuy.getCollide())
 			mainGuy.setJumping(true);
@@ -127,7 +130,7 @@ public class GameObject extends InputFunctions{
 			mainGuy.move();
 			group.setTranslateX(group.getTranslateX() - mainGuy.getdx());
 			//group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
-			if (mainGuy.jumping) {
+			if (mainGuy.jumping && mainGuy.getdy() < 5.5) {
 				mainGuy.setdy(mainGuy.getdy() + (gravity*calculate()));
 			}
 		}
@@ -554,14 +557,14 @@ public class GameObject extends InputFunctions{
 	
 	public int findNearestHole(String holes)
 	{
-		int pos = (int)mainGuy.getx()/125-1; //position in string
+		int pos = (int)mainGuy.getx()/tileWidth-1; //position in string
 		System.out.println("pos: "+pos);
 		for(int x = pos; x >= 0; x--)
 		{
 			System.out.println(x+": current char: "+holes.charAt(x));
 			if(holes.charAt(x) != '0')
 			{
-				int spawnPoint = (x+1)*125-20;
+				int spawnPoint = (x+1)*tileWidth-20;
 				System.out.println("Spawn found, "+holes.charAt(x)+" at "+ spawnPoint);
 				return spawnPoint;
 			}
