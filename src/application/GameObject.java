@@ -38,6 +38,7 @@ public class GameObject extends InputFunctions{
 	}
 
 	public void update() {
+
 		updateMC();
 		updateMovPlats();
 		checkMovingCollision(LevelManager.mainGuy);
@@ -159,6 +160,7 @@ public class GameObject extends InputFunctions{
 				//On top of the platform
 				if(charBot-12 <= obstacle.getY() && c.getdy() >= 0)
 				{
+					
 					diff = LevelManager.level.getTranslateY() + (c.gety() - c.getPrevY());
 					c.setCollide(true);
 					if(c.getColor() == Color.RED)
@@ -206,9 +208,28 @@ public class GameObject extends InputFunctions{
 
 				}
 				//If under the platform:
-				else if(charTop <= obstacle.getY()+obstacle.getHeight() && c.getdy() < 0)
+				/*else if(charTop <= obstacle.getY()+obstacle.getHeight() && c.getdy() < 0)
 				{
+					LevelManager.mainGuy.setCollideTop(true);
+					diff = LevelManager.level.getTranslateY() + (c.gety() - c.getPrevY());
 
+					c.setdy(1);
+					if(c.getColor() == Color.RED)
+					{
+						c.sety(c.getPrevY());
+						c.getCharacter().setTranslateY(LevelManager.mainGuy.getPrevTranslateY());
+					}
+				}*/
+				else if(charTop >= obstacle.getY() && c.getdy() < 0)
+				{
+					LevelManager.mainGuy.setCollideTop(true);
+					
+					// width == height means its a prize box
+					if (obstacle.getWidth() == obstacle.getHeight()) {
+						System.out.println("make coin sound");
+						LevelManager.mainGuy.finalScore += 100;
+						System.out.println("Score without time bonus: " + LevelManager.mainGuy.finalScore);
+					}
 					diff = LevelManager.level.getTranslateY() + (c.gety() - c.getPrevY());
 
 					c.setdy(1);
@@ -223,6 +244,7 @@ public class GameObject extends InputFunctions{
 				c.setCollide(false);
 				LevelManager.mainGuy.setCollideLeft(false);
 				LevelManager.mainGuy.setCollideRight(false);
+				LevelManager.mainGuy.setCollideTop(false);
 			}
 		}
 		

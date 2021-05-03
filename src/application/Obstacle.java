@@ -31,11 +31,21 @@ public class Obstacle implements Collidable {
 
 		if(!collidable) 
 			return false;
+		
+	/*	if (this.getWidth() == this.getHeight() && collided) {
+			if ((x + w >= this.x && x - w <= this.x + width) && (y+h >= this.y && y-h <= this.y + this.height)) {
+				System.out.println("bump");
+			}
+		}*/
 			
-		if((x+w>= this.x && x-w <= this.x+width) && (y+h >= this.y && y-h <= this.y+height))
+		if((x+w>= this.x && x-w <= this.x+width) && (y+h >= this.y && y-h <= this.y+height)) {
+			setColliding(true);
 			return true;
-		else 
+		}
+		else {
+			setColliding(false);
 			return false;
+		}
 	}
 
 	public void setCollidable(boolean isCollidable) {
@@ -46,8 +56,8 @@ public class Obstacle implements Collidable {
 		return collided;
 	}
 	
-	public void setColliding() {
-		this.collided = true;
+	public void setColliding(boolean b) {
+		this.collided = b;
 	}
 
 	public boolean isCollidable() {

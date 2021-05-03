@@ -15,12 +15,13 @@ public class Character {
 	double size;
 	Color color;
 	Circle character = new Circle(x, y, size, color);
-	boolean collide, collideRight, collideLeft;
+	boolean collide, collideRight, collideLeft, collideTop, collideBottom;
 	double groundLvl;
 	double radius;
 	private boolean dir;
 	double collisionTimeDelta = 0, startTime = 0;
 	Score score = new Score();
+	int finalScore = 0;
 
 	public Character(double x, double y, double size, Color color) {
 		lives = 3;
@@ -202,6 +203,20 @@ public class Character {
 
 	public void setCollideRight(boolean collide) {
 		this.collideRight = collide;
+	}
+	
+	public void setCollideTop(boolean b) {
+		this.collideTop = b;
+	}
+	public boolean getCollideTop() {
+		return this.collideTop;
+	}
+	
+	public void setCollideBottom(boolean b) {
+		this.collideBottom = b;
+	}
+	public boolean getCollideBottom() {
+		return this.collideBottom;
 	}
 
 	public double getGroundLvl() {

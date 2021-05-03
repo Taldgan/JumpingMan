@@ -62,7 +62,8 @@ public class LevelManager {
 		//Read in level data to strings
 		System.out.println(StateManager.currentLevel.ordinal());
 		try {
-			BufferedReader levelReader = new BufferedReader(new FileReader("src/application/levels/level" + StateManager.currentLevel.ordinal() + ".lvl"));
+			//BufferedReader levelReader = new BufferedReader(new FileReader("src/application/levels/level" + StateManager.currentLevel.ordinal() + ".lvl"));
+			BufferedReader levelReader = new BufferedReader(new FileReader("src/application/levels/test.lvl"));
 			//Colors
 			groundColor = Color.web(levelReader.readLine());
 			grassColor = Color.web(levelReader.readLine());
@@ -92,6 +93,7 @@ public class LevelManager {
 		allStaticObjects = new ArrayList<Obstacle>();
 		allMovingObjects = new ArrayList<MovingObstacle>();
 		enemyList = new ArrayList<Enemies>();
+		
 
 		mainGuy = new Character(spawnX, spawnY, 20, Color.RED);
 
@@ -102,7 +104,7 @@ public class LevelManager {
 		lowerPlatforms = spawnPlatforms(lowerPlatString,0,0, platColor, grassColor, lowerPlatList);
 		upperPlatforms = spawnPlatforms(upperPlatString,0,0, platColor, grassColor, upperPlatList);
 		movingPlatforms = spawnMovingPlatforms(movingPlatString, 0, 50, grassColor, movingPlatList);
-		obstacles = spawnObstacles(obstacleString, obstacleWidth, obstacleHeight, Color.DARKGREEN, obstacleList);
+		obstacles = spawnObstacles(obstacleString, obstacleWidth, obstacleHeight, Color.DARKGREEN, obstacleList);		
 		enemies = spawnEnemies(enemyString, groundString);
 		level = new Group(background, ground, lowerPlatforms, upperPlatforms, movingPlatforms, obstacles, enemies, mainGuy.getCharacter());
 		level.setManaged(false);
