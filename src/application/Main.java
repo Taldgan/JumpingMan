@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-	private boolean menuLoaded = true;
+	private boolean menuLoaded = false;
 	private boolean gameLoaded = false;
 
 	@Override
@@ -16,15 +16,16 @@ public class Main extends Application {
 		primaryStage.setWidth(1000);
 		primaryStage.setHeight(800);
 		primaryStage.setTitle("Jumping Man");
+		StateManager.gameState = State.MAINMENU;
 		try {
 			GameObject game = new GameObject();
 
 			game.render(primaryStage);
 			AnimationTimer timer = new AnimationTimer() {
-
 				@Override
 				public void handle(long arg0) {
-					if(StateManager.gameState != State.MAINMENU && StateManager.gameState != State.PAUSE && StateManager.gameState != State.YOUDIED && StateManager.gameState != State.GAMEOVER) {
+					System.out.println("IN LOOP");
+					if(StateManager.gameState == StateManager.currLevel) {
 						game.update();
 						if(!gameLoaded) {
 							try {

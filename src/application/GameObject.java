@@ -79,8 +79,6 @@ public class GameObject extends InputFunctions{
 
 	public GameObject() {
 
-		StateManager.gameState = State.MAINMENU;
-
 		//Labels
 		pauseLabel.setTranslateY(groundLevel-400);
 		pauseLabel.setFont(new Font("Blocky Font", 50));
@@ -193,6 +191,7 @@ public class GameObject extends InputFunctions{
 				//Player got hit, go to game over screen or whatever. For now, change the enemy's color.
 				eList.get(x).getCharacter().setFill(Color.YELLOW);
 				mainGuy.setDead(true);
+				mainGuy.setdx(0);
 				eList.get(x).getCharacter().setCenterY(-1000);
 				eList.remove(x);
 				
@@ -231,8 +230,7 @@ public class GameObject extends InputFunctions{
 
 	@FXML
 	public void playAgain(ActionEvent e) {
-		StateManager.gameState = State.LEVEL1;
-		StateManager.currLevel = State.LEVEL1;
+		StateManager.gameState = StateManager.currLevel;
 		mainGuy.setDead(false);
 	}
 
@@ -268,6 +266,7 @@ public class GameObject extends InputFunctions{
 		case LEVEL2:
 			break;
 		case YOUDIED:
+			System.out.println("you died render");
 			Sounds.sPlayer.stopSong();
 			Sounds.sPlayer.playSFX(1);
 			view = FXMLLoader.load(getClass().getResource("/application/YouDied.fxml"));

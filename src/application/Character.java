@@ -19,7 +19,7 @@ public class Character {
 	double groundLvl;
 	double radius;
 	private boolean dir;
-	
+
 	public Character(double x, double y, double size, Color color) {
 		lives = 3;
 		dead = false;
@@ -37,32 +37,31 @@ public class Character {
 		setColor(color);
 		setCharacter(x, y, size, color);
 	}
-	
+
 	public void dead(Group group, int respawnX) {
-		if (gety() > 800 || dead){
+		if (gety() > 800 || dead) {
 			setDead(true);
 			setLives(getLives() - 1);
-			if(getLives() <= 0) {
+			if (getLives() <= 0) {
 				StateManager.gameState = State.GAMEOVER;
-			}
-			else {
+			} else {
 				StateManager.gameState = State.YOUDIED;
-				//If player fell down hole
-				if (gety() > 800)
-				{
+				System.out.println("YOU DIED SET");
+				// If player fell down hole
+				if (gety() > 800) {
 					setdy(0);
 					setdx(0);
 					this.getCharacter().setTranslateY(-500);
 					int oldX = (int) getx();
 					setx(respawnX);
 					int newX = (int) getx();
-					this.getCharacter().setTranslateX(this.getCharacter().getTranslateX()-(oldX-newX));
-					group.setTranslateX(group.getTranslateX() + (oldX-newX));
+					this.getCharacter().setTranslateX(this.getCharacter().getTranslateX() - (oldX - newX));
+					group.setTranslateX(group.getTranslateX() + (oldX - newX));
 				}
 			}
 		}
 	}
-	
+
 	public void move() {
 		prevX = this.x;
 		prevY = this.y;
@@ -74,119 +73,137 @@ public class Character {
 		sety(this.character.getCenterY() + this.character.getTranslateY());
 		// the background game objects are scrolled accordingly in the GameObject class
 	}
-	
+
 	public Circle getCharacter() {
-		return this.character;      
+		return this.character;
 	}
+
 	public void setCharacter(double x, double y, double size, Color color) {
 		this.character.setCenterX(x);
 		this.character.setCenterY(y);
 		this.character.setRadius(size);
 		this.character.setFill(color);
 	}
+
 	public double getx() {
 		return this.x;
 	}
+
 	public void setx(double x) {
 		this.x = x;
 	}
+
 	public double gety() {
 		return this.y;
 	}
+
 	public void sety(double y) {
 		this.y = y;
 	}
+
 	public void setMinY(double y) {
 		this.minY = y;
 	}
+
 	public double getSize() {
 		return this.size;
 	}
+
 	public void setSize(double size) {
 		this.size = size;
 	}
+
 	public Color getColor() {
 		return this.color;
 	}
+
 	public void setColor(Color color) {
 		this.color = color;
 	}
+
 	public double getdx() {
 		return this.dx;
 	}
+
 	public void setdx(double dx) {
-		//Set speed cap to 5 or -5
-		if(dx > 5)
+		// Set speed cap to 5 or -5
+		if (dx > 5)
 			dx = 5;
-		else if(dx < -5)
+		else if (dx < -5)
 			dx = -5;
 		this.dx = dx;
 	}
-	public void setGroundLvl(double y)
-	{
+
+	public void setGroundLvl(double y) {
 		groundLvl = y;
 	}
+
 	public double getdy() {
 		return this.dy;
 	}
+
 	public void setdy(double dy) {
 		this.dy = dy;
 	}
-	public void setJumping(boolean b){
+
+	public void setJumping(boolean b) {
 		this.jumping = b;
 	}
-	public boolean getJumping(){
+
+	public boolean getJumping() {
 		return this.jumping;
 	}
+
 	public void setWalking(boolean b) {
 		this.walking = b;
 	}
+
 	public boolean getWalking() {
 		return this.walking;
 	}
 
-	public boolean getCollide()
-	{
+	public boolean getCollide() {
 		return collide;
 	}
-	public void setCollide(boolean collide)
-	{
+
+	public void setCollide(boolean collide) {
 		this.collide = collide;
 	}
-	public boolean getCollideLeft()
-	{
+
+	public boolean getCollideLeft() {
 		return collideLeft;
 	}
-	public void setCollideLeft(boolean collide)
-	{
+
+	public void setCollideLeft(boolean collide) {
 		this.collideLeft = collide;
 	}
-	public boolean getCollideRight()
-	{
+
+	public boolean getCollideRight() {
 		return collideRight;
 	}
-	public void setCollideRight(boolean collide)
-	{
+
+	public void setCollideRight(boolean collide) {
 		this.collideRight = collide;
 	}
-	public double getGroundLvl()
-	{
+
+	public double getGroundLvl() {
 		return groundLvl;
 	}
+
 	public double getMinY() {
 		return this.minY;
 	}
-	public double getRadius()
-	{
+
+	public double getRadius() {
 		return radius;
 	}
-	public void setRadius(double r)
-	{
+
+	public void setRadius(double r) {
 		radius = r;
 	}
-	public void swapDir()
-	{
-		if(dir)
+
+	public void swapDir() {
+		if (dir)
 			dir = false;
 		else
 			dir = true;
@@ -223,19 +240,19 @@ public class Character {
 	public void setPrevTranslateY(double prevTranslateY) {
 		this.prevTranslateY = prevTranslateY;
 	}
-	
+
 	public void setLives(int lives) {
 		this.lives = lives;
 	}
-	
+
 	public int getLives() {
 		return this.lives;
 	}
-	
+
 	public void setDead(Boolean dead) {
 		this.dead = dead;
 	}
-	
+
 	public Boolean getDead() {
 		return this.dead;
 	}
