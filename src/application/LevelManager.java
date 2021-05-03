@@ -31,7 +31,7 @@ public class LevelManager {
 
 	
 	public static void loadLevel() {
-		Scanner levelReader = new Scanner("levels/" + StateManager.currLevel + ".lvl");
+		Scanner levelReader = new Scanner("levels/" + StateManager.currentLevel + ".lvl");
 		groundString = levelReader.nextLine();
 		lowerPlatString = levelReader.nextLine();
 		upperPlatString = levelReader.nextLine();

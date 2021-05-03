@@ -25,7 +25,7 @@ public class Main extends Application {
 				@Override
 				public void handle(long arg0) {
 					System.out.println("IN LOOP State: " + StateManager.gameState);
-					if(StateManager.gameState == StateManager.currLevel) {
+					if(StateManager.gameState == State.PLAYING) {
 						game.update();
 						if(!gameLoaded) {
 							try {

@@ -125,13 +125,13 @@ public class GameObject extends InputFunctions{
 	@FXML 
 	public void newGame(ActionEvent event) {
 		mainGuy.setDead(false);
-		StateManager.gameState = State.LEVEL1;
-		StateManager.currLevel = State.LEVEL1;
+		StateManager.gameState = State.PLAYING;
+		StateManager.currentLevel = Level.LEVEL1;
 	}
 
 	@FXML
 	public void playAgain(ActionEvent e) {
-		StateManager.gameState = StateManager.currLevel;
+		StateManager.gameState = State.PLAYING;
 		mainGuy.setDead(false);
 	}
 
@@ -153,7 +153,7 @@ public class GameObject extends InputFunctions{
 			pauseLabel.setTranslateX(mainGuy.getCharacter().getTranslateX()+400);
 			group.getChildren().add(pauseLabel);
 			break;
-		case LEVEL1:
+		case PLAYING:
 			livesRemaining.setTranslateX(mainGuy.getCharacter().getTranslateX());
 			if(!group.getChildren().contains(livesRemaining))
 				group.getChildren().add(livesRemaining);
@@ -163,8 +163,6 @@ public class GameObject extends InputFunctions{
 			if(group.getChildren().contains(pauseLabel))
 				group.getChildren().remove(pauseLabel);
 			primaryStage.setScene(this.gameScene);
-			break;
-		case LEVEL2:
 			break;
 		case YOUDIED:
 			System.out.println("you died render");
