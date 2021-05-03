@@ -24,7 +24,7 @@ public class Main extends Application {
 			AnimationTimer timer = new AnimationTimer() {
 				@Override
 				public void handle(long arg0) {
-					System.out.println("IN LOOP");
+					System.out.println("IN LOOP State: " + StateManager.gameState);
 					if(StateManager.gameState == StateManager.currLevel) {
 						game.update();
 						if(!gameLoaded) {
@@ -38,7 +38,9 @@ public class Main extends Application {
 							game.processInput();
 						}
 					}
-					else if(!menuLoaded){
+					else if(!menuLoaded || StateManager.prevMenu == State.GAMEOVER) {
+						if(StateManager.prevMenu == State.GAMEOVER)
+							StateManager.prevMenu = State.MAINMENU;
 						try {
 							game.render(primaryStage);
 						} catch (IOException e) {
@@ -49,6 +51,7 @@ public class Main extends Application {
 					}
 
 				}
+
 			};
 			timer.start();
 

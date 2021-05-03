@@ -212,6 +212,8 @@ public class GameObject extends InputFunctions{
 
 	@FXML
 	public void mainMenu(ActionEvent e) {
+		System.out.println("mainMenu called");
+		StateManager.prevMenu = State.GAMEOVER;
 		StateManager.gameState = State.MAINMENU;
 	}
 
@@ -220,12 +222,6 @@ public class GameObject extends InputFunctions{
 		mainGuy.setDead(false);
 		StateManager.gameState = State.LEVEL1;
 		StateManager.currLevel = State.LEVEL1;
-		/*try {
-			render((Stage) ((Node) event.getSource()).getScene().getWindow());
-		} catch (IOException e) {
-			e.printStackTrace();
-		} 
-		 */
 	}
 
 	@FXML
@@ -441,7 +437,7 @@ public class GameObject extends InputFunctions{
 				//obstacle.getPlat().setFill(Color.CORAL);
 				double diff;
 				//On top of the platform
-				if(charBot-12 <= obstacle.getY())
+				if(charBot-12 <= obstacle.getY() && c.getdy() >= 0)
 				{
 					diff = group.getTranslateY() + (c.gety() - c.getPrevY());
 					c.setCollide(true);
