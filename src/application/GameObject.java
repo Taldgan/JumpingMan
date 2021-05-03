@@ -109,6 +109,11 @@ public class GameObject extends InputFunctions{
 			this.gameOverScene = new Scene(view);
 			primaryStage.setScene(this.gameOverScene);
 			break;
+		case NEXTLEVEL:
+			view = FXMLLoader.load(getClass().getResource("/application/NextLevel.fxml"));
+			this.winScene = new Scene(view);
+			primaryStage.setScene(this.winScene);
+			break;
 		case YOUWON:
 			view = FXMLLoader.load(getClass().getResource("/application/YouWon.fxml"));
 			this.winScene = new Scene(view);
@@ -146,7 +151,7 @@ public class GameObject extends InputFunctions{
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
 				//Win if on last obstacle
 				if(obstacle.getColor() == Color.DARKSLATEGRAY) { //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
-					win();
+					nextLevel();
 				}
 				double diff;
 				//On top of the platform
@@ -390,7 +395,19 @@ public class GameObject extends InputFunctions{
 	}
 
 	public void win() {
-		StateManager.currentLevel = Level.values()[StateManager.currentLevel.ordinal()+1];
 		StateManager.gameState = State.YOUWON;
+		StateManager.currentLevel = Level.LEVEL1;
+	}
+	
+	public void nextLevel() {
+		System.out.println("next level: " + Level.values()[StateManager.currentLevel.ordinal()+1]);
+		if(Level.values()[StateManager.currentLevel.ordinal()+1] != Level.END) {
+			StateManager.currentLevel = Level.values()[StateManager.currentLevel.ordinal()+1];
+			StateManager.gameState = State.NEXTLEVEL;
+		}
+		else {
+			System.out.println("else...");
+			win();
+		}
 	}
 }

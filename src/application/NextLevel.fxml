@@ -10,35 +10,36 @@
    <children>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Label text="YOU WON">
+            <Label text="YOU BEAT A LEVEL">
                <font>
-                  <Font size="90.0" />
+                  <Font size="96.0" />
                </font>
             </Label>
          </children>
       </HBox>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Label text="Score: ">
+            <Label fx:id="livesRemaining" alignment="CENTER" contentDisplay="CENTER" prefHeight="62.0" prefWidth="50.0" textAlignment="CENTER">
                <font>
-                  <Font size="20.0" />
+                  <Font size="42.0" />
                </font>
             </Label>
-            <Label prefHeight="30.0" prefWidth="30.0">
+            <Button mnemonicParsing="false" onAction="#newGame" text="Next Level">
                <font>
-                  <Font size="20.0" />
-               </font>
-            </Label>
-         </children>
-      </HBox>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
-         <children>
-            <Button mnemonicParsing="false" onAction="#mainMenu" text="Main Menu">
-               <font>
-                  <Font size="25.0" />
+                  <Font size="30.0" />
                </font>
             </Button>
          </children>
       </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#exitGame" text="Quit">
+               <font>
+                  <Font size="31.0" />
+               </font>
+            </Button>
+         </children></HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" />
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" />
    </children>
 </VBox>
