@@ -4,11 +4,13 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
@@ -36,7 +38,7 @@ public class LevelManager {
 	static ArrayList<Obstacle> allObjects;
 	static ArrayList<Enemies> enemyList;
 	
-	//Void and Background
+	//Background
 	static Rectangle background;
 
 	//Main character variables
@@ -47,6 +49,10 @@ public class LevelManager {
 	static Label pauseLabel = new Label("PAUSED\n(Q)UIT");
 	static Group lifeCounter;
 	static Label infoLabel = new Label("Level: \nLives: ");
+	
+	//Colors
+	private static Color bgColor, groundColor, grassColor, platColor, cloudColor;
+	
 
 
 	public static void loadLevel() {
@@ -54,6 +60,13 @@ public class LevelManager {
 		System.out.println(StateManager.currentLevel.ordinal());
 		try {
 			BufferedReader levelReader = new BufferedReader(new FileReader("src/application/levels/level" + StateManager.currentLevel.ordinal() + ".lvl"));
+			//Colors
+			groundColor = Color.web(levelReader.readLine());
+			grassColor = Color.web(levelReader.readLine());
+			bgColor = Color.web(levelReader.readLine());
+			cloudColor = Color.web(levelReader.readLine());
+			platColor = Color.web(levelReader.readLine());
+			//Level strings
 			groundString = levelReader.readLine();
 			lowerPlatString = levelReader.readLine();
 			upperPlatString = levelReader.readLine();
@@ -78,10 +91,10 @@ public class LevelManager {
 
 
 		//Assign groups using spawn methods
-		background = new Rectangle(groundString.length()*tileWidth, 5000, Color.LIGHTSKYBLUE);
-		ground = spawnGround(groundString, 0, 0,  Color.SADDLEBROWN, Color.GREEN, groundList);
-		lowerPlatforms = spawnPlatforms(lowerPlatString,0,0,Color.SADDLEBROWN, Color.GREEN, lowerPlatList);
-		upperPlatforms = spawnPlatforms(upperPlatString,0,0,Color.SADDLEBROWN, Color.GREEN, lowerPlatList);
+		background = new Rectangle(groundString.length()*tileWidth, 5000, bgColor);
+		ground = spawnGround(groundString, 0, 0, groundColor, grassColor, groundList);
+		lowerPlatforms = spawnPlatforms(lowerPlatString,0,0, platColor, grassColor, lowerPlatList);
+		upperPlatforms = spawnPlatforms(upperPlatString,0,0, platColor, grassColor, lowerPlatList);
 		obstacles = spawnObstacles(obstacleString, obstacleWidth, obstacleHeight, Color.DARKGREEN, obstacleList);
 		enemies = spawnEnemies(enemyString, groundString);
 		level = new Group(background, ground, lowerPlatforms, upperPlatforms, obstacles, enemies, mainGuy.getCharacter());
@@ -102,7 +115,31 @@ public class LevelManager {
 		for(int l = 0; l < mainGuy.getLives(); l++) {
 			lifeCounter.getChildren().add(new Circle((l*(mainGuy.getRadius()*2))+15, 0, (mainGuy.getRadius()*2)/3, mainGuy.getColor()));
 		}
+		drawClouds();
 
+	}
+	
+	private static void drawClouds() {
+		Random gen = new Random();
+		int cloudX = 200;
+		int cloudY;
+		Group cloud;
+		Ellipse puff;
+		for(int i = 0; i < groundString.length(); i+=3) {
+			cloudY = 400 - gen.nextInt(200)-100;
+			cloud = new Group();
+			for(int j = 0; j < gen.nextInt(5)+4; j++) {
+				puff = new Ellipse();
+				puff.setCenterX(cloudX + (i*tileWidth) + (j*12) + 10 + gen.nextInt(10));
+				puff.setCenterY(cloudY+ (7*(gen.nextInt(6)-3)));
+				puff.setRadiusX(30);
+				puff.setRadiusY(25);
+				puff.setFill(cloudColor);
+				cloud.getChildren().add(puff);
+			}
+			level.getChildren().add(cloud);	
+		}
+		
 	}
 
 	private static Group spawnEnemies(String eSet, String groundSet)
