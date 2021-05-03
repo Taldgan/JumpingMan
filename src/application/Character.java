@@ -40,7 +40,6 @@ public class Character {
 	
 	public void dead(Group group, int respawnX) {
 		if (gety() > 800 || dead){
-			System.out.println("dead called");
 			setDead(true);
 			setLives(getLives() - 1);
 			if(getLives() <= 0) {
@@ -54,12 +53,10 @@ public class Character {
 					setdy(0);
 					setdx(0);
 					this.getCharacter().setTranslateY(-500);
-					System.out.println("Previous x: " + this.getx());
 					int oldX = (int) getx();
 					setx(respawnX);
 					int newX = (int) getx();
 					this.getCharacter().setTranslateX(this.getCharacter().getTranslateX()-(oldX-newX));
-					System.out.println("New x: " + this.getx());
 					group.setTranslateX(group.getTranslateX() + (oldX-newX));
 				}
 			}

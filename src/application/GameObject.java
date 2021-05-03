@@ -117,10 +117,6 @@ public class GameObject extends InputFunctions{
 
 		if(mainGuy.getDead() || mainGuy.gety() > 800)
 			mainGuy.dead(group,findNearestHole(lvl1GSet1));
-		//System.out.println("Main guy x: "+mainGuy.getx()+ ", Main guy centerx: "+mainGuy.getCharacter().getCenterX());
-		//System.out.println("Main guy y: "+String.format("%.2f",mainGuy.gety())+ ", Main guy centery: "+mainGuy.getCharacter().getCenterY());
-		//System.out.println("Main guy Translate X: " + mainGuy.getCharacter().getTranslateX());
-		//System.out.println("Main guy Translate Y: " + mainGuy.getCharacter().getTranslateY());
 		//If mainGuy is not touching top of platform, he must be jumping/falling
 		if(!mainGuy.getCollide())
 			mainGuy.setJumping(true);
@@ -186,11 +182,6 @@ public class GameObject extends InputFunctions{
 					eList.get(x).setInitialX(eList.get(x).getx());
 				}
 			}
-			//Chance for an enemy to swap directions (5/1000 chance) per frame refresh.
-			//Perhaps we can have this be a new enemy type?
-			/*int ran = eList.get(x).getRNG(1000);
-			if(ran >= 0 && ran <= 5)
-				eList.get(x).swapDir();*/
 			eList.get(x).enemyMove();
 			//Check collision with obstacles/platforms
 			checkCollision(eList.get(x)); 
@@ -201,15 +192,9 @@ public class GameObject extends InputFunctions{
 			{
 				//Player got hit, go to game over screen or whatever. For now, change the enemy's color.
 				eList.get(x).getCharacter().setFill(Color.YELLOW);
-				/*mainGuy.setDead(true);
+				mainGuy.setDead(true);
 				eList.get(x).getCharacter().setCenterY(-1000);
 				eList.remove(x);
-				mainGuy.setdx(0);*/
-				//System.out.println("Center x1: "+mainGuy.getCharacter().getCenterX());
-				//System.out.println("actual x1: "+mainGuy.getx());
-
-				//System.out.println("Center x2: "+mainGuy.getCharacter().getCenterX());
-				//System.out.println("actual x2: "+mainGuy.getx());
 				
 			}
 			else
