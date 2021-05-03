@@ -321,8 +321,6 @@ public class GameObject extends InputFunctions{
 						groundSet.charAt(x),groundLevel));
 			}
 
-			//else if(eSet.charAt(x) >= '3' && eSet.charAt(x) <= '9')
-			//{
 			//Starting at 3, spawn enemy on platforms. To match the platform height, multiply the string value-2 by 45 and subtract that by
 			//The ground level, groundLevel, groundLevel offset gListOffsets.get(x). 
 			//Finally, substract in an offset of 20 to account for the circle's bottom.
@@ -428,13 +426,11 @@ public class GameObject extends InputFunctions{
 		double charRight = c.getx()-c.getCharacter().getRadius();
 		double charRad = c.getCharacter().getRadius();
 
-		//Replaced with for:each, pList1.get(i) was getting tedious :P
 		for(Obstacle obstacle : allObs) {
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
 				//Win if on last obstacle
 				if(obstacle.getColor() == Color.DARKSLATEGRAY) //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
 					System.out.println("You win :^)");
-				//obstacle.getPlat().setFill(Color.CORAL);
 				double diff;
 				//On top of the platform
 				if(charBot-12 <= obstacle.getY() && c.getdy() >= 0)
@@ -446,14 +442,11 @@ public class GameObject extends InputFunctions{
 						c.setGroundLvl(c.gety());
 						c.setdy(-.05);
 						c.setJumping(false);
-						//System.out.println("collide with top of platform");
 						c.sety(c.getPrevY());
 						c.getCharacter().setTranslateY(mainGuy.getPrevTranslateY());
-						//group.setTranslateY(diff);
 					}
 
 				}
-				//Added 2 more checks for horizontal collision
 				//Left of platform collision:
 				if(charLeft <= obstacle.getX()) {
 
@@ -463,7 +456,6 @@ public class GameObject extends InputFunctions{
 					{
 						c.setx(c.getPrevX());
 						c.getCharacter().setTranslateX(mainGuy.getPrevTranslateX());
-						//System.out.println("collide with left side of platform");
 						group.setTranslateX(diff);
 					}
 					//Swap enemy direction when touching an obstacle.
@@ -477,12 +469,10 @@ public class GameObject extends InputFunctions{
 				else if(charRight >= obstacle.getX()+obstacle.getWidth()) {
 					c.setCollideLeft(true);
 					diff = group.getTranslateX() + (c.getx() - c.getPrevX());
-					//System.out.println("obstacle color: that you are colliding with: "+String.valueOf(obstacle.getColor()));
 					if(c.getColor() == Color.RED)
 					{
 						c.setx(c.getPrevX());
 						c.getCharacter().setTranslateX(mainGuy.getPrevTranslateX());
-						//System.out.println("collide with right side of platform");
 						group.setTranslateX(diff);
 					}
 					else if(c.getColor() != Color.RED && obstacle.getColor() == null)
@@ -502,14 +492,11 @@ public class GameObject extends InputFunctions{
 					{
 						c.sety(c.getPrevY());
 						c.getCharacter().setTranslateY(mainGuy.getPrevTranslateY());
-						//System.out.println("collide with bottom of platform");
-						//group.setTranslateY(diff);
 					}
 				}
 			}
 			else {
 				c.setCollide(false);
-				//obstacle.getPlat().setFill(Color.DARKORCHID); //reset color if not touching
 				mainGuy.setCollideLeft(false);
 				mainGuy.setCollideRight(false);
 			}
