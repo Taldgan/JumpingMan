@@ -62,15 +62,15 @@ public class GameObject extends InputFunctions{
 	Scene gameScene;
 	Scene deadScene;
 	Scene gameOverScene;
-		
+
 	//Etc
 	int spawnX = 250, spawnY = groundLevel-25;
 	Character mainGuy = new Character(spawnX, spawnY, 20, Color.RED);
-	
+
 	//Labels
 	Label pauseLabel = new Label("PAUSED\n(Q)UIT");
 	Label livesRemaining = new Label("Lives " + mainGuy.getLives());
-		
+
 	Group group = new Group(theVoid, background, groundSet1, mainGuy.getCharacter(), e1, platformSet1, platformSet2, obstacleSet1);
 
 	double lastTime = System.currentTimeMillis();
@@ -82,10 +82,10 @@ public class GameObject extends InputFunctions{
 		//Labels
 		pauseLabel.setTranslateY(groundLevel-400);
 		pauseLabel.setFont(new Font("Blocky Font", 50));
-		
+
 		livesRemaining.setTranslateY(groundLevel - 700);
 		livesRemaining.setFont(new Font("Blocky Font", 40));
-		
+
 
 		group.setManaged(false);
 
@@ -112,102 +112,9 @@ public class GameObject extends InputFunctions{
 	}
 
 	public void update() {
-
-		if(mainGuy.getDead() || mainGuy.gety() > 800)
-			mainGuy.dead(group,findNearestHole(lvl1GSet1));
-		//If mainGuy is not touching top of platform, he must be jumping/falling
-		if(!mainGuy.getCollide())
-			mainGuy.setJumping(true);
-
-		//If he is jumping or walking, update his movement to match
-		if (mainGuy.walking || mainGuy.jumping) {
-			mainGuy.move();
-			group.setTranslateX(group.getTranslateX() - mainGuy.getdx());
-			//group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
-			if (mainGuy.jumping && mainGuy.getdy() < 5.5) {
-				mainGuy.setdy(mainGuy.getdy() + (gravity*calculate()));
-			}
-		}
-
-		//Prevent mainGuy from moving faster than 5 units left/right
-		if (mainGuy.getdx() > 5)
-			mainGuy.setdx(5);
-		if (mainGuy.getdx() < -5)
-			mainGuy.setdx(-5);
-
-		//???
-		if (mainGuy.getdx() != 0 && !mainGuy.walking) {
-			if (mainGuy.getdx() > 0)
-				mainGuy.setdx(mainGuy.getdx()-0.25);
-			if (mainGuy.getdx() < 0)
-				mainGuy.setdx(mainGuy.getdx()+0.25);
-			group.setTranslateX(group.getTranslateX() - mainGuy.getdx());
-			//group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
-			mainGuy.move();
-		}
-
-		//=====================================================
-		//Update enemies
-		for(int x = 0; x < eList.size();x++)
-		{
-			//Blue enemies jump
-			if(eList.get(x).getColor() == Color.BLUE)
-			{
-				if(eList.get(x).getJumping())
-					eList.get(x).setdy(gravity*calculate()+eList.get(x).getdy());
-
-				if(eList.get(x).getJumping() && eList.get(x).gety() > eList.get(x).getInitY())
-				{
-					//System.out.println("Enemy not jumping");
-					eList.get(x).setdy(0); //down
-					eList.get(x).setJumping(false);
-				}
-				int ran = eList.get(x).getRNG(1000);
-				if(ran >= 0 && ran < 15) //Random chance (15/1000) that an enemy will jump. I think this is per frame, so it's still quite a lot.
-				{
-					eList.get(x).enemyJump();
-				}
-
-			}
-			//Dark Magenta enemies on platforms
-			if(eList.get(x).getColor() == Color.DARKMAGENTA)
-			{
-				//Swap directions if they're about to move off of their platform. Platform size is 90 rn, so they move 70 pixels left or right
-				//then swap.
-				if(eList.get(x).getx() >= eList.get(x).getInitialX()+tileWidth-20 || eList.get(x).getx() <= eList.get(x).getInitialX()-tileWidth+20)
-				{
-					eList.get(x).swapDir();
-					eList.get(x).setInitialX(eList.get(x).getx());
-				}
-			}
-			eList.get(x).enemyMove();
-			//Check collision with obstacles/platforms
-			checkCollision(eList.get(x)); 
-			groundCheck(eList.get(x),lvl1GSet1); //Swap enemy direction when close to a hole.
-			
-			//Check collision with the player
-			if(eList.get(x).collide(mainGuy.getx(),mainGuy.gety(),mainGuy.getRadius(),mainGuy.getRadius()))
-			{
-				//Player got hit, go to game over screen or whatever. For now, change the enemy's color.
-				eList.get(x).getCharacter().setFill(Color.YELLOW);
-				mainGuy.setDead(true);
-				mainGuy.setdx(0);
-				eList.get(x).getCharacter().setCenterY(-1000);
-				eList.remove(x);
-				
-			}
-			else
-				eList.get(x).getCharacter().setFill(eList.get(x).getColor());
-
-		}
-
-		//=====================================================
-		//Update platforms, testing collision. Moved down to a method at the bottom so
-		//That enemies can also collide with objects.
-		checkCollision(mainGuy);
-
-		livesRemaining.setText("Lives " + mainGuy.getLives());
-		livesRemaining.setTranslateX(mainGuy.getCharacter().getTranslateX()+20);
+		updateMC();
+		updateEnemies();
+		updateLabels();
 	}
 
 	@FXML
@@ -392,7 +299,7 @@ public class GameObject extends InputFunctions{
 				Obstacle r = new Obstacle(width, height, Color.DARKSLATEGRAY, cTop);
 				pList.add(r);
 				platG.getChildren().add(r.getPlat());
-				
+
 				r.setX(tileWidth*x);
 				r.setY(groundLvlOffset-gListOffsets.get(x)-45);
 			}
@@ -521,7 +428,7 @@ public class GameObject extends InputFunctions{
 			}
 		}
 	}
-	
+
 	public int findNearestHole(String holes)
 	{
 		int pos = (int)mainGuy.getx()/tileWidth-1; //position in string
@@ -537,5 +444,106 @@ public class GameObject extends InputFunctions{
 			}
 		}
 		return 250; //Should never reach here.
+	}
+
+	//Update methods
+
+	public void updateMC() {
+		if(mainGuy.getDead() || mainGuy.gety() > 800)
+			mainGuy.dead(group,findNearestHole(lvl1GSet1));
+		//If mainGuy is not touching top of platform, he must be jumping/falling
+		if(!mainGuy.getCollide())
+			mainGuy.setJumping(true);
+
+		//If he is jumping or walking, update his movement to match
+		if (mainGuy.walking || mainGuy.jumping) {
+			mainGuy.move();
+			group.setTranslateX(group.getTranslateX() - mainGuy.getdx());
+			//group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
+			if (mainGuy.jumping && mainGuy.getdy() < 5.5) {
+				mainGuy.setdy(mainGuy.getdy() + (gravity*calculate()));
+			}
+		}
+
+		//Prevent mainGuy from moving faster than 5 units left/right
+		if (mainGuy.getdx() > 5)
+			mainGuy.setdx(5);
+		if (mainGuy.getdx() < -5)
+			mainGuy.setdx(-5);
+
+		//???
+		if (mainGuy.getdx() != 0 && !mainGuy.walking) {
+			if (mainGuy.getdx() > 0)
+				mainGuy.setdx(mainGuy.getdx()-0.25);
+			if (mainGuy.getdx() < 0)
+				mainGuy.setdx(mainGuy.getdx()+0.25);
+			group.setTranslateX(group.getTranslateX() - mainGuy.getdx());
+			//group.setTranslateY(group.getTranslateY() - mainGuy.getdy());
+			mainGuy.move();
+		}
+		checkCollision(mainGuy);
+	}
+	
+	public void updateEnemies() {
+		//=====================================================
+		//Update enemies
+		for(int x = 0; x < eList.size();x++)
+		{
+			//Blue enemies jump
+			if(eList.get(x).getColor() == Color.BLUE)
+			{
+				if(eList.get(x).getJumping())
+					eList.get(x).setdy(gravity*calculate()+eList.get(x).getdy());
+
+				if(eList.get(x).getJumping() && eList.get(x).gety() > eList.get(x).getInitY())
+				{
+					//System.out.println("Enemy not jumping");
+					eList.get(x).setdy(0); //down
+					eList.get(x).setJumping(false);
+				}
+				int ran = eList.get(x).getRNG(1000);
+				if(ran >= 0 && ran < 15) //Random chance (15/1000) that an enemy will jump. I think this is per frame, so it's still quite a lot.
+				{
+					eList.get(x).enemyJump();
+				}
+
+			}
+			//Dark Magenta enemies on platforms
+			if(eList.get(x).getColor() == Color.DARKMAGENTA)
+			{
+				//Swap directions if they're about to move off of their platform. Platform size is 90 rn, so they move 70 pixels left or right
+				//then swap.
+				if(eList.get(x).getx() >= eList.get(x).getInitialX()+tileWidth-20 || eList.get(x).getx() <= eList.get(x).getInitialX()-tileWidth+20)
+				{
+					eList.get(x).swapDir();
+					eList.get(x).setInitialX(eList.get(x).getx());
+				}
+			}
+			eList.get(x).enemyMove();
+			//Check collision with obstacles/platforms
+			checkCollision(eList.get(x)); 
+			groundCheck(eList.get(x),lvl1GSet1); //Swap enemy direction when close to a hole.
+
+			//Check collision with the player
+			if(eList.get(x).collide(mainGuy.getx(),mainGuy.gety(),mainGuy.getRadius(),mainGuy.getRadius()))
+			{
+				//Player got hit, go to game over screen or whatever. For now, change the enemy's color.
+				eList.get(x).getCharacter().setFill(Color.YELLOW);
+				mainGuy.setDead(true);
+				mainGuy.setdx(0);
+				eList.get(x).getCharacter().setCenterY(-1000);
+				eList.remove(x);
+
+			}
+			else
+				eList.get(x).getCharacter().setFill(eList.get(x).getColor());
+
+		}
+
+	}
+
+	public void updateLabels() {
+		livesRemaining.setText("Lives " + mainGuy.getLives());
+		livesRemaining.setTranslateX(mainGuy.getCharacter().getTranslateX()+20);
 	}
 }
