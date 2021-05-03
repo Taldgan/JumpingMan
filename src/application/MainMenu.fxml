@@ -10,7 +10,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <Pane style="-fx-background-image: /home/taldgan/git/SemesterProject/src/application/images/JumpMan.png;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.GameObject">
    <children>
       <StackPane prefHeight="150.0" prefWidth="200.0">
@@ -33,7 +32,7 @@
                   </StackPane>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#newGame" prefHeight="56.0" prefWidth="175.0" text="Play">
+                        <Button blendMode="DIFFERENCE" mnemonicParsing="false" onAction="#newGame" prefHeight="56.0" prefWidth="175.0" text="PLAY" textFill="#680c0c">
                            <font>
                               <Font size="30.0" />
                            </font>
@@ -42,22 +41,14 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Button mnemonicParsing="false" prefWidth="100.0" text="Stats">
+                        <Button blendMode="DIFFERENCE" mnemonicParsing="false" onAction="#exitGame" prefHeight="20.0" prefWidth="100.0" text="Exit" textFill="#dd1111">
                            <font>
                               <Font size="20.0" />
                            </font>
                         </Button>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
-                     <children>
-                        <Button mnemonicParsing="false" onAction="#exitGame" prefHeight="20.0" prefWidth="100.0" text="Exit">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Button>
-                     </children>
-                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" />
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" />
                </children>
             </VBox>
