@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
@@ -42,9 +43,10 @@ public class LevelManager {
 	private static int spawnX = 250, spawnY = LevelManager.groundLevel-25;
 	static Character mainGuy;
 	
-	//Labels
+	//Labels/Data
 	static Label pauseLabel = new Label("PAUSED\n(Q)UIT");
-	static Label livesRemaining = new Label("Lives ");
+	static Group lifeCounter;
+	static Label infoLabel = new Label("Level: \nLives: ");
 
 
 	public static void loadLevel() {
@@ -94,8 +96,12 @@ public class LevelManager {
 		//Lastly, set labels
 		pauseLabel.setTranslateY(LevelManager.groundLevel-400);
 		pauseLabel.setFont(new Font("Blocky Font", 50));
-		livesRemaining.setTranslateY(LevelManager.groundLevel - 700);
-		livesRemaining.setFont(new Font("Blocky Font", 40));
+		infoLabel.setTranslateY(LevelManager.groundLevel - 655);
+		infoLabel.setFont(new Font("Blocky Font", 40));
+		lifeCounter = new Group();
+		for(int l = 0; l < mainGuy.getLives(); l++) {
+			lifeCounter.getChildren().add(new Circle((l*(mainGuy.getRadius()*2))+15, 0, (mainGuy.getRadius()*2)/3, mainGuy.getColor()));
+		}
 
 	}
 

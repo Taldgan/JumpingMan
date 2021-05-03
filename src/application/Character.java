@@ -42,6 +42,7 @@ public class Character {
 		if (gety() > 800 || dead) {
 			setDead(true);
 			setLives(getLives() - 1);
+			LevelManager.lifeCounter.getChildren().remove(getLives());
 			if (getLives() <= 0) {
 				StateManager.gameState = State.GAMEOVER;
 			} else {

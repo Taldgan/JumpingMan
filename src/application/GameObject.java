@@ -18,10 +18,8 @@ public class GameObject extends InputFunctions{
 	Scene menuScene;
 	Scene gameScene;
 	Scene deadScene;
+	Scene winScene;
 	Scene gameOverScene;
-
-	//Etc
-
 
 	double lastTime = System.currentTimeMillis();
 	double delta;
@@ -59,7 +57,6 @@ public class GameObject extends InputFunctions{
 		LevelManager.loadLevel();
 		LevelManager.mainGuy.setDead(false);
 		StateManager.gameState = State.PLAYING;
-		StateManager.currentLevel = Level.LEVEL1;
 	}
 
 	@FXML
@@ -87,9 +84,11 @@ public class GameObject extends InputFunctions{
 			LevelManager.level.getChildren().add(LevelManager.pauseLabel);
 			break;
 		case PLAYING:
-			LevelManager.livesRemaining.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX());
-			if(!LevelManager.level.getChildren().contains(LevelManager.livesRemaining))
-				LevelManager.level.getChildren().add(LevelManager.livesRemaining);
+			LevelManager.infoLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX());
+			if(!LevelManager.level.getChildren().contains(LevelManager.infoLabel)) 
+				LevelManager.level.getChildren().add(LevelManager.infoLabel);
+			if(!LevelManager.level.getChildren().contains(LevelManager.lifeCounter)) 
+				LevelManager.level.getChildren().add(LevelManager.lifeCounter);
 			Sounds.sPlayer.playSong(0);
 			this.root = new BorderPane(LevelManager.level);
 			this.gameScene = new Scene(root);
@@ -98,7 +97,6 @@ public class GameObject extends InputFunctions{
 			primaryStage.setScene(this.gameScene);
 			break;
 		case YOUDIED:
-			System.out.println("you died render");
 			Sounds.sPlayer.stopSong();
 			Sounds.sPlayer.playSFX(1);
 			view = FXMLLoader.load(getClass().getResource("/application/YouDied.fxml"));
@@ -112,6 +110,9 @@ public class GameObject extends InputFunctions{
 			primaryStage.setScene(this.gameOverScene);
 			break;
 		case YOUWON:
+			view = FXMLLoader.load(getClass().getResource("/application/YouWon.fxml"));
+			this.winScene = new Scene(view);
+			primaryStage.setScene(this.winScene);
 			break;
 		}
 		primaryStage.show();
@@ -144,8 +145,10 @@ public class GameObject extends InputFunctions{
 		for(Obstacle obstacle : LevelManager.allObjects) {
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
 				//Win if on last obstacle
-				if(obstacle.getColor() == Color.DARKSLATEGRAY) //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
+				if(obstacle.getColor() == Color.DARKSLATEGRAY) { //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
 					System.out.println("You win :^)");
+					win();
+				}
 				double diff;
 				//On top of the platform
 				if(charBot-12 <= obstacle.getY() && c.getdy() >= 0)
@@ -263,12 +266,11 @@ public class GameObject extends InputFunctions{
 		if(!LevelManager.mainGuy.getCollide())
 			LevelManager.mainGuy.setJumping(true);
 
-		//If he is jumping or walking, update his movement to match
+		//If he is jumping or walking, update his movement to match, also prevent max fall speed from exceeding 6.5
 		if (LevelManager.mainGuy.walking || LevelManager.mainGuy.jumping) {
 			LevelManager.mainGuy.move();
 			LevelManager.level.setTranslateX(LevelManager.level.getTranslateX() - LevelManager.mainGuy.getdx());
-			//LevelManager.level.setTranslateY(LevelManager.level.getTranslateY() - LevelManager.mainGuy.getdy());
-			if (LevelManager.mainGuy.jumping && LevelManager.mainGuy.getdy() < 5.5) {
+			if (LevelManager.mainGuy.jumping && LevelManager.mainGuy.getdy() < 6.5) {
 				LevelManager.mainGuy.setdy(LevelManager.mainGuy.getdy() + (gravity*calculate()));
 			}
 		}
@@ -351,7 +353,14 @@ public class GameObject extends InputFunctions{
 	}
 
 	public void updateLabels() {
-		LevelManager.livesRemaining.setText("Lives " + LevelManager.mainGuy.getLives());
-		LevelManager.livesRemaining.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX()+20);
+		LevelManager.infoLabel.setText("Level " + StateManager.currentLevel.ordinal());
+		LevelManager.infoLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX()+40);
+		LevelManager.lifeCounter.setTranslateY(LevelManager.infoLabel.getTranslateY()+65);
+		LevelManager.lifeCounter.setTranslateX(LevelManager.infoLabel.getTranslateX());
+	}
+	
+	public void win() {
+		StateManager.currentLevel = Level.values()[StateManager.currentLevel.ordinal()+1];
+		StateManager.gameState = State.YOUWON;
 	}
 }

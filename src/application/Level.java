@@ -1,5 +1,5 @@
 package application;
 
 public enum Level {
-	SECRET, LEVEL1, LEVEL2
+	DEMO, LEVEL1, LEVEL2
 }
