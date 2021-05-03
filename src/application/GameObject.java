@@ -37,7 +37,6 @@ public class GameObject extends InputFunctions{
 	//Platform vars
 	ArrayList<Obstacle> pList1 = new ArrayList<Obstacle>();
 	ArrayList<Obstacle> pList2 = new ArrayList<Obstacle>();
-	ArrayList<Obstacle> pList3 = new ArrayList<Obstacle>();
 
 	Group groundSet1 = spawnGround(lvl1GSet1, 0, 0,  Color.SADDLEBROWN, Color.GREEN, gList);
 	Group platformSet1 = spawnPlatforms(lvl1Set1,0,0,Color.SADDLEBROWN, Color.GREEN, pList1);
@@ -92,7 +91,6 @@ public class GameObject extends InputFunctions{
 		allObs.addAll(gList);
 		allObs.addAll(pList1);
 		allObs.addAll(pList2);
-		allObs.addAll(pList3);
 		allObs.addAll(oList1);
 
 		theVoid.setY(-2500);
@@ -541,7 +539,6 @@ public class GameObject extends InputFunctions{
 		}
 
 	}
-
 	public void updateLabels() {
 		livesRemaining.setText("Lives " + mainGuy.getLives());
 		livesRemaining.setTranslateX(mainGuy.getCharacter().getTranslateX()+20);
