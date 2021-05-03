@@ -9,7 +9,7 @@ public class Character {
 	int lives;
 	static Boolean dead;
 	Boolean jumping, walking;
-	double dx, dy;
+	double dx, dy, platdx = 0, platdy = 0;
 	double x, y, minY = 280;
 	double prevX, prevY, prevTranslateX, prevTranslateY;
 	double size;
@@ -19,6 +19,7 @@ public class Character {
 	double groundLvl;
 	double radius;
 	private boolean dir;
+	double collisionTimeDelta = 0, startTime = 0;
 
 	public Character(double x, double y, double size, Color color) {
 		lives = 3;
@@ -68,9 +69,9 @@ public class Character {
 		prevY = this.y;
 		prevTranslateX = this.getCharacter().getTranslateX();
 		prevTranslateY = this.getCharacter().getTranslateY();
-		this.character.setTranslateX(this.character.getTranslateX() + getdx());
+		this.character.setTranslateX(this.character.getTranslateX() + getdx() + getPlatdx());
 		setx(this.character.getCenterX() + this.character.getTranslateX());
-		this.character.setTranslateY(this.character.getTranslateY() + getdy());
+		this.character.setTranslateY(this.character.getTranslateY() + getdy() + getPlatdy());
 		sety(this.character.getCenterY() + this.character.getTranslateY());
 	}
 
@@ -167,7 +168,17 @@ public class Character {
 	}
 
 	public void setCollide(boolean collide) {
+		if(collide) {
+			startTime = System.currentTimeMillis();
+		}
+		else {
+			collisionTimeDelta = System.currentTimeMillis() - startTime;
+		}
 		this.collide = collide;
+	}
+	
+	public double getCollisionDelta() {
+		return this.collisionTimeDelta;
 	}
 
 	public boolean getCollideLeft() {
@@ -256,4 +267,18 @@ public class Character {
 	public Boolean getDead() {
 		return this.dead;
 	}
+	
+	public double getPlatdx() {
+		return this.platdx;
+	}
+	public double getPlatdy() {
+		return this.platdy;
+	}
+	public void setPlatdx(double platdx) {
+		this.platdx = platdx;
+	}
+	public void setPlatdy(double platdy) {
+		this.platdy = platdy;
+	}
 }
+	

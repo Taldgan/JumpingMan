@@ -37,7 +37,8 @@ public class LevelManager {
 	static ArrayList<Obstacle> upperPlatList;
 	static ArrayList<Obstacle> obstacleList;
 	static ArrayList<MovingObstacle> movingPlatList;
-	static ArrayList<Obstacle> allObjects;
+	static ArrayList<Obstacle> allStaticObjects;
+	static ArrayList<MovingObstacle> allMovingObjects;
 	static ArrayList<Enemies> enemyList;
 	
 	//Background
@@ -88,7 +89,8 @@ public class LevelManager {
 		upperPlatList = new ArrayList<Obstacle>();
 		movingPlatList = new ArrayList<MovingObstacle>();
 		obstacleList = new ArrayList<Obstacle>();
-		allObjects = new ArrayList<Obstacle>();
+		allStaticObjects = new ArrayList<Obstacle>();
+		allMovingObjects = new ArrayList<MovingObstacle>();
 		enemyList = new ArrayList<Enemies>();
 
 		mainGuy = new Character(spawnX, spawnY, 20, Color.RED);
@@ -99,19 +101,21 @@ public class LevelManager {
 		ground = spawnGround(groundString, 0, 0, groundColor, grassColor, groundList);
 		lowerPlatforms = spawnPlatforms(lowerPlatString,0,0, platColor, grassColor, lowerPlatList);
 		upperPlatforms = spawnPlatforms(upperPlatString,0,0, platColor, grassColor, upperPlatList);
-		//movingPlatforms = spawnMovingPlatforms(movingPlatString, 0, 0 grassColor, grassColor, movingPlatList);
+		movingPlatforms = spawnMovingPlatforms(movingPlatString, 0, 50, grassColor, movingPlatList);
 		obstacles = spawnObstacles(obstacleString, obstacleWidth, obstacleHeight, Color.DARKGREEN, obstacleList);
 		enemies = spawnEnemies(enemyString, groundString);
-		level = new Group(background, ground, lowerPlatforms, upperPlatforms, /*movingPlatforms,*/ obstacles, enemies, mainGuy.getCharacter());
+		level = new Group(background, ground, lowerPlatforms, upperPlatforms, movingPlatforms, obstacles, enemies, mainGuy.getCharacter());
 		level.setManaged(false);
 
-		//Add all object lists to allObjects for easier collision
-		allObjects.addAll(groundList);
-		allObjects.addAll(lowerPlatList);
-		allObjects.addAll(upperPlatList);
-		allObjects.addAll(movingPlatList);
-		allObjects.addAll(obstacleList);
-		
+		//Add all static object lists to allStaticObjects for easier collision
+		allStaticObjects.addAll(groundList);
+		allStaticObjects.addAll(lowerPlatList);
+		allStaticObjects.addAll(upperPlatList);
+		allStaticObjects.addAll(obstacleList);
+
+		//Add all moving object lists to allMovingObjects for moving collision
+		allMovingObjects.addAll(movingPlatList);
+
 		//Lastly, set labels
 		pauseLabel.setTranslateY(LevelManager.groundLevel-400);
 		pauseLabel.setFont(new Font("Blocky Font", 50));
@@ -214,7 +218,32 @@ public class LevelManager {
 		return groundG;
 
 	}
+	
+	private static Group spawnMovingPlatforms(String lvl, int offsetX, int offsetY, Color c, ArrayList<MovingObstacle> pList) {
+		Group platG = new Group();
+		double groundLvlOffset = groundLevel - 45;
+		for(int x = 0; x < lvl.length()-1;x++)
+		{
+			if(lvl.charAt(x) != '0') //If the current char is not 0, create a platform in that spot.
+			{
+				//Spawn platform based off of char's location in string
+				//Each char will be 90 pixels of space, and will spawn at a height of 265-(y*45)
+				//charAt(x) determines offset of platform, charAt(x+1) determines how far to move before returning 
 
+				MovingObstacle r = new MovingObstacle((int) (tileWidth),25,c, Integer.parseInt(String.valueOf(lvl.charAt((x+1))))*tileWidth); //Platforms are 90x25
+				pList.add(r);
+				platG.getChildren().add(r.getPlat());
+				platG.getChildren().add(r.getPlatTop());
+
+				r.setX(tileWidth*x+offsetX);
+				r.setStartEndX(tileWidth*x+offsetX);
+				r.setY(groundLvlOffset-groundOffsets.get(x)+Integer.parseInt(String.valueOf(lvl.charAt(x)))*45*-1-offsetY);
+				x++;
+			}
+		}
+		return platG;
+	}
+		
 	private static Group spawnPlatforms(String lvl, int offsetX, int offsetY, Color c, Color cTop, ArrayList<Obstacle> pList) 
 	{
 		//lvl string: 

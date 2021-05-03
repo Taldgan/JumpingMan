@@ -39,13 +39,15 @@ public class GameObject extends InputFunctions{
 
 	public void update() {
 		updateMC();
+		updateMovPlats();
+		checkMovingCollision(LevelManager.mainGuy);
+		checkCollision(LevelManager.mainGuy);
 		updateEnemies();
 		updateLabels();
 	}
 
 	@FXML
 	public void mainMenu(ActionEvent e) {
-		System.out.println("mainMenu called");
 		StateManager.prevMenu = State.GAMEOVER;
 		StateManager.gameState = State.MAINMENU;
 	}
@@ -140,11 +142,10 @@ public class GameObject extends InputFunctions{
 		double charRight = c.getx()-c.getCharacter().getRadius();
 		double charRad = c.getCharacter().getRadius();
 
-		for(Obstacle obstacle : LevelManager.allObjects) {
+		for(Obstacle obstacle : LevelManager.allStaticObjects) {
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
 				//Win if on last obstacle
 				if(obstacle.getColor() == Color.DARKSLATEGRAY) { //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
-					System.out.println("You win :^)");
 					win();
 				}
 				double diff;
@@ -217,7 +218,52 @@ public class GameObject extends InputFunctions{
 				LevelManager.mainGuy.setCollideRight(false);
 			}
 		}
+		
 	}
+	
+	public void checkMovingCollision(Character c) {
+		//character bound variables for readability
+		double charTop = c.gety()-c.getCharacter().getRadius();
+		double charBot = c.gety()+c.getCharacter().getRadius();
+		double charLeft = c.getx()+c.getCharacter().getRadius();
+		double charRight = c.getx()-c.getCharacter().getRadius();
+		double charRad = c.getCharacter().getRadius();
+		//moving platforms... add velocity to player
+		for(MovingObstacle obstacle : LevelManager.allMovingObjects) {
+
+			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
+				double diff;
+				//On top of the platform
+				if(charBot-25 <= obstacle.getY() && c.getdy() >= 0)
+				{
+					diff = LevelManager.level.getTranslateY() + (c.gety() - c.getPrevY());
+					c.setCollide(true);
+					if(c.getColor() == Color.RED)
+					{
+						c.setGroundLvl(c.gety());
+						c.setdy(-0.005);
+						//c.getCharacter().setTranslateY(LevelManager.mainGuy.getPrevTranslateY());
+						//c.getCharacter().setTranslateX(c.getCharacter().getTranslateX() + obstacle.getdx()) ;
+						c.setPlatdx(obstacle.getdx());
+						c.setPlatdy(obstacle.getdy());
+						//LevelManager.level.setTranslateX(LevelManager.level.getTranslateX() -  obstacle.getdx());
+						c.getCharacter().setTranslateY(c.getCharacter().getTranslateY() + obstacle.getdy());
+						c.setJumping(false);
+					}
+				}
+			}
+			else {
+				c.setCollide(false);
+				LevelManager.mainGuy.setCollideLeft(false);
+				LevelManager.mainGuy.setCollideRight(false);
+			}
+			if(c.getCollisionDelta() > 150) {
+				c.setPlatdx(0);
+				c.setPlatdy(0);
+			}
+		}
+	}
+	
 
 	//Method for enemies to turn around if they are next to a hole.
 	public void groundCheck(Enemies e, String holes)
@@ -241,19 +287,17 @@ public class GameObject extends InputFunctions{
 	public int findNearestHole(String holes)
 	{
 		int pos = (int)LevelManager.mainGuy.getx()/LevelManager.tileWidth-1; //position in string
-		System.out.println("pos: "+pos);
 		for(int x = pos; x >= 0; x--)
 		{
-			System.out.println(x+": current char: "+holes.charAt(x));
 			if(holes.charAt(x) != '0')
 			{
 				int spawnPoint = (x+1)*LevelManager.tileWidth-20;
-				System.out.println("Spawn found, "+holes.charAt(x)+" at "+ spawnPoint);
 				return spawnPoint;
 			}
 		}
 		return 250; //Should never reach here.
 	}
+
 
 	//Update methods
 
@@ -261,37 +305,20 @@ public class GameObject extends InputFunctions{
 		if(LevelManager.mainGuy.getDead() || LevelManager.mainGuy.gety() > 800)
 			LevelManager.mainGuy.dead(LevelManager.level,findNearestHole(LevelManager.groundString));
 		//If LevelManager.mainGuy is not touching top of platform, he must be jumping/falling
-		if(!LevelManager.mainGuy.getCollide())
+		if(!LevelManager.mainGuy.getCollide()) {
 			LevelManager.mainGuy.setJumping(true);
+		}
 
 		//If he is jumping or walking, update his movement to match, also prevent max fall speed from exceeding 6.5
 		if (LevelManager.mainGuy.walking || LevelManager.mainGuy.jumping) {
 			LevelManager.mainGuy.move();
-			LevelManager.level.setTranslateX(LevelManager.level.getTranslateX() - LevelManager.mainGuy.getdx());
+			LevelManager.level.setTranslateX(LevelManager.level.getTranslateX() - LevelManager.mainGuy.getdx() - LevelManager.mainGuy.getPlatdx());
 			if (LevelManager.mainGuy.jumping && LevelManager.mainGuy.getdy() < 6.5) {
 				LevelManager.mainGuy.setdy(LevelManager.mainGuy.getdy() + (gravity*calculate()));
 			}
 		}
-
-		//Prevent LevelManager.mainGuy from moving faster than 5 units left/right
-		if (LevelManager.mainGuy.getdx() > 5)
-			LevelManager.mainGuy.setdx(5);
-		if (LevelManager.mainGuy.getdx() < -5)
-			LevelManager.mainGuy.setdx(-5);
-
-		//???
-		if (LevelManager.mainGuy.getdx() != 0 && !LevelManager.mainGuy.walking) {
-			if (LevelManager.mainGuy.getdx() > 0)
-				LevelManager.mainGuy.setdx(LevelManager.mainGuy.getdx()-0.25);
-			if (LevelManager.mainGuy.getdx() < 0)
-				LevelManager.mainGuy.setdx(LevelManager.mainGuy.getdx()+0.25);
-			LevelManager.level.setTranslateX(LevelManager.level.getTranslateX() - LevelManager.mainGuy.getdx());
-			//LevelManager.level.setTranslateY(LevelManager.level.getTranslateY() - LevelManager.mainGuy.getdy());
-			LevelManager.mainGuy.move();
-		}
-		checkCollision(LevelManager.mainGuy);
 	}
-	
+
 	public void updateEnemies() {
 		//=====================================================
 		//Update enemies
@@ -305,7 +332,6 @@ public class GameObject extends InputFunctions{
 
 				if(LevelManager.enemyList.get(x).getJumping() && LevelManager.enemyList.get(x).gety() > LevelManager.enemyList.get(x).getInitY())
 				{
-					//System.out.println("Enemy not jumping");
 					LevelManager.enemyList.get(x).setdy(0); //down
 					LevelManager.enemyList.get(x).setJumping(false);
 				}
@@ -335,7 +361,6 @@ public class GameObject extends InputFunctions{
 			//Check collision with the player
 			if(LevelManager.enemyList.get(x).collide(LevelManager.mainGuy.getx(),LevelManager.mainGuy.gety(),LevelManager.mainGuy.getRadius(),LevelManager.mainGuy.getRadius()))
 			{
-				//Player got hit, go to game over screen or whatever. For now, change the enemy's color.
 				LevelManager.enemyList.get(x).getCharacter().setFill(Color.YELLOW);
 				LevelManager.mainGuy.setDead(true);
 				LevelManager.mainGuy.setdx(0);
@@ -350,13 +375,20 @@ public class GameObject extends InputFunctions{
 
 	}
 
+	public void updateMovPlats() {
+		for(MovingObstacle obstacle : LevelManager.allMovingObjects) {
+			if(obstacle.isMoving()) {
+				obstacle.move();
+			}
+		}
+	}
 	public void updateLabels() {
 		LevelManager.infoLabel.setText("Level " + StateManager.currentLevel.ordinal());
 		LevelManager.infoLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX()+40);
 		LevelManager.lifeCounter.setTranslateY(LevelManager.infoLabel.getTranslateY()+65);
 		LevelManager.lifeCounter.setTranslateX(LevelManager.infoLabel.getTranslateX());
 	}
-	
+
 	public void win() {
 		StateManager.currentLevel = Level.values()[StateManager.currentLevel.ordinal()+1];
 		StateManager.gameState = State.YOUWON;
