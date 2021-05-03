@@ -7,7 +7,7 @@ public class Obstacle implements Collidable {
 	
 	private boolean collidable = true;
 	private Rectangle platform, platTop;
-	private double width, height, x, y;
+	private double width, height, x, y, dx, dy;
 	private boolean collided;
 	private Color initColor;
 	
@@ -102,5 +102,20 @@ public class Obstacle implements Collidable {
 	public Color getColor() {
 		return initColor;
 	}
+	public double getdx() {
+		return this.dx;
+	}
+	public double getdy() {
+		return this.dy;
+	}
+	public void setdx(double dx) {
+		this.dx = dx;
+	}
+	public void setdy(double dy) {
+		this.dy = dy;
+	}
+
+
+
 
 }
