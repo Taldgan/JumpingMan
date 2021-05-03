@@ -39,8 +39,6 @@ public class GameObject extends InputFunctions{
 
 	public void update() {
 		updateMC();
-		System.out.println("LevelManager.mainGuy X: " + LevelManager.mainGuy.getx() + " TranslateX: " + LevelManager.mainGuy.getCharacter().getTranslateX());
-		System.out.println("LevelManager.mainGuy Y: " + LevelManager.mainGuy.gety() + " TranslateY: " + LevelManager.mainGuy.getCharacter().getTranslateY());
 		updateEnemies();
 		updateLabels();
 	}
