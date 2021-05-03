@@ -23,14 +23,16 @@ public class LevelManager {
 	
 	//List vars, lists of objects containing location data
 	static ArrayList<Obstacle> groundList = new ArrayList<Obstacle>();
-	static ArrayList<Integer> groundOffsets;
+	static ArrayList<Integer> groundOffsets = new ArrayList<Integer>();
 	static ArrayList<Obstacle> lowerPlatList = new ArrayList<Obstacle>();
 	static ArrayList<Obstacle> upperPlatList = new ArrayList<Obstacle>();
 	static ArrayList<Obstacle> obstacleList = new ArrayList<Obstacle>();
+	static ArrayList<Obstacle> allObjects = new ArrayList<Obstacle>();
 	static ArrayList<Enemies> enemyList = new ArrayList<Enemies>();
 
 	
 	public static void loadLevel() {
+		//Read in level data to strings
 		Scanner levelReader = new Scanner("levels/" + StateManager.currentLevel + ".lvl");
 		groundString = levelReader.nextLine();
 		lowerPlatString = levelReader.nextLine();
@@ -38,12 +40,20 @@ public class LevelManager {
 		obstacleString = levelReader.nextLine();
 		enemyString = levelReader.nextLine();
 		levelReader.close();
+
+		//Assign groups using spawn methods
 		ground = spawnGround(groundString, 0, 0,  Color.SADDLEBROWN, Color.GREEN, groundList);
 		lowerPlatforms = spawnPlatforms(lowerPlatString,0,0,Color.SADDLEBROWN, Color.GREEN, lowerPlatList);
 		upperPlatforms = spawnPlatforms(upperPlatString,0,0,Color.SADDLEBROWN, Color.GREEN, lowerPlatList);
 		obstacles = spawnObstacles(obstacleString, obstacleWidth, obstacleHeight, Color.DARKGREEN, obstacleList);
 		enemies = spawnEnemies(enemyString, groundString);
 		level = new Group(ground, lowerPlatforms, upperPlatforms, obstacles, enemies);
+
+		//Add all object lists to allObjects for easier collision
+		allObjects.addAll(groundList);
+		allObjects.addAll(lowerPlatList);
+		allObjects.addAll(upperPlatList);
+		allObjects.addAll(obstacleList);
 	}
 
 	private static Group spawnEnemies(String eSet, String groundSet)
