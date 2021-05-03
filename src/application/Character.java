@@ -20,6 +20,7 @@ public class Character {
 	double radius;
 	private boolean dir;
 	double collisionTimeDelta = 0, startTime = 0;
+	Score score = new Score();
 
 	public Character(double x, double y, double size, Color color) {
 		lives = 3;
@@ -38,8 +39,13 @@ public class Character {
 		setColor(color);
 		setCharacter(x, y, size, color);
 	}
+	
+	public void play() {
+		score.start(getLives());
+	}
 
 	public void dead(Group group, int respawnX) {
+		score.stop(getLives());
 		if (gety() > 800 || dead) {
 			setDead(true);
 			setLives(getLives() - 1);

@@ -55,12 +55,14 @@ public class GameObject extends InputFunctions{
 	@FXML 
 	public void newGame(ActionEvent event) {
 		LevelManager.loadLevel();
+		LevelManager.mainGuy.play();
 		LevelManager.mainGuy.setDead(false);
 		StateManager.gameState = State.PLAYING;
 	}
 
 	@FXML
 	public void playAgain(ActionEvent e) {
+		LevelManager.mainGuy.play();
 		StateManager.gameState = State.PLAYING;
 		LevelManager.mainGuy.setDead(false);
 	}
@@ -395,6 +397,7 @@ public class GameObject extends InputFunctions{
 	}
 
 	public void win() {
+		System.out.println("Score: " + LevelManager.mainGuy.score.calculateScore(LevelManager.mainGuy.getLives()));
 		StateManager.gameState = State.YOUWON;
 		StateManager.currentLevel = Level.LEVEL1;
 	}
@@ -404,6 +407,7 @@ public class GameObject extends InputFunctions{
 		if(Level.values()[StateManager.currentLevel.ordinal()+1] != Level.END) {
 			StateManager.currentLevel = Level.values()[StateManager.currentLevel.ordinal()+1];
 			StateManager.gameState = State.NEXTLEVEL;
+			LevelManager.mainGuy.score.stop(LevelManager.mainGuy.getLives());
 		}
 		else {
 			System.out.println("else...");
