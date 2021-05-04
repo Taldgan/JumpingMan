@@ -165,7 +165,7 @@ public class GameObject extends InputFunctions{
 		for(Obstacle obstacle : LevelManager.allStaticObjects) {
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
 				//Win if on last obstacle
-				if(obstacle.getColor() == Color.WHITESMOKE) { //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
+				if(obstacle.getColor() == Color.WHITESMOKE && c.getColor() == Color.RED) { //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
 					
 					//might need to move this somewhere else but idrk where else it would work
 					//System.out.println("pole score: " + Math.abs(LevelManager.mainGuy.gety()-800));
