@@ -41,8 +41,8 @@ public class GameObject extends InputFunctions{
 
 		updateMC();
 		updateMovPlats();
-		checkMovingCollision(LevelManager.mainGuy);
 		checkCollision(LevelManager.mainGuy);
+		checkMovingCollision(LevelManager.mainGuy);
 		updateEnemies();
 		updateLabels();
 	}
@@ -152,6 +152,7 @@ public class GameObject extends InputFunctions{
 
 		for(Obstacle obstacle : LevelManager.allStaticObjects) {
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
+				System.out.println("COLLIDE");
 				//Win if on last obstacle
 				if(obstacle.getColor() == Color.WHITESMOKE) { //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
 					nextLevel();
@@ -160,7 +161,7 @@ public class GameObject extends InputFunctions{
 				//On top of the platform
 				if(charBot-12 <= obstacle.getY() && c.getdy() >= 0)
 				{
-					System.out.println("top collision");
+					//System.out.println("top collision");
 					
 					diff = LevelManager.level.getTranslateY() + (c.gety() - c.getPrevY());
 					c.setCollide(true);
@@ -175,7 +176,7 @@ public class GameObject extends InputFunctions{
 
 				}
 				//Left of platform collision:
-				if(charLeft <= obstacle.getX()) {
+				if(charLeft <= obstacle.getX()+15) {
 
 					c.setCollideRight(true);
 					diff = LevelManager.level.getTranslateX() + (c.getx() - c.getPrevX());
@@ -193,7 +194,7 @@ public class GameObject extends InputFunctions{
 
 				}
 				//Right of platform collision:
-				else if(charRight >= obstacle.getX()+obstacle.getWidth()) {
+				else if(charRight >= obstacle.getX()+obstacle.getWidth()-15) {
 					c.setCollideLeft(true);
 					diff = LevelManager.level.getTranslateX() + (c.getx() - c.getPrevX());
 					if(c.getColor() == Color.RED)
@@ -253,20 +254,15 @@ public class GameObject extends InputFunctions{
 	
 	public void checkMovingCollision(Character c) {
 		//character bound variables for readability
-		double charTop = c.gety()-c.getCharacter().getRadius();
 		double charBot = c.gety()+c.getCharacter().getRadius();
-		double charLeft = c.getx()+c.getCharacter().getRadius();
-		double charRight = c.getx()-c.getCharacter().getRadius();
 		double charRad = c.getCharacter().getRadius();
 		//moving platforms... add velocity to player
 		for(MovingObstacle obstacle : LevelManager.allMovingObjects) {
 
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
-				double diff;
 				//On top of the platform
-				if(charBot-25 <= obstacle.getY() && c.getdy() >= 0)
+				if(charBot-12 <= obstacle.getY() && c.getdy() >= 0)
 				{
-					diff = LevelManager.level.getTranslateY() + (c.gety() - c.getPrevY());
 					c.setCollide(true);
 					if(c.getColor() == Color.RED)
 					{
@@ -282,12 +278,11 @@ public class GameObject extends InputFunctions{
 			}
 			else {
 				c.setCollide(false);
-				LevelManager.mainGuy.setCollideLeft(false);
-				LevelManager.mainGuy.setCollideRight(false);
 			}
 			if(c.getCollisionDelta() > 100) {
 				c.setPlatdx(0);
 				c.setPlatdy(0);
+				c.setOnMovingPlat(false);
 			}
 		}
 	}
@@ -333,12 +328,17 @@ public class GameObject extends InputFunctions{
 		if(LevelManager.mainGuy.getDead() || LevelManager.mainGuy.gety() > 800)
 			LevelManager.mainGuy.dead(LevelManager.level,findNearestHole(LevelManager.groundString));
 		//If LevelManager.mainGuy is not touching top of platform, he must be jumping/falling
-		if(!LevelManager.mainGuy.getCollide() && LevelManager.mainGuy.getCollisionDelta() > 200) {
+		if(!LevelManager.mainGuy.getCollide()) {
 			LevelManager.mainGuy.setJumping(true);
 		}
 
 		//If he is jumping or walking, update his movement to match, also prevent max fall speed from exceeding 6.5
 		if (LevelManager.mainGuy.walking || LevelManager.mainGuy.jumping || LevelManager.mainGuy.getOnMovingPlat()) {
+			System.out.println("x " + LevelManager.mainGuy.getx());
+			System.out.println("dx " + LevelManager.mainGuy.getdx());
+			System.out.println("platdx " + LevelManager.mainGuy.getPlatdx());
+			System.out.println("prevX " + LevelManager.mainGuy.getPrevX());
+			System.out.println("onMPlat " + LevelManager.mainGuy.getOnMovingPlat());
 			LevelManager.mainGuy.move();
 			LevelManager.level.setTranslateX(LevelManager.level.getTranslateX() - LevelManager.mainGuy.getdx() - LevelManager.mainGuy.getPlatdx());
 			if (LevelManager.mainGuy.jumping && LevelManager.mainGuy.getdy() < 6.5) {
