@@ -40,8 +40,6 @@ public class GameObject extends InputFunctions{
 	public void update() {
 
 		updateMC();
-		System.out.println("MainGuy 'Jumping': " + LevelManager.mainGuy.getJumping());
-		System.out.println("collisionDelta: " + LevelManager.mainGuy.getCollisionDelta());
 		updateMovPlats();
 		checkMovingCollision(LevelManager.mainGuy);
 		checkCollision(LevelManager.mainGuy);

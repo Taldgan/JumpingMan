@@ -19,23 +19,23 @@ public class LevelManager {
 	//Level/Object Size integers
 	public static int groundLevel = 700;
 	public static int tileWidth = 125;
-	private static int obstacleWidth = 50;
-	private static int obstacleHeight = 50;
+	private static int pointBoxWidth = 40;
+	private static int pointBoxHeight = 40;
 
 	//Level Strings for Obstacle x/y locations in level
 	static String groundString, lowerPlatString, upperPlatString, 
-	movingPlatString, obstacleString, enemyString; 
+	movingPlatString, pointBoxString, enemyString; 
 
 	//Group vars, for altering level object positions
 	static Group ground, lowerPlatforms, upperPlatforms, movingPlatforms,
-	level, obstacles, enemies;
+	level, pointBoxes, enemies;
 	
 	//List vars, lists of objects containing location data
 	static ArrayList<Obstacle> groundList;
 	static ArrayList<Integer> groundOffsets;
 	static ArrayList<Obstacle> lowerPlatList;
 	static ArrayList<Obstacle> upperPlatList;
-	static ArrayList<Obstacle> obstacleList;
+	static ArrayList<PointBox> pointBoxList;
 	static ArrayList<MovingObstacle> movingPlatList;
 	static ArrayList<Obstacle> allStaticObjects;
 	static ArrayList<MovingObstacle> allMovingObjects;
@@ -75,7 +75,7 @@ public class LevelManager {
 			lowerPlatString = levelReader.readLine();
 			upperPlatString = levelReader.readLine();
 			movingPlatString = levelReader.readLine();
-			obstacleString = levelReader.readLine();
+			pointBoxString = levelReader.readLine();
 			enemyString = levelReader.readLine();
 			levelReader.close();
 		} catch (IOException e) {
@@ -89,7 +89,7 @@ public class LevelManager {
 		lowerPlatList = new ArrayList<Obstacle>();
 		upperPlatList = new ArrayList<Obstacle>();
 		movingPlatList = new ArrayList<MovingObstacle>();
-		obstacleList = new ArrayList<Obstacle>();
+		pointBoxList = new ArrayList<PointBox>();
 		allStaticObjects = new ArrayList<Obstacle>();
 		allMovingObjects = new ArrayList<MovingObstacle>();
 		enemyList = new ArrayList<Enemies>();
@@ -104,17 +104,21 @@ public class LevelManager {
 		lowerPlatforms = spawnPlatforms(lowerPlatString,0,0, platColor, grassColor, lowerPlatList);
 		upperPlatforms = spawnPlatforms(upperPlatString,0,0, platColor, grassColor, upperPlatList);
 		movingPlatforms = spawnMovingPlatforms(movingPlatString, 0, 50, grassColor, movingPlatList);
-		obstacles = spawnObstacles(obstacleString, obstacleWidth, obstacleHeight, Color.DARKGREEN, obstacleList);
+//<<<<<<< HEAD
+//		obstacles = spawnObstacles(obstacleString, obstacleWidth, obstacleHeight, Color.DARKGREEN, obstacleList);
 		
+//=======
+		pointBoxes = spawnPointBoxes(pointBoxString, pointBoxWidth, pointBoxHeight, Color.web("0xF5E101"), pointBoxList);		
+//>>>>>>> branch 'master' of https://github.com/Taldgan/SemesterProject.git
 		enemies = spawnEnemies(enemyString, groundString);
-		level = new Group(background, ground, lowerPlatforms, upperPlatforms, movingPlatforms, obstacles, enemies, mainGuy.getCharacter());
+		level = new Group(background, ground, lowerPlatforms, upperPlatforms, movingPlatforms, pointBoxes, enemies, mainGuy.getCharacter());
 		level.setManaged(false);
 
 		//Add all static object lists to allStaticObjects for easier collision
 		allStaticObjects.addAll(groundList);
 		allStaticObjects.addAll(lowerPlatList);
 		allStaticObjects.addAll(upperPlatList);
-		allStaticObjects.addAll(obstacleList);
+		allStaticObjects.addAll(pointBoxList);
 
 		//Add all moving object lists to allMovingObjects for moving collision
 		allMovingObjects.addAll(movingPlatList);
@@ -284,14 +288,14 @@ public class LevelManager {
 		return platG;
 	}
 
-	private static Group spawnObstacles(String lvl, int sizeX, int sizeY, Color c, ArrayList<Obstacle> oList)
+	private static Group spawnPointBoxes(String lvl, int sizeX, int sizeY, Color c, ArrayList<PointBox> oList)
 	{
 		Group obsGroup = new Group();
 		for(int x = 0; x < lvl. length(); x++)
 		{
 			if(lvl.charAt(x) != '0') //If the current char is not 0, create a platform in that spot.
 			{
-				Obstacle o = new Obstacle(sizeX,sizeY, c);
+				PointBox o = new PointBox(sizeX,sizeY, c);
 				o.setX(tileWidth*x);
 				o.setY(groundLevel-groundOffsets.get(x)-(Integer.parseInt(String.valueOf(lvl.charAt(x))))*sizeY);
 				oList.add(o);
