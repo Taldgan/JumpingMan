@@ -55,8 +55,10 @@ public class GameObject extends InputFunctions{
 
 	@FXML 
 	public void newGame(ActionEvent event) {
-		if(LevelManager.lifeCount == 0) 
+		if(LevelManager.lifeCount == 0) {
 			LevelManager.lifeCount = 3;
+			StateManager.currentLevel = Level.LEVEL1;
+		}
 		LevelManager.loadLevel();
 		LevelManager.mainGuy.play();
 		LevelManager.mainGuy.setDead(false);
