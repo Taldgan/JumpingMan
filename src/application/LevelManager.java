@@ -35,7 +35,7 @@ public class LevelManager {
 	static ArrayList<Integer> groundOffsets;
 	static ArrayList<Obstacle> lowerPlatList;
 	static ArrayList<Obstacle> upperPlatList;
-	static ArrayList<Obstacle> pointBoxList;
+	static ArrayList<PointBox> pointBoxList;
 	static ArrayList<MovingObstacle> movingPlatList;
 	static ArrayList<Obstacle> allStaticObjects;
 	static ArrayList<MovingObstacle> allMovingObjects;
@@ -89,7 +89,7 @@ public class LevelManager {
 		lowerPlatList = new ArrayList<Obstacle>();
 		upperPlatList = new ArrayList<Obstacle>();
 		movingPlatList = new ArrayList<MovingObstacle>();
-		pointBoxList = new ArrayList<Obstacle>();
+		pointBoxList = new ArrayList<PointBox>();
 		allStaticObjects = new ArrayList<Obstacle>();
 		allMovingObjects = new ArrayList<MovingObstacle>();
 		enemyList = new ArrayList<Enemies>();
@@ -283,14 +283,14 @@ public class LevelManager {
 		return platG;
 	}
 
-	private static Group spawnPointBoxes(String lvl, int sizeX, int sizeY, Color c, ArrayList<Obstacle> oList)
+	private static Group spawnPointBoxes(String lvl, int sizeX, int sizeY, Color c, ArrayList<PointBox> oList)
 	{
 		Group obsGroup = new Group();
 		for(int x = 0; x < lvl. length(); x++)
 		{
 			if(lvl.charAt(x) != '0') //If the current char is not 0, create a platform in that spot.
 			{
-				Obstacle o = new Obstacle(sizeX,sizeY, c);
+				PointBox o = new PointBox(sizeX,sizeY, c);
 				o.setX(tileWidth*x);
 				o.setY(groundLevel-groundOffsets.get(x)-(Integer.parseInt(String.valueOf(lvl.charAt(x))))*sizeY);
 				oList.add(o);
