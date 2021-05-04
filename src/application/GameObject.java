@@ -171,7 +171,7 @@ public class GameObject extends InputFunctions{
 					//System.out.println("pole score: " + Math.abs(LevelManager.mainGuy.gety()-800));
 					LevelManager.score.finalScore += Math.abs(LevelManager.mainGuy.gety()-800);
 					
-					LevelManager.mainGuy.winPlatX = (int) obstacle.getX()-80;
+					LevelManager.mainGuy.winPlatX = (int) obstacle.getX();
 					nextLevel();
 				}
 				double diff;
@@ -431,25 +431,15 @@ public class GameObject extends InputFunctions{
 	}
 
 	public void win() {
-		LevelManager.lifeCount = 3;
-		//finalScore.setText("" + LevelManager.score.finalScore);
-		StateManager.gameState = State.YOUWON;
-		StateManager.currentLevel = Level.LEVEL1;
-		LevelManager.levelOver();
 	}
 	
 	public void nextLevel() {
-		if(Level.values()[StateManager.currentLevel.ordinal()+1] != Level.END) {
-			StateManager.currentLevel = Level.values()[StateManager.currentLevel.ordinal()+1];
-			Sounds.sPlayer.playSFX(4);
-			Sounds.sPlayer.stopSong();
-			LevelManager.mainGuy.setWinning(true);
-			LevelManager.mainGuy.setWinACount(420);
-			StateManager.gameState = State.WINNING;
-		}
-		else {
-			win();
-		}
+		StateManager.currentLevel = Level.values()[StateManager.currentLevel.ordinal()+1];
+		Sounds.sPlayer.playSFX(4);
+		Sounds.sPlayer.stopSong();
+		LevelManager.mainGuy.setWinning(true);
+		LevelManager.mainGuy.setWinACount(420);
+		StateManager.gameState = State.WINNING;
 	}
 
 	public void updatePointBoxes() {

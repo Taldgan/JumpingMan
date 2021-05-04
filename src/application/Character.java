@@ -128,7 +128,7 @@ public class Character {
 		setdx(0);
 		if(winAnimationCount > 0) {
 			if(winAnimationCount >= 419) {
-				character.setTranslateX(winPlatX-140);
+				character.setTranslateX(winPlatX-220);
 			}
 			setdy(0);
 			if(winAnimationCount % 15 == 0) {
@@ -156,8 +156,16 @@ public class Character {
 			winAnimationCount--;
 		}
 		else {
-			StateManager.gameState = State.NEXTLEVEL;
-			LevelManager.levelOver();
+			if(StateManager.currentLevel == Level.END) {
+				LevelManager.lifeCount = 3;
+				StateManager.gameState = State.YOUWON;
+				StateManager.currentLevel = Level.LEVEL1;
+				LevelManager.levelOver();
+			}
+			else {
+				StateManager.gameState = State.NEXTLEVEL;
+				LevelManager.levelOver();
+			}
 		}
 	}
 
