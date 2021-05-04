@@ -16,8 +16,7 @@ public class PointBox extends Obstacle {
 
 	public PointBox(int w, int h, Color c) {
 		super(w, h, c);
-		File test = new File("src/applications/images/pointBoxSprite.png");
-		image = new Image(test.toURI().toString());
+		image = new Image("/application/images/pointBoxSprite.png");
 		imageViewer = new ImageView();
 		imageViewer.setImage(image);
 		displayImage = new Group(imageViewer);
