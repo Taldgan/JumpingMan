@@ -16,7 +16,7 @@ public class InputFunctions {
 		if (key == KeyCode.ESCAPE) {
 			if(StateManager.gameState == State.PAUSE) 
 				StateManager.gameState = State.PLAYING;
-			else
+			else if(StateManager.gameState == State.PLAYING)
 				StateManager.gameState = State.PAUSE;
 
 		}

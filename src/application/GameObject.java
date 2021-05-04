@@ -172,7 +172,7 @@ public class GameObject extends InputFunctions{
 					//System.out.println("pole score: " + Math.abs(LevelManager.mainGuy.gety()-800));
 					LevelManager.score.finalScore += Math.abs(LevelManager.mainGuy.gety()-800);
 					
-					LevelManager.mainGuy.winPlatX = (int) obstacle.getPlat().getTranslateX();
+					LevelManager.mainGuy.winPlatX = (int) obstacle.getX()-80;
 					nextLevel();
 				}
 				double diff;

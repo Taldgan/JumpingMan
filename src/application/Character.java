@@ -126,10 +126,9 @@ public class Character {
 	}
 	public void animateWin() {
 		setdx(0);
-		System.out.println("animating: " + winAnimationCount);
 		if(winAnimationCount > 0) {
-			if(winAnimationCount == 0) {
-				character.setTranslateX(winPlatX);
+			if(winAnimationCount >= 419) {
+				character.setTranslateX(winPlatX-140);
 			}
 			setdy(0);
 			if(winAnimationCount % 15 == 0) {
@@ -163,7 +162,6 @@ public class Character {
 	}
 
 	public void animateDeath() {
-		System.out.println("animating: " + deathAnimationCount);
 		if(deathAnimationCount >= 120) {
 			this.getCharacter().setTranslateY(this.getCharacter().getTranslateY()-0.5);
 			deathAnimationCount--;
