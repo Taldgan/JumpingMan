@@ -104,12 +104,8 @@ public class LevelManager {
 		lowerPlatforms = spawnPlatforms(lowerPlatString,0,0, platColor, grassColor, lowerPlatList);
 		upperPlatforms = spawnPlatforms(upperPlatString,0,0, platColor, grassColor, upperPlatList);
 		movingPlatforms = spawnMovingPlatforms(movingPlatString, 0, 50, grassColor, movingPlatList);
-//<<<<<<< HEAD
-//		obstacles = spawnObstacles(obstacleString, obstacleWidth, obstacleHeight, Color.DARKGREEN, obstacleList);
 		
-//=======
 		pointBoxes = spawnPointBoxes(pointBoxString, pointBoxWidth, pointBoxHeight, Color.web("0xF5E101"), pointBoxList);		
-//>>>>>>> branch 'master' of https://github.com/Taldgan/SemesterProject.git
 		enemies = spawnEnemies(enemyString, groundString);
 		level = new Group(background, ground, lowerPlatforms, upperPlatforms, movingPlatforms, pointBoxes, enemies, mainGuy.getCharacter());
 		level.setManaged(false);
@@ -291,13 +287,14 @@ public class LevelManager {
 	private static Group spawnPointBoxes(String lvl, int sizeX, int sizeY, Color c, ArrayList<PointBox> oList)
 	{
 		Group pBoxGroup = new Group();
+		double groundLvlOffset = groundLevel-45;
 		for(int x = 0; x < lvl. length(); x++)
 		{
 			if(lvl.charAt(x) != '0') //If the current char is not 0, create a platform in that spot.
 			{
 				PointBox pBox = new PointBox(sizeX,sizeY, c);
 				pBox.setX(tileWidth*x);
-				pBox.setY(groundLevel-groundOffsets.get(x)-(Integer.parseInt(String.valueOf(lvl.charAt(x))))*sizeY);
+				pBox.setY(groundLvlOffset-groundOffsets.get(x)+Integer.parseInt(String.valueOf(lvl.charAt(x)))*45*-1);
 				oList.add(pBox);
 				pBoxGroup.getChildren().add(pBox.getPlat());
 				pBoxGroup.getChildren().add(pBox.getImageGroup());
