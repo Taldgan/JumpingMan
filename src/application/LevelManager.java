@@ -285,18 +285,19 @@ public class LevelManager {
 
 	private static Group spawnPointBoxes(String lvl, int sizeX, int sizeY, Color c, ArrayList<PointBox> oList)
 	{
-		Group obsGroup = new Group();
+		Group pBoxGroup = new Group();
 		for(int x = 0; x < lvl. length(); x++)
 		{
 			if(lvl.charAt(x) != '0') //If the current char is not 0, create a platform in that spot.
 			{
-				PointBox o = new PointBox(sizeX,sizeY, c);
-				o.setX(tileWidth*x);
-				o.setY(groundLevel-groundOffsets.get(x)-(Integer.parseInt(String.valueOf(lvl.charAt(x))))*sizeY);
-				oList.add(o);
-				obsGroup.getChildren().add(o.getPlat());
+				PointBox pBox = new PointBox(sizeX,sizeY, c);
+				pBox.setX(tileWidth*x);
+				pBox.setY(groundLevel-groundOffsets.get(x)-(Integer.parseInt(String.valueOf(lvl.charAt(x))))*sizeY);
+				oList.add(pBox);
+				pBoxGroup.getChildren().add(pBox.getPlat());
+				pBoxGroup.getChildren().add(pBox.getImageGroup());
 			}
 		}
-		return obsGroup;
+		return pBoxGroup;
 	}
 }

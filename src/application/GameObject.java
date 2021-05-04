@@ -167,7 +167,7 @@ public class GameObject extends InputFunctions{
 					if(c.getColor() == Color.RED)
 					{
 						c.setGroundLvl(c.gety());
-						c.setdy(-.05);
+						c.setdy(0);
 						c.setJumping(false);
 						c.sety(c.getPrevY());
 						c.getCharacter().setTranslateY(LevelManager.mainGuy.getPrevTranslateY());
@@ -271,14 +271,12 @@ public class GameObject extends InputFunctions{
 					if(c.getColor() == Color.RED)
 					{
 						c.setGroundLvl(c.gety());
-						c.setdy(-0.005);
-						//c.getCharacter().setTranslateY(LevelManager.mainGuy.getPrevTranslateY());
-						//c.getCharacter().setTranslateX(c.getCharacter().getTranslateX() + obstacle.getdx()) ;
+						c.setdy(0);
 						c.setPlatdx(obstacle.getdx());
 						c.setPlatdy(obstacle.getdy());
-						//LevelManager.level.setTranslateX(LevelManager.level.getTranslateX() -  obstacle.getdx());
 						c.getCharacter().setTranslateY(c.getCharacter().getTranslateY() + obstacle.getdy());
-						//c.setJumping(false);
+						c.setJumping(false);
+						c.setOnMovingPlat(true);
 					}
 				}
 			}
@@ -287,7 +285,7 @@ public class GameObject extends InputFunctions{
 				LevelManager.mainGuy.setCollideLeft(false);
 				LevelManager.mainGuy.setCollideRight(false);
 			}
-			if(c.getCollisionDelta() > 200) {
+			if(c.getCollisionDelta() > 100) {
 				c.setPlatdx(0);
 				c.setPlatdy(0);
 			}
@@ -340,7 +338,7 @@ public class GameObject extends InputFunctions{
 		}
 
 		//If he is jumping or walking, update his movement to match, also prevent max fall speed from exceeding 6.5
-		if (LevelManager.mainGuy.walking || LevelManager.mainGuy.jumping) {
+		if (LevelManager.mainGuy.walking || LevelManager.mainGuy.jumping || LevelManager.mainGuy.getOnMovingPlat()) {
 			LevelManager.mainGuy.move();
 			LevelManager.level.setTranslateX(LevelManager.level.getTranslateX() - LevelManager.mainGuy.getdx() - LevelManager.mainGuy.getPlatdx());
 			if (LevelManager.mainGuy.jumping && LevelManager.mainGuy.getdy() < 6.5) {
@@ -426,7 +424,6 @@ public class GameObject extends InputFunctions{
 	}
 	
 	public void nextLevel() {
-		System.out.println("next level: " + Level.values()[StateManager.currentLevel.ordinal()+1]);
 		if(Level.values()[StateManager.currentLevel.ordinal()+1] != Level.END) {
 			StateManager.currentLevel = Level.values()[StateManager.currentLevel.ordinal()+1];
 			StateManager.gameState = State.NEXTLEVEL;

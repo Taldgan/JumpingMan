@@ -10,6 +10,7 @@ public class Character {
 	static Boolean dead;
 	Boolean jumping, walking;
 	double dx, dy, platdx = 0, platdy = 0;
+	boolean onMovingPlat = false;
 	double x, y, minY = 280;
 	double prevX, prevY, prevTranslateX, prevTranslateY;
 	double size;
@@ -301,6 +302,14 @@ public class Character {
 	}
 	public void setPlatdy(double platdy) {
 		this.platdy = platdy;
+	}
+
+	public void setOnMovingPlat(boolean b) {
+		this.onMovingPlat = b;
+	}
+
+	public boolean getOnMovingPlat() {
+		return this.onMovingPlat;
 	}
 }
 	
