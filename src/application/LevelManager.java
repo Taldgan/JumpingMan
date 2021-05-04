@@ -62,8 +62,7 @@ public class LevelManager {
 		//Read in level data to strings
 		System.out.println(StateManager.currentLevel.ordinal());
 		try {
-			//BufferedReader levelReader = new BufferedReader(new FileReader("src/application/levels/level" + StateManager.currentLevel.ordinal() + ".lvl"));
-			BufferedReader levelReader = new BufferedReader(new FileReader("src/application/levels/test.lvl"));
+			BufferedReader levelReader = new BufferedReader(new FileReader("src/application/levels/level" + StateManager.currentLevel.ordinal() + ".lvl"));
 			//Colors
 			groundColor = Color.web(levelReader.readLine());
 			grassColor = Color.web(levelReader.readLine());
