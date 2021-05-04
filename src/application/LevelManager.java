@@ -301,7 +301,7 @@ public class LevelManager {
 				pBox.setX(tileWidth*x);
 				pBox.setY(groundLvlOffset-groundOffsets.get(x)+Integer.parseInt(String.valueOf(lvl.charAt(x)))*45*-1);
 				oList.add(pBox);
-				pBoxGroup.getChildren().add(pBox.getPlat());
+				//pBoxGroup.getChildren().add(pBox.getPlat());
 				pBoxGroup.getChildren().add(pBox.getImageGroup());
 			}
 		}

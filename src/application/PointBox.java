@@ -18,6 +18,8 @@ public class PointBox extends Obstacle {
 	private Group displayImage;
 	private ArrayList<FloatLabel> scoreLabels;
 	private Random pointNum;
+	private boolean animating = false;
+	private int animationCount = 0;
 
 	public PointBox(int w, int h, Color c) {
 		super(w, h, c);
@@ -31,6 +33,10 @@ public class PointBox extends Obstacle {
 		scoreLabels = new ArrayList<FloatLabel>();
 	}
 	
+	public int getACount() {
+		return this.animationCount;
+	}
+
 	public void setX(double x) {
 		super.setX(x);
 		imageViewer.setX(x);
@@ -52,6 +58,10 @@ public class PointBox extends Obstacle {
 	public int getPointsLeft() {
 		return this.pointsLeft;
 	}
+
+	public boolean isAnimating() {
+		return this.animating;
+	}
 	
 	public void floatLabels() {
 		for(FloatLabel scoreLabel : scoreLabels) {
@@ -61,12 +71,23 @@ public class PointBox extends Obstacle {
 			}
 		}
 	}
+	
+	public void animateCube() {
+		if(animationCount == 0) {
+			this.getImageGroup().setTranslateY(this.getImageGroup().getTranslateY() + 5);
+			animating = false;
+		}
+		else {
+			animationCount--;
+		}
+	}
 
 	public void getHit() {
 		if(this.pointsLeft >= 1) {
 			Sounds.sPlayer.playSFX(2);
 			LevelManager.mainGuy.finalScore += 100;
 			System.out.println("Score without time bonus: " + LevelManager.mainGuy.finalScore);
+			//create floatLabel and add it
 			FloatLabel scoreLabel = new FloatLabel("+100", 15, -20);
 			scoreLabel.setFont(new Font("Blocky Font", 30));
 			scoreLabel.setTranslateX(this.getX() + this.pointNum.nextInt(60)-30);
@@ -74,12 +95,19 @@ public class PointBox extends Obstacle {
 			scoreLabel.setStartEndXY(scoreLabel.getTranslateX(), scoreLabel.getTranslateY());
 			scoreLabels.add(scoreLabel);
 			getImageGroup().getChildren().add(scoreLabels.get(scoreLabels.size()-1));
+			if(!animating){
+				this.animating = true;
+				this.getImageGroup().setTranslateY(this.getImageGroup().getTranslateY() - 5);
+				animationCount = 10;
+			}
+
 			this.pointsLeft--;
+
 			if(this.pointsLeft == 0) 
 				this.imageViewer.setImage(emptyBox);
 		}
 	}
-	
+
 	class FloatLabel extends Label {
 
 		private double moveX, moveY, startX, endX, startY, endY, movedX, movedY;
@@ -90,7 +118,7 @@ public class PointBox extends Obstacle {
 			this.moveX = moveX;
 			this.moveY = moveY;
 		}
-		
+
 		public void setStartEndXY(double startX, double startY) {
 			this.startX = startX;
 			this.endX = this.startX+this.moveX;
@@ -108,9 +136,10 @@ public class PointBox extends Obstacle {
 			else
 				this.remove = true;
 		}
-		
+
 		public boolean needToRemove() {
 			return this.remove;
 		}
 	}
+	
 }
