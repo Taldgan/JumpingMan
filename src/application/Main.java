@@ -25,7 +25,7 @@ public class Main extends Application {
 			AnimationTimer timer = new AnimationTimer() {
 				@Override
 				public void handle(long arg0) {
-					if(StateManager.gameState == State.PLAYING || StateManager.gameState == State.DYING) {
+					if(StateManager.gameState == State.PLAYING || StateManager.gameState == State.DYING || StateManager.gameState == State.WINNING) {
 						game.update();
 						if(!gameLoaded) {
 							try {

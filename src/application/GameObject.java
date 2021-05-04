@@ -99,8 +99,8 @@ public class GameObject extends InputFunctions{
 			break;
 
 		case DYING:
-			Sounds.sPlayer.stopSong();
 		case WINNING:
+			Sounds.sPlayer.stopSong();
 		case PLAYING:
 			LevelManager.infoLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX());
 			if(!LevelManager.level.getChildren().contains(LevelManager.infoLabel)) 

@@ -45,6 +45,7 @@ public class LevelManager {
 	
 	//Background
 	static Rectangle background;
+	static Rectangle theVoid;
 
 	//Main character variables
 	private static int spawnX = 250, spawnY = LevelManager.groundLevel-25;
@@ -116,6 +117,8 @@ public class LevelManager {
 
 		//Assign groups using spawn methods
 		background = new Rectangle(groundString.length()*tileWidth, 5000, bgColor);
+		theVoid = new Rectangle(groundString.length()*tileWidth*2, 8000, groundColor);
+		theVoid.setTranslateX(theVoid.getTranslateX()-2000);
 		ground = spawnGround(groundString, 0, 0, groundColor, grassColor, groundList);
 		lowerPlatforms = spawnPlatforms(lowerPlatString,0,0, platColor, grassColor, lowerPlatList);
 		upperPlatforms = spawnPlatforms(upperPlatString,0, upperOffset, platColor, grassColor, upperPlatList);
@@ -124,7 +127,7 @@ public class LevelManager {
 		pointBoxes = spawnPointBoxes(pointBoxString, pointBoxWidth, pointBoxHeight, Color.web("0xF5E101"), pointBoxList);		
 		enemies = spawnEnemies(lowerEnemyString, groundString, 0);
 		enemies.getChildren().add(spawnEnemies(upperEnemyString, groundString, upperOffset));
-		level = new Group(background, ground, lowerPlatforms, upperPlatforms, movingPlatforms, pointBoxes, enemies, mainGuy.getCharacter());
+		level = new Group(theVoid, background, ground, lowerPlatforms, upperPlatforms, movingPlatforms, pointBoxes, enemies, mainGuy.getCharacter());
 		level.setManaged(false);
 
 		//Add all static object lists to allStaticObjects for easier collision
