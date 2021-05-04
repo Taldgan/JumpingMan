@@ -167,13 +167,11 @@ public class GameObject extends InputFunctions{
 						c.setGroundLvl(c.gety());
 						c.setdy(0);
 						c.setJumping(false);
-						c.sety(c.getPrevY());
-						c.getCharacter().setTranslateY(LevelManager.mainGuy.getPrevTranslateY());
+						c.getCharacter().setTranslateY(obstacle.getPlat().getY()-LevelManager.groundLevel+5);
 					}
-
 				}
 				//Left of platform collision:
-				if(charLeft <= obstacle.getX()+15) {
+				if(charLeft <= obstacle.getX()+15 && !(charBot-12 <= obstacle.getY()+10)) {
 
 					c.setCollideRight(true);
 					diff = LevelManager.level.getTranslateX() + (c.getx() - c.getPrevX());
@@ -191,7 +189,7 @@ public class GameObject extends InputFunctions{
 
 				}
 				//Right of platform collision:
-				else if(charRight >= obstacle.getX()+obstacle.getWidth()-15) {
+				else if(charRight >= obstacle.getX()+obstacle.getWidth()-15 && !(charBot-12 <= obstacle.getY()+10)) {
 					c.setCollideLeft(true);
 					diff = LevelManager.level.getTranslateX() + (c.getx() - c.getPrevX());
 					if(c.getColor() == Color.RED)
@@ -311,7 +309,7 @@ public class GameObject extends InputFunctions{
 		if(LevelManager.mainGuy.getDead() || LevelManager.mainGuy.gety() > 800)
 			LevelManager.mainGuy.dead(LevelManager.level,findNearestHole(LevelManager.groundString));
 		//If LevelManager.mainGuy is not touching top of platform, he must be jumping/falling
-		if(!LevelManager.mainGuy.getCollide()) {
+		if(!LevelManager.mainGuy.getCollide() && LevelManager.mainGuy.getCollisionDelta() > 100) {
 			LevelManager.mainGuy.setJumping(true);
 		}
 
