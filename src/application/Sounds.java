@@ -23,6 +23,7 @@ public class Sounds
 		sfxCollection.add("src/application/sounds/Jump.wav");
 		sfxCollection.add("src/application/sounds/Death.wav");
 		sfxCollection.add("src/application/sounds/pointBox.wav");
+		sfxCollection.add("src/application/sounds/enemyDeath.wav");
 		
 		bgmCollection.add("src/application/sounds/ex101.wav");
 	}

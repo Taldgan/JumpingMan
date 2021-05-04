@@ -404,7 +404,7 @@ public class GameObject extends InputFunctions{
 				LevelManager.enemyList.get(x).getCharacter().setFill(Color.YELLOW);
 				LevelManager.enemyList.get(x).getCharacter().setCenterY(-1000);
 				LevelManager.enemyList.remove(x);
-				System.out.println("play sound");
+				Sounds.sPlayer.playSFX(3);
 			}
 			else
 				LevelManager.enemyList.get(x).getCharacter().setFill(LevelManager.enemyList.get(x).getColor());
