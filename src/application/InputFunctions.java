@@ -43,7 +43,6 @@ public class InputFunctions {
 		
 		//temporary
 		if (key == KeyCode.W) {
-			System.out.println(character.getJumping());
 			character.setdy(-6.5);
 		}
 	}
