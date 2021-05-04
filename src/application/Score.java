@@ -9,12 +9,12 @@ public class Score {
 	public static long maxTime;
 	
 	public void start() {		
-		System.out.println("start: " + System.currentTimeMillis());
+		//System.out.println("start: " + System.currentTimeMillis());
 		maxTime = System.currentTimeMillis() + 30000;
 	}
 	
 	public void stop() {
-		System.out.println("stop: " + System.currentTimeMillis());
+		//System.out.println("stop: " + System.currentTimeMillis());
 		maxTime -= System.currentTimeMillis();
 	}
 	

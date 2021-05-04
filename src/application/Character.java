@@ -8,6 +8,7 @@ public class Character {
 
 	int lives;
 	static Boolean dead;
+	boolean winning = false;
 	Boolean jumping, walking;
 	double dx, dy, platdx = 0, platdy = 0;
 	double predeathy, predeathx, predeathTranslateX, predeathTranslateY;
@@ -23,14 +24,12 @@ public class Character {
 	double radius;
 	private boolean dir;
 	private boolean animating = false;
+	int winPlatX;
+	private boolean animatingWinG = false;
 	private int deathAnimationCount = 150;
+	private int winAnimationCount = 0;
 	double collisionTimeDelta = 0, startTime = 0;
 	
-	
-	
-	//Score score = new Score();
-	//int finalScore = 0;
-
 	public Character(double x, double y, double size, Color color) {
 		dead = false;
 		jumping = false;
@@ -120,6 +119,47 @@ public class Character {
 		this.character.setCenterY(y);
 		this.character.setRadius(size);
 		this.character.setFill(color);
+	}
+
+	public void setWinACount(int count) {
+		this.winAnimationCount = count;
+	}
+	public void animateWin() {
+		setdx(0);
+		System.out.println("animating: " + winAnimationCount);
+		if(winAnimationCount > 0) {
+			if(winAnimationCount == 0) {
+				character.setTranslateX(winPlatX);
+			}
+			setdy(0);
+			if(winAnimationCount % 15 == 0) {
+				swapDir();
+			}
+			if(gety()+character.getRadius() < LevelManager.groundLevel && !animatingWinG) {
+				if(dir) 
+					character.setTranslateX(character.getTranslateX() + 3);
+				else
+					character.setTranslateX(character.getTranslateX() - 3);
+				character.setTranslateY(character.getTranslateY() + 2.5);
+			}
+			else {
+				if(winAnimationCount == 40) {
+					animatingWinG = true;
+					Sounds.sPlayer.playSFX(0);
+				}
+				else if(winAnimationCount < 20) {
+					character.setTranslateY(character.getTranslateY() + 2.5);
+				}
+				else if(winAnimationCount < 40) {
+					character.setTranslateY(character.getTranslateY() - 2.5);
+				}
+			}
+			winAnimationCount--;
+		}
+		else {
+			StateManager.gameState = State.NEXTLEVEL;
+			LevelManager.levelOver();
+		}
 	}
 
 	public void animateDeath() {
@@ -376,4 +416,13 @@ public class Character {
 	public void setAnimating(boolean animating) {
 		this.animating = animating;
 	}
+
+	public void setWinning(boolean winning) {
+		this.winning = winning;
+	}
+
+	public boolean isWinning() {
+		return this.winning;
+	}
+
 }

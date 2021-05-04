@@ -24,6 +24,7 @@ public class Sounds
 		sfxCollection.add("src/application/sounds/Death.wav");
 		sfxCollection.add("src/application/sounds/pointBox.wav");
 		sfxCollection.add("src/application/sounds/enemyDeath.wav");
+		sfxCollection.add("src/application/sounds/winLevel.wav");
 		
 		bgmCollection.add("src/application/sounds/ex101.wav");
 	}

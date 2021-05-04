@@ -16,7 +16,6 @@ public class GameObject extends InputFunctions{
 	
 	@FXML Label finalScore;
 
-	LevelManager levelManager = new LevelManager();
 	//Scenes
 	BorderPane root;
 	Scene menuScene;
@@ -42,16 +41,16 @@ public class GameObject extends InputFunctions{
 	}
 
 	public void update() {
-		System.out.println("update " + StateManager.gameState + " transy" + LevelManager.mainGuy.getCharacter().getTranslateY());
 		updateMC();
-		if(!LevelManager.mainGuy.getDead()) {
+		if(!LevelManager.mainGuy.getDead() && !LevelManager.mainGuy.isWinning()) {
+			System.out.println("made it to inner loop");
 			updateMovPlats();
 			updatePointBoxes();
 			checkCollision(LevelManager.mainGuy);
 			checkMovingCollision(LevelManager.mainGuy);
 			updateEnemies();
+			updateLabels();
 		}
-		updateLabels();
 	}
 
 
@@ -66,7 +65,7 @@ public class GameObject extends InputFunctions{
 		if(LevelManager.lifeCount == 0) {
 			LevelManager.lifeCount = 3;
 			StateManager.currentLevel = Level.LEVEL1;
-			levelManager.gameOver();
+			LevelManager.gameOver();
 		}
 		LevelManager.loadLevel();
 		LevelManager.mainGuy.setDead(false);
@@ -107,7 +106,8 @@ public class GameObject extends InputFunctions{
 				LevelManager.level.getChildren().add(LevelManager.infoLabel);
 			if(!LevelManager.level.getChildren().contains(LevelManager.lifeCounter)) 
 				LevelManager.level.getChildren().add(LevelManager.lifeCounter);
-			Sounds.sPlayer.playSong(0);
+			if(StateManager.gameState == State.PLAYING)
+				Sounds.sPlayer.playSong(0);
 			this.root = new BorderPane(LevelManager.level);
 			this.gameScene = new Scene(root);
 			if(LevelManager.level.getChildren().contains(LevelManager.pauseLabel))
@@ -169,9 +169,10 @@ public class GameObject extends InputFunctions{
 				if(obstacle.getColor() == Color.WHITESMOKE) { //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
 					
 					//might need to move this somewhere else but idrk where else it would work
-					System.out.println("pole score: " + Math.abs(LevelManager.mainGuy.gety()-800));
+					//System.out.println("pole score: " + Math.abs(LevelManager.mainGuy.gety()-800));
 					LevelManager.score.finalScore += Math.abs(LevelManager.mainGuy.gety()-800);
 					
+					LevelManager.mainGuy.winPlatX = (int) obstacle.getPlat().getTranslateX();
 					nextLevel();
 				}
 				double diff;
@@ -324,10 +325,13 @@ public class GameObject extends InputFunctions{
 	//Update methods
 
 	public void updateMC() {
+		if(LevelManager.mainGuy.isWinning()) {
+			LevelManager.mainGuy.animateWin();
+		}
 		if(LevelManager.mainGuy.getDead()) {
 			LevelManager.mainGuy.animateDeath();
 		}
-		if(LevelManager.mainGuy.gety() > 800 && StateManager.gameState != State.DYING) {
+		if(LevelManager.mainGuy.gety() > 800 && StateManager.gameState != State.DYING  && StateManager.gameState != State.WINNING) {
 			LevelManager.mainGuy.setDead(true);
 			LevelManager.mainGuy.deathByHole(LevelManager.level,findNearestHole(LevelManager.groundString));
 			Sounds.sPlayer.playSFX(1);
@@ -432,14 +436,17 @@ public class GameObject extends InputFunctions{
 		//finalScore.setText("" + LevelManager.score.finalScore);
 		StateManager.gameState = State.YOUWON;
 		StateManager.currentLevel = Level.LEVEL1;
-		levelManager.levelOver();
+		LevelManager.levelOver();
 	}
 	
 	public void nextLevel() {
 		if(Level.values()[StateManager.currentLevel.ordinal()+1] != Level.END) {
 			StateManager.currentLevel = Level.values()[StateManager.currentLevel.ordinal()+1];
-			StateManager.gameState = State.NEXTLEVEL;
-			levelManager.levelOver();
+			Sounds.sPlayer.playSFX(4);
+			Sounds.sPlayer.stopSong();
+			LevelManager.mainGuy.setWinning(true);
+			LevelManager.mainGuy.setWinACount(420);
+			StateManager.gameState = State.WINNING;
 		}
 		else {
 			win();

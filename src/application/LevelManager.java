@@ -60,13 +60,13 @@ public class LevelManager {
 	//Colors
 	private static Color bgColor, groundColor, grassColor, platColor, cloudColor;
 	
-	public void levelOver() {
+	public static void levelOver() {
 		score.stop();
 		score.finalScore += score.calculateTimeScore();
-		System.out.println("time score: " + score.calculateTimeScore());
-		System.out.println("final score: " + score.finalScore);
+		//System.out.println("time score: " + score.calculateTimeScore());
+		//System.out.println("final score: " + score.finalScore);
 	}
-	public void gameOver() {
+	public static void gameOver() {
 		score.finalScore = 0;
 	}
 	
