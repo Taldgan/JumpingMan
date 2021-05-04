@@ -25,8 +25,7 @@ public class Main extends Application {
 			AnimationTimer timer = new AnimationTimer() {
 				@Override
 				public void handle(long arg0) {
-					//System.out.println("IN LOOP State: " + StateManager.gameState);
-					if(StateManager.gameState == State.PLAYING) {
+					if(StateManager.gameState == State.PLAYING || StateManager.gameState == State.DYING) {
 						game.update();
 						if(!gameLoaded) {
 							try {

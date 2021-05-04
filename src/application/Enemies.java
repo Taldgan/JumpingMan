@@ -52,7 +52,6 @@ public class Enemies extends Character implements Collidable
 	{
 		if(!getJumping())
 		{
-			//System.out.println("Enemy jumping");
 			setJumping(true);
 			setdy(-3); //Up
 		}
@@ -61,15 +60,6 @@ public class Enemies extends Character implements Collidable
 			setJumping(false);
 			setdy(0);
 		}
-		
-		/*else if(getJumping() && gety() > initialY)
-		{
-			//System.out.println("Enemy not jumping");
-			setdy(0); //down
-			setJumping(false);
-		}*/
-		//setJumping(false);
-		
 	}
 	public int getRNG(int max)
 	{

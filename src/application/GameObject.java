@@ -38,12 +38,15 @@ public class GameObject extends InputFunctions{
 	}
 
 	public void update() {
+		System.out.println("update " + StateManager.gameState + " transy" + LevelManager.mainGuy.getCharacter().getTranslateY());
 		updateMC();
-		updateMovPlats();
-		updatePointBoxes();
-		checkCollision(LevelManager.mainGuy);
-		checkMovingCollision(LevelManager.mainGuy);
-		updateEnemies();
+		if(!LevelManager.mainGuy.getDead()) {
+			updateMovPlats();
+			updatePointBoxes();
+			checkCollision(LevelManager.mainGuy);
+			checkMovingCollision(LevelManager.mainGuy);
+			updateEnemies();
+		}
 		updateLabels();
 	}
 
@@ -91,6 +94,10 @@ public class GameObject extends InputFunctions{
 			LevelManager.pauseLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX()+400);
 			LevelManager.level.getChildren().add(LevelManager.pauseLabel);
 			break;
+
+		case DYING:
+			Sounds.sPlayer.stopSong();
+		case WINNING:
 		case PLAYING:
 			LevelManager.infoLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX());
 			if(!LevelManager.level.getChildren().contains(LevelManager.infoLabel)) 
@@ -105,8 +112,6 @@ public class GameObject extends InputFunctions{
 			primaryStage.setScene(this.gameScene);
 			break;
 		case YOUDIED:
-			Sounds.sPlayer.stopSong();
-			Sounds.sPlayer.playSFX(1);
 			view = FXMLLoader.load(getClass().getResource("/application/YouDied.fxml"));
 			this.deadScene = new Scene(view);
 			primaryStage.setScene(this.deadScene);
@@ -311,8 +316,14 @@ public class GameObject extends InputFunctions{
 	//Update methods
 
 	public void updateMC() {
-		if(LevelManager.mainGuy.getDead() || LevelManager.mainGuy.gety() > 800)
-			LevelManager.mainGuy.dead(LevelManager.level,findNearestHole(LevelManager.groundString));
+		if(LevelManager.mainGuy.getDead()) {
+			LevelManager.mainGuy.animateDeath();
+		}
+		if(LevelManager.mainGuy.gety() > 800 && StateManager.gameState != State.DYING) {
+			LevelManager.mainGuy.setDead(true);
+			LevelManager.mainGuy.deathByHole(LevelManager.level,findNearestHole(LevelManager.groundString));
+			Sounds.sPlayer.playSFX(1);
+		}
 		//If LevelManager.mainGuy is not touching top of platform, he must be jumping/falling
 		if(!LevelManager.mainGuy.getCollide() && LevelManager.mainGuy.getCollisionDelta() > 100) {
 			LevelManager.mainGuy.setJumping(true);
@@ -372,6 +383,9 @@ public class GameObject extends InputFunctions{
 			{
 				if(LevelManager.mainGuy.getdy() <= 0) {
 					LevelManager.mainGuy.setDead(true);
+					Sounds.sPlayer.playSFX(1);
+					LevelManager.mainGuy.setAnimating(true);
+					LevelManager.mainGuy.deathByEnemy();
 					LevelManager.mainGuy.setdx(0);
 				}
 				else {
@@ -398,14 +412,13 @@ public class GameObject extends InputFunctions{
 		}
 	}
 	public void updateLabels() {
-		LevelManager.infoLabel.setText("Level " + StateManager.currentLevel.ordinal() + "\n\nScore: ");
+		LevelManager.infoLabel.setText("Level " + StateManager.currentLevel.ordinal() + "\n\nScore: " + LevelManager.score);
 		LevelManager.infoLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX()+40);
 		LevelManager.lifeCounter.setTranslateY(LevelManager.infoLabel.getTranslateY()+65);
 		LevelManager.lifeCounter.setTranslateX(LevelManager.infoLabel.getTranslateX());
 	}
 
 	public void win() {
-		System.out.println("Score: " + LevelManager.mainGuy.score.calculateScore(LevelManager.mainGuy.getLives()));
 		LevelManager.lifeCount = 3;
 		StateManager.gameState = State.YOUWON;
 		StateManager.currentLevel = Level.LEVEL1;
@@ -426,7 +439,6 @@ public class GameObject extends InputFunctions{
 		for(PointBox pBox : LevelManager.pointBoxList) {
 			pBox.floatLabels();
 			if(pBox.isAnimating()) {
-				System.out.println("Acount: " + pBox.getACount());
 				pBox.animateCube();
 			}
 		}

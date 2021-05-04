@@ -24,26 +24,21 @@ public class InputFunctions {
 		if(key == KeyCode.Q && StateManager.gameState == State.PAUSE)
 			System.exit(0);
 
-		if ((key == KeyCode.RIGHT || key == KeyCode.L) && !character.getCollideRight()) {
+		if ((key == KeyCode.RIGHT || key == KeyCode.L) && !character.getCollideRight() && StateManager.gameState == State.PLAYING) {
 			character.setdx(5);
 			character.walking = true;
 		}
-		if ((key == KeyCode.LEFT || key == KeyCode.H) && !character.getCollideLeft()) {
+		if ((key == KeyCode.LEFT || key == KeyCode.H) && !character.getCollideLeft() && StateManager.gameState == State.PLAYING) {
 			character.setdx(-5);
 			character.walking = true;
 		}
-		if (key == KeyCode.SPACE || key == KeyCode.UP || key == KeyCode.K) {
+		if (key == KeyCode.SPACE || key == KeyCode.UP || key == KeyCode.K && StateManager.gameState == State.PLAYING) {
 			if (!character.getJumping() || character.getCollide()) {
 				character.setGroundLvl(character.gety());
 				character.setdy(-6.5); //Changed from 5, to accomodate raising the platforms
 				character.jumping = true;
 				s.playSFX(0);
 			}
-		}
-		
-		//temporary
-		if (key == KeyCode.W) {
-			character.setdy(-6.5);
 		}
 	}
 	

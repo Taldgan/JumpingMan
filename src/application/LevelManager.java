@@ -53,6 +53,7 @@ public class LevelManager {
 	static Group lifeCounter;
 	static Label infoLabel = new Label("Level: \nLives: \nScore: ");
 	static int lifeCount = 3;
+	static int score = 0; //TODO temp score
 	
 	//Colors
 	private static Color bgColor, groundColor, grassColor, platColor, cloudColor;
@@ -61,7 +62,6 @@ public class LevelManager {
 
 	public static void loadLevel() {
 		//Read in level data to strings
-		System.out.println(StateManager.currentLevel.ordinal());
 		try {
 			BufferedReader levelReader = new BufferedReader(new FileReader("src/application/levels/level" + StateManager.currentLevel.ordinal() + ".lvl"));
 			//Colors

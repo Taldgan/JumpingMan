@@ -10,15 +10,12 @@ public class Score {
 		switch (livesRemaining) {
 		case 3:
 			live3start = new Date();
-			System.out.println("3 started");
 			break;
 		case 2:
 			live2start = new Date();
-			System.out.println("2 started");
 			break;
 		case 1:
 			live1start = new Date();
-			System.out.println("1 started");
 			break;
 		default:
 			System.out.println("Error in Score.java start()");
@@ -28,19 +25,15 @@ public class Score {
 	public void stop(int livesRemaining) {
 		switch (livesRemaining) {
 		case 3:
-			System.out.println("3 stopped");
 			live3stop = new Date();
 			break;
 		case 2:
 			live2stop = new Date();
-			System.out.println("2 stopped");
 			break;
 		case 1:
 			live1stop = new Date();
-			System.out.println("1 stopped");
 			break;
 		case 0:
-			System.out.println("somehow in case 0");
 			break;
 		default:
 			System.out.println("Error in Score.java stop()");

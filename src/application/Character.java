@@ -10,6 +10,8 @@ public class Character {
 	static Boolean dead;
 	Boolean jumping, walking;
 	double dx, dy, platdx = 0, platdy = 0;
+	double predeathy, predeathx, predeathTranslateX, predeathTranslateY;
+	double safeY, safeTranslateY;
 	boolean onMovingPlat = false;
 	double x, y, minY = 280;
 	double prevX, prevY, prevTranslateX, prevTranslateY;
@@ -20,6 +22,8 @@ public class Character {
 	double groundLvl;
 	double radius;
 	private boolean dir;
+	private boolean animating = false;
+	private int deathAnimationCount = 150;
 	double collisionTimeDelta = 0, startTime = 0;
 	Score score = new Score();
 	int finalScore = 0;
@@ -63,32 +67,38 @@ public class Character {
 		score.start(getLives());
 	}
 
-	public void dead(Group group, int respawnX) {
-		score.stop(getLives());
-		if (gety() > 800 || dead) {
-			setDead(true);
+	public void deathByEnemy() {
+		predeathx = getx();
+		predeathy = gety();
+		predeathTranslateX = character.getTranslateX();
+		predeathTranslateY = character.getTranslateY();
+		System.out.println("Death by enemy");
+		if (dead) {
 			setLives(getLives() - 1);
 			LevelManager.lifeCount--;
 			LevelManager.lifeCounter.getChildren().remove(getLives());
-			if (getLives() <= 0) {
-				StateManager.gameState = State.GAMEOVER;
-			} else {
-				StateManager.gameState = State.YOUDIED;
-				System.out.println("YOU DIED SET");
-				// If player fell down hole
-				if (gety() > 800) {
-					setdy(0);
-					setdx(0);
-					this.getCharacter().setTranslateY(-500);
-					int oldX = (int) getx();
-					setx(respawnX);
-					int newX = (int) getx();
-					this.getCharacter().setTranslateX(this.getCharacter().getTranslateX() - (oldX - newX));
-					group.setTranslateX(group.getTranslateX() + (oldX - newX));
-				}
-			}
+			StateManager.gameState = State.DYING;
 		}
-		System.out.println("Score: " + score.calculateScore(getLives()));
+	}
+	public void deathByHole(Group group, int respawnX) {
+		int oldX = (int) getx();
+		setx(respawnX);
+		int newX = (int) getx();
+		this.getCharacter().setTranslateX(this.getCharacter().getTranslateX() - (oldX-newX));
+		character.setTranslateY(LevelManager.groundList.get(respawnX/LevelManager.tileWidth).getY()-LevelManager.groundLevel);
+		group.setTranslateX(group.getTranslateX() + (oldX-newX));
+		predeathx = respawnX;
+		if (dead) {
+			setdy(0);
+			setdx(0);
+			setLives(getLives() - 1);
+			LevelManager.lifeCount--;
+			LevelManager.lifeCounter.getChildren().remove(getLives());
+			if(getLives() <= 0)
+				StateManager.gameState = State.GAMEOVER;
+			else
+				StateManager.gameState = State.YOUDIED;
+		}
 	}
 
 	public void move() {
@@ -111,6 +121,34 @@ public class Character {
 		this.character.setCenterY(y);
 		this.character.setRadius(size);
 		this.character.setFill(color);
+	}
+
+	public void animateDeath() {
+		System.out.println("animating: " + deathAnimationCount);
+		if(deathAnimationCount >= 120) {
+			this.getCharacter().setTranslateY(this.getCharacter().getTranslateY()-0.5);
+			deathAnimationCount--;
+		}
+		else if(deathAnimationCount > 0) {
+			this.getCharacter().setTranslateY(this.getCharacter().getTranslateY()+8);
+			deathAnimationCount--;
+		}
+		else {
+			this.deathAnimationCount = 150;
+			this.animating = false;
+			if(!animating) {
+				setdx(0);
+				setdy(0);
+				this.getCharacter().setTranslateX(predeathTranslateX);
+				this.getCharacter().setTranslateY(predeathTranslateY);
+				sety(predeathy);
+				setx(predeathx);
+				if(getLives() != 0) 
+					StateManager.gameState = State.YOUDIED;
+				else
+					StateManager.gameState = State.GAMEOVER;
+			}
+		}
 	}
 
 	public double getx() {
@@ -197,13 +235,15 @@ public class Character {
 	public void setCollide(boolean collide) {
 		if(collide) {
 			startTime = System.currentTimeMillis();
+			safeY = gety();
+			safeTranslateY = character.getTranslateY();
 		}
 		else {
 			collisionTimeDelta = System.currentTimeMillis() - startTime;
 		}
 		this.collide = collide;
 	}
-	
+
 	public double getCollisionDelta() {
 		return this.collisionTimeDelta;
 	}
@@ -223,14 +263,14 @@ public class Character {
 	public void setCollideRight(boolean collide) {
 		this.collideRight = collide;
 	}
-	
+
 	public void setCollideTop(boolean b) {
 		this.collideTop = b;
 	}
 	public boolean getCollideTop() {
 		return this.collideTop;
 	}
-	
+
 	public void setCollideBottom(boolean b) {
 		this.collideBottom = b;
 	}
@@ -308,7 +348,7 @@ public class Character {
 	public Boolean getDead() {
 		return this.dead;
 	}
-	
+
 	public double getPlatdx() {
 		return this.platdx;
 	}
@@ -329,5 +369,12 @@ public class Character {
 	public boolean getOnMovingPlat() {
 		return this.onMovingPlat;
 	}
+
+	public boolean isAnimating() {
+		return animating;
+	}
+
+	public void setAnimating(boolean animating) {
+		this.animating = animating;
+	}
 }
-	
