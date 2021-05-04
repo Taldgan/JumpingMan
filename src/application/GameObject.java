@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 
 public class GameObject extends InputFunctions{
 
+	LevelManager levelManager = new LevelManager();
 	//Scenes
 	BorderPane root;
 	Scene menuScene;
@@ -38,7 +39,7 @@ public class GameObject extends InputFunctions{
 	}
 
 	public void update() {
-
+	
 		updateMC();
 		updateMovPlats();
 		checkCollision(LevelManager.mainGuy);
@@ -60,14 +61,12 @@ public class GameObject extends InputFunctions{
 			StateManager.currentLevel = Level.LEVEL1;
 		}
 		LevelManager.loadLevel();
-		LevelManager.mainGuy.play();
 		LevelManager.mainGuy.setDead(false);
 		StateManager.gameState = State.PLAYING;
 	}
 
 	@FXML
 	public void playAgain(ActionEvent e) {
-		LevelManager.mainGuy.play();
 		StateManager.gameState = State.PLAYING;
 		LevelManager.mainGuy.setDead(false);
 	}
@@ -404,17 +403,17 @@ public class GameObject extends InputFunctions{
 	}
 
 	public void win() {
-		System.out.println("Score: " + LevelManager.mainGuy.score.calculateScore(LevelManager.mainGuy.getLives()));
 		LevelManager.lifeCount = 3;
 		StateManager.gameState = State.YOUWON;
 		StateManager.currentLevel = Level.LEVEL1;
+		levelManager.levelOver();
 	}
 	
 	public void nextLevel() {
 		if(Level.values()[StateManager.currentLevel.ordinal()+1] != Level.END) {
 			StateManager.currentLevel = Level.values()[StateManager.currentLevel.ordinal()+1];
 			StateManager.gameState = State.NEXTLEVEL;
-			LevelManager.mainGuy.score.stop(LevelManager.mainGuy.getLives());
+			levelManager.levelOver();
 		}
 		else {
 			win();

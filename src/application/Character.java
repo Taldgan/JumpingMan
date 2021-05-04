@@ -21,6 +21,9 @@ public class Character {
 	double radius;
 	private boolean dir;
 	double collisionTimeDelta = 0, startTime = 0;
+	
+	
+	
 	Score score = new Score();
 	int finalScore = 0;
 
@@ -58,13 +61,8 @@ public class Character {
 		setColor(color);
 		setCharacter(x, y, size, color);
 	}
-	
-	public void play() {
-		score.start(getLives());
-	}
 
 	public void dead(Group group, int respawnX) {
-		score.stop(getLives());
 		if (gety() > 800 || dead) {
 			setDead(true);
 			setLives(getLives() - 1);
@@ -88,7 +86,6 @@ public class Character {
 				}
 			}
 		}
-		System.out.println("Score: " + score.calculateScore(getLives()));
 	}
 
 	public void move() {

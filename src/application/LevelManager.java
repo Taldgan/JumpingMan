@@ -15,6 +15,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
 public class LevelManager {
+	
+	static Score score = new Score();
 
 	//Level/Object Size integers
 	public static int groundLevel = 700;
@@ -57,9 +59,17 @@ public class LevelManager {
 	//Colors
 	private static Color bgColor, groundColor, grassColor, platColor, cloudColor;
 	
-
-
+	public void levelOver() {
+		score.stop();
+		score.finalScore += score.calculateTimeScore();
+		System.out.println("time score: " + score.calculateTimeScore());
+		System.out.println("final score: " + score.finalScore);
+	}
+	
 	public static void loadLevel() {
+		
+		score.start();		
+		
 		//Read in level data to strings
 		System.out.println(StateManager.currentLevel.ordinal());
 		try {
