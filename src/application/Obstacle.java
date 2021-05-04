@@ -31,12 +31,6 @@ public class Obstacle implements Collidable {
 
 		if(!collidable) 
 			return false;
-		
-	/*	if (this.getWidth() == this.getHeight() && collided) {
-			if ((x + w >= this.x && x - w <= this.x + width) && (y+h >= this.y && y-h <= this.y + this.height)) {
-				System.out.println("bump");
-			}
-		}*/
 			
 		if((x+w>= this.x && x-w <= this.x+width) && (y+h >= this.y && y-h <= this.y+height)) {
 			setColliding(true);
