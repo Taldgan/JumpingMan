@@ -38,14 +38,15 @@ public class GameObject extends InputFunctions{
 	}
 
 	public void update() {
-
 		updateMC();
 		updateMovPlats();
+		updatePointBoxes();
 		checkCollision(LevelManager.mainGuy);
 		checkMovingCollision(LevelManager.mainGuy);
 		updateEnemies();
 		updateLabels();
 	}
+
 
 	@FXML
 	public void mainMenu(ActionEvent e) {
@@ -418,6 +419,12 @@ public class GameObject extends InputFunctions{
 		}
 		else {
 			win();
+		}
+	}
+
+	public void updatePointBoxes() {
+		for(PointBox pBox : LevelManager.pointBoxList) {
+			pBox.floatLabels();
 		}
 	}
 }

@@ -51,7 +51,7 @@ public class LevelManager {
 	//Labels/Data
 	static Label pauseLabel = new Label("PAUSED\n(Q)UIT");
 	static Group lifeCounter;
-	static Label infoLabel = new Label("Level: \nLives: ");
+	static Label infoLabel = new Label("Level: \nLives: \nScore: ");
 	static int lifeCount = 3;
 	
 	//Colors
