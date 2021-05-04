@@ -55,6 +55,8 @@ public class GameObject extends InputFunctions{
 
 	@FXML 
 	public void newGame(ActionEvent event) {
+		if(LevelManager.lifeCount == 0) 
+			LevelManager.lifeCount = 3;
 		LevelManager.loadLevel();
 		LevelManager.mainGuy.play();
 		LevelManager.mainGuy.setDead(false);
@@ -395,6 +397,7 @@ public class GameObject extends InputFunctions{
 
 	public void win() {
 		System.out.println("Score: " + LevelManager.mainGuy.score.calculateScore(LevelManager.mainGuy.getLives()));
+		LevelManager.lifeCount = 3;
 		StateManager.gameState = State.YOUWON;
 		StateManager.currentLevel = Level.LEVEL1;
 	}

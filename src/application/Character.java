@@ -25,7 +25,24 @@ public class Character {
 	int finalScore = 0;
 
 	public Character(double x, double y, double size, Color color) {
-		lives = 3;
+		dead = false;
+		jumping = false;
+		walking = false;
+		collide = false;
+		collideLeft = false;
+		collideRight = false;
+		radius = size;
+		groundLvl = 280;
+		dir = true;
+		setx(x);
+		sety(y);
+		setSize(size);
+		setColor(color);
+		setCharacter(x, y, size, color);
+	}
+
+	public Character(double x, double y, double size, Color color, int lives) {
+		this.lives = lives;
 		dead = false;
 		jumping = false;
 		walking = false;
@@ -51,6 +68,7 @@ public class Character {
 		if (gety() > 800 || dead) {
 			setDead(true);
 			setLives(getLives() - 1);
+			LevelManager.lifeCount--;
 			LevelManager.lifeCounter.getChildren().remove(getLives());
 			if (getLives() <= 0) {
 				StateManager.gameState = State.GAMEOVER;

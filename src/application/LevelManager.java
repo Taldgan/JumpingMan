@@ -52,6 +52,7 @@ public class LevelManager {
 	static Label pauseLabel = new Label("PAUSED\n(Q)UIT");
 	static Group lifeCounter;
 	static Label infoLabel = new Label("Level: \nLives: ");
+	static int lifeCount = 3;
 	
 	//Colors
 	private static Color bgColor, groundColor, grassColor, platColor, cloudColor;
@@ -94,7 +95,7 @@ public class LevelManager {
 		enemyList = new ArrayList<Enemies>();
 		
 
-		mainGuy = new Character(spawnX, spawnY, 20, Color.RED);
+		mainGuy = new Character(spawnX, spawnY, 20, Color.RED, lifeCount);
 
 
 		//Assign groups using spawn methods
