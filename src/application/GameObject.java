@@ -59,6 +59,7 @@ public class GameObject extends InputFunctions{
 		if(LevelManager.lifeCount == 0) {
 			LevelManager.lifeCount = 3;
 			StateManager.currentLevel = Level.LEVEL1;
+			levelManager.gameOver();
 		}
 		LevelManager.loadLevel();
 		LevelManager.mainGuy.setDead(false);

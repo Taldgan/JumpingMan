@@ -65,6 +65,9 @@ public class LevelManager {
 		System.out.println("time score: " + score.calculateTimeScore());
 		System.out.println("final score: " + score.finalScore);
 	}
+	public void gameOver() {
+		score.finalScore = 0;
+	}
 	
 	public static void loadLevel() {
 		
