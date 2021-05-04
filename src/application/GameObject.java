@@ -367,9 +367,15 @@ public class GameObject extends InputFunctions{
 			//Check collision with the player
 			if(LevelManager.enemyList.get(x).collide(LevelManager.mainGuy.getx(),LevelManager.mainGuy.gety(),LevelManager.mainGuy.getRadius(),LevelManager.mainGuy.getRadius()))
 			{
+				if(LevelManager.mainGuy.getdy() <= 0) {
+					LevelManager.mainGuy.setDead(true);
+					LevelManager.mainGuy.setdx(0);
+				}
+				else {
+					LevelManager.mainGuy.setdy(-3);
+					
+				}
 				LevelManager.enemyList.get(x).getCharacter().setFill(Color.YELLOW);
-				LevelManager.mainGuy.setDead(true);
-				LevelManager.mainGuy.setdx(0);
 				LevelManager.enemyList.get(x).getCharacter().setCenterY(-1000);
 				LevelManager.enemyList.remove(x);
 

@@ -24,7 +24,7 @@ public class LevelManager {
 
 	//Level Strings for Obstacle x/y locations in level
 	static String groundString, lowerPlatString, upperPlatString, 
-	movingPlatString, pointBoxString, enemyString; 
+	movingPlatString, pointBoxString, lowerEnemyString, upperEnemyString; 
 
 	//Group vars, for altering level object positions
 	static Group ground, lowerPlatforms, upperPlatforms, movingPlatforms,
@@ -65,18 +65,22 @@ public class LevelManager {
 		try {
 			BufferedReader levelReader = new BufferedReader(new FileReader("src/application/levels/level" + StateManager.currentLevel.ordinal() + ".lvl"));
 			//Colors
+			String comment = levelReader.readLine();
 			groundColor = Color.web(levelReader.readLine());
 			grassColor = Color.web(levelReader.readLine());
 			bgColor = Color.web(levelReader.readLine());
 			cloudColor = Color.web(levelReader.readLine());
 			platColor = Color.web(levelReader.readLine());
 			//Level strings
+			comment = levelReader.readLine();
+			comment = levelReader.readLine();
 			groundString = levelReader.readLine();
 			lowerPlatString = levelReader.readLine();
 			upperPlatString = levelReader.readLine();
 			movingPlatString = levelReader.readLine();
 			pointBoxString = levelReader.readLine();
-			enemyString = levelReader.readLine();
+			lowerEnemyString = levelReader.readLine();
+			upperEnemyString = levelReader.readLine();
 			levelReader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -93,7 +97,7 @@ public class LevelManager {
 		allStaticObjects = new ArrayList<Obstacle>();
 		allMovingObjects = new ArrayList<MovingObstacle>();
 		enemyList = new ArrayList<Enemies>();
-		
+		int upperOffset = 10;
 
 		mainGuy = new Character(spawnX, spawnY, 20, Color.RED, lifeCount);
 
@@ -102,11 +106,12 @@ public class LevelManager {
 		background = new Rectangle(groundString.length()*tileWidth, 5000, bgColor);
 		ground = spawnGround(groundString, 0, 0, groundColor, grassColor, groundList);
 		lowerPlatforms = spawnPlatforms(lowerPlatString,0,0, platColor, grassColor, lowerPlatList);
-		upperPlatforms = spawnPlatforms(upperPlatString,0,0, platColor, grassColor, upperPlatList);
+		upperPlatforms = spawnPlatforms(upperPlatString,0, upperOffset, platColor, grassColor, upperPlatList);
 		movingPlatforms = spawnMovingPlatforms(movingPlatString, 0, 50, grassColor, movingPlatList);
 		
 		pointBoxes = spawnPointBoxes(pointBoxString, pointBoxWidth, pointBoxHeight, Color.web("0xF5E101"), pointBoxList);		
-		enemies = spawnEnemies(enemyString, groundString);
+		enemies = spawnEnemies(lowerEnemyString, groundString, 0);
+		enemies.getChildren().add(spawnEnemies(upperEnemyString, groundString, upperOffset));
 		level = new Group(background, ground, lowerPlatforms, upperPlatforms, movingPlatforms, pointBoxes, enemies, mainGuy.getCharacter());
 		level.setManaged(false);
 
@@ -155,7 +160,7 @@ public class LevelManager {
 		
 	}
 
-	private static Group spawnEnemies(String eSet, String groundSet)
+	private static Group spawnEnemies(String eSet, String groundSet, int upperOffset)
 	{
 		//1 is a normal enemy
 		//2 is a jumping enemy
@@ -168,15 +173,15 @@ public class LevelManager {
 			groundOffset = groundOffsets.get(x);
 			if(eSet.charAt(x) == '1')
 			{
-				enemyList.add(new Enemies(x*tileWidth+spawnOffset,groundLevel-groundOffset-20,20,Color.MAGENTA, groundSet.charAt(x),groundLevel));
+				enemyList.add(new Enemies(x*tileWidth+spawnOffset,groundLevel-groundOffset-20-upperOffset,20,Color.MAGENTA, groundSet.charAt(x),groundLevel));
 			}
 			else if(eSet.charAt(x) == '2')
 			{
-				enemyList.add(new Enemies(x*tileWidth+spawnOffset,groundLevel-groundOffset-20,20,Color.BLUE, groundSet.charAt(x),groundLevel));
+				enemyList.add(new Enemies(x*tileWidth+spawnOffset,groundLevel-groundOffset-20-upperOffset,20,Color.BLUE, groundSet.charAt(x),groundLevel));
 			}
 			else if(eSet.charAt(x) >= '3' && eSet.charAt(x) <= '9') {
 				enemyList.add(new Enemies((x+1)*tileWidth,
-						groundLevel-groundOffset-20-45-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA,
+						groundLevel-groundOffset-20-upperOffset-45-45*(Integer.parseInt(String.valueOf(eSet.charAt(x)))-2),20,Color.DARKMAGENTA,
 						groundSet.charAt(x),groundLevel));
 			}
 
