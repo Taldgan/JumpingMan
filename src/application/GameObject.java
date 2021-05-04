@@ -289,7 +289,7 @@ public class GameObject extends InputFunctions{
 				LevelManager.mainGuy.setCollideLeft(false);
 				LevelManager.mainGuy.setCollideRight(false);
 			}
-			if(c.getCollisionDelta() > 150) {
+			if(c.getCollisionDelta() > 200) {
 				c.setPlatdx(0);
 				c.setPlatdy(0);
 			}
@@ -337,7 +337,7 @@ public class GameObject extends InputFunctions{
 		if(LevelManager.mainGuy.getDead() || LevelManager.mainGuy.gety() > 800)
 			LevelManager.mainGuy.dead(LevelManager.level,findNearestHole(LevelManager.groundString));
 		//If LevelManager.mainGuy is not touching top of platform, he must be jumping/falling
-		if(!LevelManager.mainGuy.getCollide() && LevelManager.mainGuy.getCollisionDelta() > 150) {
+		if(!LevelManager.mainGuy.getCollide() && LevelManager.mainGuy.getCollisionDelta() > 200) {
 			LevelManager.mainGuy.setJumping(true);
 		}
 
