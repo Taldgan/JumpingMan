@@ -202,7 +202,7 @@ public class GameObject extends InputFunctions{
 						LevelManager.level.setTranslateX(diff);
 					}
 					//Swap enemy direction when touching an obstacle.
-					else if(c.getColor() != Color.RED && obstacle.getColor() == null) //Dont ask how, dont ask why. But it just works.
+					else if(c.getColor() != Color.RED) //Dont ask how, dont ask why. But it just works.
 					{
 						c.swapDir();
 					}
@@ -219,7 +219,7 @@ public class GameObject extends InputFunctions{
 						c.getHat().setTranslateX(LevelManager.mainGuy.getHatPrevTranslateX());
 						LevelManager.level.setTranslateX(diff);
 					}
-					else if(c.getColor() != Color.RED && obstacle.getColor() == null)
+					else if(c.getColor() != Color.RED)
 					{
 						c.swapDir();
 					}
