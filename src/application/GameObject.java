@@ -160,6 +160,7 @@ public class GameObject extends InputFunctions{
 				//On top of the platform
 				if(charBot-12 <= obstacle.getY() && c.getdy() >= 0)
 				{
+					System.out.println("top collision");
 					
 					diff = LevelManager.level.getTranslateY() + (c.gety() - c.getPrevY());
 					c.setCollide(true);
@@ -172,6 +173,9 @@ public class GameObject extends InputFunctions{
 						c.getCharacter().setTranslateY(LevelManager.mainGuy.getPrevTranslateY());
 					}
 
+				}
+				else if(c.getCollisionDelta() > 150) {
+						c.setJumping(true);
 				}
 				//Left of platform collision:
 				if(charLeft <= obstacle.getX()) {
@@ -220,7 +224,7 @@ public class GameObject extends InputFunctions{
 						c.getCharacter().setTranslateY(LevelManager.mainGuy.getPrevTranslateY());
 					}
 				}*/
-				else if(charTop >= obstacle.getY() && c.getdy() < 0)
+				else if(charTop >= obstacle.getY() && c.getdy() <= 0)
 				{
 					LevelManager.mainGuy.setCollideTop(true);
 					
