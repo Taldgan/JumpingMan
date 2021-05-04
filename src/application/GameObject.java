@@ -43,7 +43,6 @@ public class GameObject extends InputFunctions{
 	public void update() {
 		updateMC();
 		if(!LevelManager.mainGuy.getDead() && !LevelManager.mainGuy.isWinning()) {
-			System.out.println("made it to inner loop");
 			updateMovPlats();
 			updatePointBoxes();
 			checkCollision(LevelManager.mainGuy);
