@@ -107,8 +107,8 @@ public class Character {
 		int newX = (int) getx();
 		this.getCharacter().setTranslateX(this.getCharacter().getTranslateX() - (oldX-newX));
 		this.getHat().setTranslateX(this.getHat().getTranslateX() - (oldX-newX));
-		character.setTranslateY(LevelManager.groundList.get(respawnX/LevelManager.tileWidth).getY()-LevelManager.groundLevel);
-		hat.setTranslateY(LevelManager.groundList.get(respawnX/LevelManager.tileWidth).getY()-LevelManager.groundLevel);
+		character.setTranslateY(LevelManager.groundList.get((respawnX-1)/LevelManager.tileWidth).getY()-(LevelManager.groundOffsets.get((respawnX-1)/LevelManager.tileWidth))-LevelManager.groundLevel);
+		hat.setTranslateY(LevelManager.groundList.get(respawnX/LevelManager.tileWidth).getY()-(LevelManager.groundOffsets.get((respawnX-1)/LevelManager.tileWidth))-LevelManager.groundLevel);
 		group.setTranslateX(group.getTranslateX() + (oldX-newX));
 		predeathx = respawnX;
 		if (dead) {
