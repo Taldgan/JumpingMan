@@ -7,12 +7,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class GameObject extends InputFunctions{
+	
+	@FXML Label finalScore;
 
+	LevelManager levelManager = new LevelManager();
 	//Scenes
 	BorderPane root;
 	Scene menuScene;
@@ -62,16 +66,15 @@ public class GameObject extends InputFunctions{
 		if(LevelManager.lifeCount == 0) {
 			LevelManager.lifeCount = 3;
 			StateManager.currentLevel = Level.LEVEL1;
+			levelManager.gameOver();
 		}
 		LevelManager.loadLevel();
-		LevelManager.mainGuy.play();
 		LevelManager.mainGuy.setDead(false);
 		StateManager.gameState = State.PLAYING;
 	}
 
 	@FXML
 	public void playAgain(ActionEvent e) {
-		LevelManager.mainGuy.play();
 		StateManager.gameState = State.PLAYING;
 		LevelManager.mainGuy.setDead(false);
 	}
@@ -164,6 +167,11 @@ public class GameObject extends InputFunctions{
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
 				//Win if on last obstacle
 				if(obstacle.getColor() == Color.WHITESMOKE) { //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
+					
+					//might need to move this somewhere else but idrk where else it would work
+					System.out.println("pole score: " + Math.abs(LevelManager.mainGuy.gety()-800));
+					LevelManager.score.finalScore += Math.abs(LevelManager.mainGuy.gety()-800);
+					
 					nextLevel();
 				}
 				double diff;
@@ -390,12 +398,13 @@ public class GameObject extends InputFunctions{
 				}
 				else {
 					LevelManager.mainGuy.setdy(-3);
+					LevelManager.score.finalScore += 300;
 					
 				}
 				LevelManager.enemyList.get(x).getCharacter().setFill(Color.YELLOW);
 				LevelManager.enemyList.get(x).getCharacter().setCenterY(-1000);
 				LevelManager.enemyList.remove(x);
-
+				System.out.println("play sound");
 			}
 			else
 				LevelManager.enemyList.get(x).getCharacter().setFill(LevelManager.enemyList.get(x).getColor());
@@ -412,7 +421,7 @@ public class GameObject extends InputFunctions{
 		}
 	}
 	public void updateLabels() {
-		LevelManager.infoLabel.setText("Level " + StateManager.currentLevel.ordinal() + "\n\nScore: " + LevelManager.score);
+		LevelManager.infoLabel.setText("Level " + StateManager.currentLevel.ordinal() + "\n\nScore: " + LevelManager.score.finalScore);
 		LevelManager.infoLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX()+40);
 		LevelManager.lifeCounter.setTranslateY(LevelManager.infoLabel.getTranslateY()+65);
 		LevelManager.lifeCounter.setTranslateX(LevelManager.infoLabel.getTranslateX());
@@ -420,15 +429,17 @@ public class GameObject extends InputFunctions{
 
 	public void win() {
 		LevelManager.lifeCount = 3;
+		//finalScore.setText("" + LevelManager.score.finalScore);
 		StateManager.gameState = State.YOUWON;
 		StateManager.currentLevel = Level.LEVEL1;
+		levelManager.levelOver();
 	}
 	
 	public void nextLevel() {
 		if(Level.values()[StateManager.currentLevel.ordinal()+1] != Level.END) {
 			StateManager.currentLevel = Level.values()[StateManager.currentLevel.ordinal()+1];
 			StateManager.gameState = State.NEXTLEVEL;
-			LevelManager.mainGuy.score.stop(LevelManager.mainGuy.getLives());
+			levelManager.levelOver();
 		}
 		else {
 			win();

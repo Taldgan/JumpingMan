@@ -25,8 +25,11 @@ public class Character {
 	private boolean animating = false;
 	private int deathAnimationCount = 150;
 	double collisionTimeDelta = 0, startTime = 0;
-	Score score = new Score();
-	int finalScore = 0;
+	
+	
+	
+	//Score score = new Score();
+	//int finalScore = 0;
 
 	public Character(double x, double y, double size, Color color) {
 		dead = false;
@@ -61,10 +64,6 @@ public class Character {
 		setSize(size);
 		setColor(color);
 		setCharacter(x, y, size, color);
-	}
-	
-	public void play() {
-		score.start(getLives());
 	}
 
 	public void deathByEnemy() {

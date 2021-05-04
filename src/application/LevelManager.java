@@ -15,6 +15,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
 public class LevelManager {
+	
+	static Score score = new Score();
 
 	//Level/Object Size integers
 	public static int groundLevel = 700;
@@ -53,14 +55,24 @@ public class LevelManager {
 	static Group lifeCounter;
 	static Label infoLabel = new Label("Level: \nLives: \nScore: ");
 	static int lifeCount = 3;
-	static int score = 0; //TODO temp score
 	
 	//Colors
 	private static Color bgColor, groundColor, grassColor, platColor, cloudColor;
 	
-
-
+	public void levelOver() {
+		score.stop();
+		score.finalScore += score.calculateTimeScore();
+		System.out.println("time score: " + score.calculateTimeScore());
+		System.out.println("final score: " + score.finalScore);
+	}
+	public void gameOver() {
+		score.finalScore = 0;
+	}
+	
 	public static void loadLevel() {
+		
+		score.start();		
+		
 		//Read in level data to strings
 		try {
 			BufferedReader levelReader = new BufferedReader(new FileReader("src/application/levels/level" + StateManager.currentLevel.ordinal() + ".lvl"));

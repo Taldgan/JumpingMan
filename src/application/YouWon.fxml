@@ -10,8 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<Pane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.GameObject">
+<Pane xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.GameObject">
    <children>
       <StackPane>
          <children>
@@ -38,7 +37,7 @@
                               <Font size="20.0" />
                            </font>
                         </Label>
-                        <Label prefHeight="30.0" prefWidth="30.0">
+                        <Label fx:id="finalScore" prefHeight="30.0" prefWidth="30.0">
                            <font>
                               <Font size="20.0" />
                            </font>

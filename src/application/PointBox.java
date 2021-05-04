@@ -85,7 +85,8 @@ public class PointBox extends Obstacle {
 	public void getHit() {
 		if(this.pointsLeft >= 1) {
 			Sounds.sPlayer.playSFX(2);
-			LevelManager.mainGuy.finalScore += 100;
+			LevelManager.score.finalScore += 100;
+			System.out.println("Score without time bonus: " + LevelManager.score.finalScore);
 			//create floatLabel and add it
 			FloatLabel scoreLabel = new FloatLabel("+100", 15, -20);
 			scoreLabel.setFont(new Font("Blocky Font", 30));
@@ -101,7 +102,6 @@ public class PointBox extends Obstacle {
 			}
 
 			this.pointsLeft--;
-			LevelManager.score += 100; //TODO Temp score
 
 			if(this.pointsLeft == 0) 
 				this.imageViewer.setImage(emptyBox);
