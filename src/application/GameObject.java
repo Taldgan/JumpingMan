@@ -39,14 +39,15 @@ public class GameObject extends InputFunctions{
 	}
 
 	public void update() {
-	
 		updateMC();
 		updateMovPlats();
+		updatePointBoxes();
 		checkCollision(LevelManager.mainGuy);
 		checkMovingCollision(LevelManager.mainGuy);
 		updateEnemies();
 		updateLabels();
 	}
+
 
 	@FXML
 	public void mainMenu(ActionEvent e) {
@@ -397,7 +398,7 @@ public class GameObject extends InputFunctions{
 		}
 	}
 	public void updateLabels() {
-		LevelManager.infoLabel.setText("Level " + StateManager.currentLevel.ordinal());
+		LevelManager.infoLabel.setText("Level " + StateManager.currentLevel.ordinal() + "\n\nScore: ");
 		LevelManager.infoLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX()+40);
 		LevelManager.lifeCounter.setTranslateY(LevelManager.infoLabel.getTranslateY()+65);
 		LevelManager.lifeCounter.setTranslateX(LevelManager.infoLabel.getTranslateX());
@@ -418,6 +419,16 @@ public class GameObject extends InputFunctions{
 		}
 		else {
 			win();
+		}
+	}
+
+	public void updatePointBoxes() {
+		for(PointBox pBox : LevelManager.pointBoxList) {
+			pBox.floatLabels();
+			if(pBox.isAnimating()) {
+				System.out.println("Acount: " + pBox.getACount());
+				pBox.animateCube();
+			}
 		}
 	}
 }
