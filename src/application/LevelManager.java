@@ -104,7 +104,8 @@ public class LevelManager {
 		lowerPlatforms = spawnPlatforms(lowerPlatString,0,0, platColor, grassColor, lowerPlatList);
 		upperPlatforms = spawnPlatforms(upperPlatString,0,0, platColor, grassColor, upperPlatList);
 		movingPlatforms = spawnMovingPlatforms(movingPlatString, 0, 50, grassColor, movingPlatList);
-		obstacles = spawnObstacles(obstacleString, obstacleWidth, obstacleHeight, Color.DARKGREEN, obstacleList);		
+		obstacles = spawnObstacles(obstacleString, obstacleWidth, obstacleHeight, Color.DARKGREEN, obstacleList);
+		
 		enemies = spawnEnemies(enemyString, groundString);
 		level = new Group(background, ground, lowerPlatforms, upperPlatforms, movingPlatforms, obstacles, enemies, mainGuy.getCharacter());
 		level.setManaged(false);
@@ -270,14 +271,14 @@ public class LevelManager {
 				r.setY(groundLvlOffset-groundOffsets.get(x)+Integer.parseInt(String.valueOf(lvl.charAt(x)))*45*-1-offsetY);
 			}
 			else if(lvl.charAt(x) == '9') { //For use for the victory platform
-				int width = tileWidth;
-				int height = 20;
-				Obstacle r = new Obstacle(width, height, Color.DARKSLATEGRAY, cTop);
+				int width = 25;
+				int height = 800-25-175;
+				Obstacle r = new Obstacle(width, height, Color.WHITESMOKE, cTop);
 				pList.add(r);
 				platG.getChildren().add(r.getPlat());
 
 				r.setX(tileWidth*x);
-				r.setY(groundLvlOffset-groundOffsets.get(x)-45);
+				r.setY(100);
 			}
 		}
 		return platG;

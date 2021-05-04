@@ -155,7 +155,7 @@ public class GameObject extends InputFunctions{
 		for(Obstacle obstacle : LevelManager.allStaticObjects) {
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
 				//Win if on last obstacle
-				if(obstacle.getColor() == Color.DARKSLATEGRAY) { //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
+				if(obstacle.getColor() == Color.WHITESMOKE) { //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
 					nextLevel();
 				}
 				double diff;
