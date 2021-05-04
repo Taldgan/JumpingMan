@@ -186,6 +186,7 @@ public class GameObject extends InputFunctions{
 						c.setdy(0);
 						c.setJumping(false);
 						c.getCharacter().setTranslateY(obstacle.getPlat().getY()-LevelManager.groundLevel+5);
+						c.getHat().setTranslateY(obstacle.getPlat().getY()-LevelManager.groundLevel+5);
 					}
 				}
 				//Left of platform collision:
@@ -197,6 +198,7 @@ public class GameObject extends InputFunctions{
 					{
 						c.setx(c.getPrevX());
 						c.getCharacter().setTranslateX(LevelManager.mainGuy.getPrevTranslateX());
+						c.getHat().setTranslateX(LevelManager.mainGuy.getHatPrevTranslateX());
 						LevelManager.level.setTranslateX(diff);
 					}
 					//Swap enemy direction when touching an obstacle.
@@ -214,6 +216,7 @@ public class GameObject extends InputFunctions{
 					{
 						c.setx(c.getPrevX());
 						c.getCharacter().setTranslateX(LevelManager.mainGuy.getPrevTranslateX());
+						c.getHat().setTranslateX(LevelManager.mainGuy.getHatPrevTranslateX());
 						LevelManager.level.setTranslateX(diff);
 					}
 					else if(c.getColor() != Color.RED && obstacle.getColor() == null)
@@ -238,6 +241,7 @@ public class GameObject extends InputFunctions{
 					{
 						c.sety(c.getPrevY());
 						c.getCharacter().setTranslateY(LevelManager.mainGuy.getPrevTranslateY());
+						c.getHat().setTranslateY(LevelManager.mainGuy.getPrevHatTranslateY());
 					}
 				}
 			}
@@ -270,6 +274,7 @@ public class GameObject extends InputFunctions{
 						c.setPlatdx(obstacle.getdx());
 						c.setPlatdy(obstacle.getdy());
 						c.getCharacter().setTranslateY(c.getCharacter().getTranslateY() + obstacle.getdy());
+						c.getHat().setTranslateY(c.getHat().getTranslateY() + obstacle.getdy());
 						c.setJumping(false);
 						c.setOnMovingPlat(true);
 					}

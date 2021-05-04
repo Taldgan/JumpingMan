@@ -1,8 +1,10 @@
 package application;
 
 import javafx.scene.Group;
+import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Ellipse;
 
 public class Character {
 
@@ -16,6 +18,7 @@ public class Character {
 	boolean onMovingPlat = false;
 	double x, y, minY = 280;
 	double prevX, prevY, prevTranslateX, prevTranslateY;
+	double hatPrevTranslateX, hatPrevTranslateY;
 	double size;
 	Color color;
 	Circle character = new Circle(x, y, size, color);
@@ -28,6 +31,8 @@ public class Character {
 	private boolean animatingWinG = false;
 	private int deathAnimationCount = 150;
 	private int winAnimationCount = 0;
+	private Group hat;
+	private boolean mc = false;
 	double collisionTimeDelta = 0, startTime = 0;
 	
 	public Character(double x, double y, double size, Color color) {
@@ -48,6 +53,7 @@ public class Character {
 	}
 
 	public Character(double x, double y, double size, Color color, int lives) {
+		this.mc = true;
 		this.lives = lives;
 		dead = false;
 		jumping = false;
@@ -63,6 +69,23 @@ public class Character {
 		setSize(size);
 		setColor(color);
 		setCharacter(x, y, size, color);
+		Ellipse hatBase = new Ellipse();
+		Ellipse hatFront = new Ellipse();
+		hatBase.setRadiusX(size);
+		hatBase.setRadiusY(size/2);
+		hatBase.setTranslateX(x+4);
+		hatBase.setTranslateY(y-14);
+		hatBase.setFill(Color.BLACK);
+		hatFront.setRadiusX(size/1.2);
+		hatFront.setRadiusY(size/2.5);
+		hatFront.setTranslateX(x+9);
+		hatFront.setTranslateY(y-7);
+		hatFront.setFill(Color.web("0x33232D"));
+		Label j = new Label("J");
+		j.setTextFill(Color.WHITE);
+		j.setTranslateX(hatFront.getTranslateX());
+		j.setTranslateY(hatFront.getTranslateY()-9);
+		hat = new Group(hatBase, hatFront, j);
 	}
 
 	public void deathByEnemy() {
@@ -83,7 +106,9 @@ public class Character {
 		setx(respawnX);
 		int newX = (int) getx();
 		this.getCharacter().setTranslateX(this.getCharacter().getTranslateX() - (oldX-newX));
+		this.getHat().setTranslateX(this.getHat().getTranslateX() - (oldX-newX));
 		character.setTranslateY(LevelManager.groundList.get(respawnX/LevelManager.tileWidth).getY()-LevelManager.groundLevel);
+		hat.setTranslateY(LevelManager.groundList.get(respawnX/LevelManager.tileWidth).getY()-LevelManager.groundLevel);
 		group.setTranslateX(group.getTranslateX() + (oldX-newX));
 		predeathx = respawnX;
 		if (dead) {
@@ -98,16 +123,25 @@ public class Character {
 				StateManager.gameState = State.YOUDIED;
 		}
 	}
+	
 
 	public void move() {
 		prevX = this.x;
 		prevY = this.y;
 		prevTranslateX = this.getCharacter().getTranslateX();
 		prevTranslateY = this.getCharacter().getTranslateY();
+		if(mc) {
+			hatPrevTranslateX = this.getHat().getTranslateX();
+			hatPrevTranslateY = this.getHat().getTranslateY();
+		}
 		this.character.setTranslateX(this.character.getTranslateX() + getdx() + getPlatdx());
 		setx(this.character.getCenterX() + this.character.getTranslateX());
 		this.character.setTranslateY(this.character.getTranslateY() + getdy() + getPlatdy());
 		sety(this.character.getCenterY() + this.character.getTranslateY());
+		if(mc) {
+			this.hat.setTranslateX(this.hat.getTranslateX() + getdx() + getPlatdx());
+			this.hat.setTranslateY(this.hat.getTranslateY() + getdy() + getPlatdy());
+		}
 	}
 
 	public Circle getCharacter() {
@@ -129,17 +163,23 @@ public class Character {
 		if(winAnimationCount > 0) {
 			if(winAnimationCount >= 419) {
 				character.setTranslateX(winPlatX-220);
+				hat.setTranslateX(winPlatX-220);
 			}
 			setdy(0);
 			if(winAnimationCount % 15 == 0) {
 				swapDir();
 			}
 			if(gety()+character.getRadius() < LevelManager.groundLevel && !animatingWinG) {
-				if(dir) 
+				if(dir) {
 					character.setTranslateX(character.getTranslateX() + 3);
-				else
+					hat.setTranslateX(hat.getTranslateX() + 3);
+				}
+				else {
 					character.setTranslateX(character.getTranslateX() - 3);
+					hat.setTranslateX(hat.getTranslateX() - 3);
+				}
 				character.setTranslateY(character.getTranslateY() + 2.5);
+				hat.setTranslateY(hat.getTranslateY() + 2.5);
 			}
 			else {
 				if(winAnimationCount == 40) {
@@ -148,9 +188,11 @@ public class Character {
 				}
 				else if(winAnimationCount < 20) {
 					character.setTranslateY(character.getTranslateY() + 2.5);
+					hat.setTranslateY(hat.getTranslateY() + 2.5);
 				}
 				else if(winAnimationCount < 40) {
 					character.setTranslateY(character.getTranslateY() - 2.5);
+					hat.setTranslateY(hat.getTranslateY() - 2.5);
 				}
 			}
 			winAnimationCount--;
@@ -172,10 +214,16 @@ public class Character {
 	public void animateDeath() {
 		if(deathAnimationCount >= 120) {
 			this.getCharacter().setTranslateY(this.getCharacter().getTranslateY()-0.5);
+			this.getHat().setTranslateY(this.getHat().getTranslateY()-0.5);
+			deathAnimationCount--;
+		}
+		else if(deathAnimationCount > 110) {
+			this.getCharacter().setTranslateY(this.getCharacter().getTranslateY()+8);
 			deathAnimationCount--;
 		}
 		else if(deathAnimationCount > 0) {
 			this.getCharacter().setTranslateY(this.getCharacter().getTranslateY()+8);
+			this.getHat().setTranslateY(this.getHat().getTranslateY()+8);
 			deathAnimationCount--;
 		}
 		else {
@@ -366,12 +414,20 @@ public class Character {
 		return prevTranslateX;
 	}
 
+	public double getHatPrevTranslateX() {
+		return hatPrevTranslateX;
+	}
+
 	public void setPrevTranslateX(double prevTranslateX) {
 		this.prevTranslateX = prevTranslateX;
 	}
 
 	public double getPrevTranslateY() {
 		return prevTranslateY;
+	}
+
+	public double getPrevHatTranslateY() {
+		return hatPrevTranslateY;
 	}
 
 	public void setPrevTranslateY(double prevTranslateY) {
@@ -429,6 +485,10 @@ public class Character {
 
 	public boolean isWinning() {
 		return this.winning;
+	}
+
+	public Group getHat() {
+		return this.hat;
 	}
 
 }

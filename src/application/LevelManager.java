@@ -127,7 +127,7 @@ public class LevelManager {
 		pointBoxes = spawnPointBoxes(pointBoxString, pointBoxWidth, pointBoxHeight, Color.web("0xF5E101"), pointBoxList);		
 		enemies = spawnEnemies(lowerEnemyString, groundString, 0);
 		enemies.getChildren().add(spawnEnemies(upperEnemyString, groundString, upperOffset));
-		level = new Group(theVoid, background, ground, lowerPlatforms, upperPlatforms, movingPlatforms, pointBoxes, enemies, mainGuy.getCharacter());
+		level = new Group(theVoid, background, ground, lowerPlatforms, upperPlatforms, movingPlatforms, pointBoxes, enemies, mainGuy.getCharacter(), mainGuy.getHat());
 		level.setManaged(false);
 
 		//Add all static object lists to allStaticObjects for easier collision
