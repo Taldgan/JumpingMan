@@ -10,7 +10,7 @@ public class Score {
 	
 	public void start() {		
 		System.out.println("start: " + System.currentTimeMillis());
-		maxTime = System.currentTimeMillis() + 20000;
+		maxTime = System.currentTimeMillis() + 30000;
 	}
 	
 	public void stop() {

@@ -24,8 +24,8 @@ public class Character {
 	
 	
 	
-	Score score = new Score();
-	int finalScore = 0;
+	//Score score = new Score();
+	//int finalScore = 0;
 
 	public Character(double x, double y, double size, Color color) {
 		dead = false;
