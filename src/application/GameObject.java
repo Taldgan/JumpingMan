@@ -40,6 +40,8 @@ public class GameObject extends InputFunctions{
 	public void update() {
 
 		updateMC();
+		System.out.println("MainGuy 'Jumping': " + LevelManager.mainGuy.getJumping());
+		System.out.println("collisionDelta: " + LevelManager.mainGuy.getCollisionDelta());
 		updateMovPlats();
 		checkMovingCollision(LevelManager.mainGuy);
 		checkCollision(LevelManager.mainGuy);
@@ -174,9 +176,6 @@ public class GameObject extends InputFunctions{
 					}
 
 				}
-				else if(c.getCollisionDelta() > 150) {
-						c.setJumping(true);
-				}
 				//Left of platform collision:
 				if(charLeft <= obstacle.getX()) {
 
@@ -281,7 +280,7 @@ public class GameObject extends InputFunctions{
 						c.setPlatdy(obstacle.getdy());
 						//LevelManager.level.setTranslateX(LevelManager.level.getTranslateX() -  obstacle.getdx());
 						c.getCharacter().setTranslateY(c.getCharacter().getTranslateY() + obstacle.getdy());
-						c.setJumping(false);
+						//c.setJumping(false);
 					}
 				}
 			}
@@ -338,7 +337,7 @@ public class GameObject extends InputFunctions{
 		if(LevelManager.mainGuy.getDead() || LevelManager.mainGuy.gety() > 800)
 			LevelManager.mainGuy.dead(LevelManager.level,findNearestHole(LevelManager.groundString));
 		//If LevelManager.mainGuy is not touching top of platform, he must be jumping/falling
-		if(!LevelManager.mainGuy.getCollide()) {
+		if(!LevelManager.mainGuy.getCollide() && LevelManager.mainGuy.getCollisionDelta() > 150) {
 			LevelManager.mainGuy.setJumping(true);
 		}
 
