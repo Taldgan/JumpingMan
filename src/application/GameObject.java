@@ -152,7 +152,6 @@ public class GameObject extends InputFunctions{
 
 		for(Obstacle obstacle : LevelManager.allStaticObjects) {
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
-				System.out.println("COLLIDE");
 				//Win if on last obstacle
 				if(obstacle.getColor() == Color.WHITESMOKE) { //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
 					nextLevel();
@@ -161,8 +160,6 @@ public class GameObject extends InputFunctions{
 				//On top of the platform
 				if(charBot-12 <= obstacle.getY() && c.getdy() >= 0)
 				{
-					//System.out.println("top collision");
-					
 					diff = LevelManager.level.getTranslateY() + (c.gety() - c.getPrevY());
 					c.setCollide(true);
 					if(c.getColor() == Color.RED)
@@ -210,27 +207,13 @@ public class GameObject extends InputFunctions{
 
 				}
 				//If under the platform:
-				/*else if(charTop <= obstacle.getY()+obstacle.getHeight() && c.getdy() < 0)
-				{
-					LevelManager.mainGuy.setCollideTop(true);
-					diff = LevelManager.level.getTranslateY() + (c.gety() - c.getPrevY());
-
-					c.setdy(1);
-					if(c.getColor() == Color.RED)
-					{
-						c.sety(c.getPrevY());
-						c.getCharacter().setTranslateY(LevelManager.mainGuy.getPrevTranslateY());
-					}
-				}*/
 				else if(charTop >= obstacle.getY() && c.getdy() <= 0)
 				{
 					LevelManager.mainGuy.setCollideTop(true);
 					
 					// width == height means its a prize box
-					if (obstacle.getWidth() == obstacle.getHeight()) {
-						System.out.println("make coin sound");
-						LevelManager.mainGuy.finalScore += 100;
-						System.out.println("Score without time bonus: " + LevelManager.mainGuy.finalScore);
+					if (obstacle instanceof PointBox) {
+						((PointBox) obstacle).getHit();
 					}
 					diff = LevelManager.level.getTranslateY() + (c.gety() - c.getPrevY());
 
@@ -334,11 +317,6 @@ public class GameObject extends InputFunctions{
 
 		//If he is jumping or walking, update his movement to match, also prevent max fall speed from exceeding 6.5
 		if (LevelManager.mainGuy.walking || LevelManager.mainGuy.jumping || LevelManager.mainGuy.getOnMovingPlat()) {
-			System.out.println("x " + LevelManager.mainGuy.getx());
-			System.out.println("dx " + LevelManager.mainGuy.getdx());
-			System.out.println("platdx " + LevelManager.mainGuy.getPlatdx());
-			System.out.println("prevX " + LevelManager.mainGuy.getPrevX());
-			System.out.println("onMPlat " + LevelManager.mainGuy.getOnMovingPlat());
 			LevelManager.mainGuy.move();
 			LevelManager.level.setTranslateX(LevelManager.level.getTranslateX() - LevelManager.mainGuy.getdx() - LevelManager.mainGuy.getPlatdx());
 			if (LevelManager.mainGuy.jumping && LevelManager.mainGuy.getdy() < 6.5) {
@@ -430,7 +408,6 @@ public class GameObject extends InputFunctions{
 			LevelManager.mainGuy.score.stop(LevelManager.mainGuy.getLives());
 		}
 		else {
-			System.out.println("else...");
 			win();
 		}
 	}

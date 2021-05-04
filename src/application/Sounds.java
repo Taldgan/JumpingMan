@@ -22,6 +22,7 @@ public class Sounds
 		//Clips and songs will be played according to their index in this array list
 		sfxCollection.add("src/application/sounds/Jump.wav");
 		sfxCollection.add("src/application/sounds/Death.wav");
+		sfxCollection.add("src/application/sounds/pointBox.wav");
 		
 		bgmCollection.add("src/application/sounds/ex101.wav");
 	}
