@@ -89,7 +89,6 @@ public class GameObject extends InputFunctions{
 			view = FXMLLoader.load(getClass().getResource("/application/MainMenu.fxml"));
 			this.menuScene = new Scene(view);
 			primaryStage.setScene(this.menuScene);
-			Sounds.sPlayer.stopSong();
 			break;
 		case PAUSE:
 			LevelManager.pauseLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX()+400);
