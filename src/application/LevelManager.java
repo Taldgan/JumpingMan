@@ -49,7 +49,7 @@ public class LevelManager {
 
 	//Main character variables
 	private static int spawnX = 250, spawnY = LevelManager.groundLevel-25;
-	static Character mainGuy;
+	static MainCharacter mainGuy;
 	
 	//Labels/Data
 	static Label pauseLabel = new Label("PAUSED\n(Q)UIT");
@@ -112,7 +112,7 @@ public class LevelManager {
 		enemyList = new ArrayList<Enemies>();
 		int upperOffset = 10;
 
-		mainGuy = new Character(spawnX, spawnY, 20, Color.RED, lifeCount);
+		mainGuy = new MainCharacter(spawnX, spawnY, 20, Color.RED, lifeCount);
 
 
 		//Assign groups using spawn methods

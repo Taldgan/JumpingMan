@@ -8,11 +8,11 @@ public class InputFunctions {
 	public InputFunctions() {
 		s = new Sounds();
 	}
-	
+
 	public void keyPressed (KeyEvent event, Character character) {
-		
+
 		KeyCode key = event.getCode();
-		
+
 		if (key == KeyCode.ESCAPE) {
 			if(StateManager.gameState == State.PAUSE) 
 				StateManager.gameState = State.PLAYING;
@@ -20,32 +20,36 @@ public class InputFunctions {
 				StateManager.gameState = State.PAUSE;
 
 		}
-		
+
 		if(key == KeyCode.Q && StateManager.gameState == State.PAUSE)
 			System.exit(0);
 
-		if ((key == KeyCode.RIGHT || key == KeyCode.L) && !character.getCollideRight() && StateManager.gameState == State.PLAYING) {
-			character.setdx(5);
-			character.walking = true;
-		}
-		if ((key == KeyCode.LEFT || key == KeyCode.H) && !character.getCollideLeft() && StateManager.gameState == State.PLAYING) {
-			character.setdx(-5);
-			character.walking = true;
-		}
-		if (key == KeyCode.SPACE || key == KeyCode.UP || key == KeyCode.K && StateManager.gameState == State.PLAYING) {
-			if (!character.getJumping() || character.getCollide()) {
-				character.setGroundLvl(character.gety());
-				character.setdy(-6.5); //Changed from 5, to accomodate raising the platforms
-				character.jumping = true;
-				s.playSFX(0);
+		//Only get movement input if in 'playing' state
+		if(StateManager.gameState == State.PLAYING) {
+			if ((key == KeyCode.RIGHT || key == KeyCode.L) && !character.getCollideRight()) {
+				character.setdx(5);
+				character.walking = true;
+			}
+			if ((key == KeyCode.LEFT || key == KeyCode.H) && !character.getCollideLeft()) {
+				character.setdx(-5);
+				character.walking = true;
+			}
+			if (key == KeyCode.SPACE || key == KeyCode.UP || key == KeyCode.K) {
+				if (!character.getJumping() || character.getCollide()) {
+					character.setGroundLvl(character.gety());
+					character.setdy(-6.5); //Changed from 5, to accomodate raising the platforms
+					character.jumping = true;
+					s.playSFX(0);
+				}
 			}
 		}
+
 	}
-	
+
 	public void keyReleased(KeyEvent event, Character character) {
-		
+
 		KeyCode key = event.getCode();
-		
+
 		if (key == KeyCode.RIGHT || key == KeyCode.L) {
 			character.walking = false;
 			character.setdx(0);
@@ -54,6 +58,6 @@ public class InputFunctions {
 			character.walking = false;
 			character.setdx(0);
 		}
-		
+
 	}
 }

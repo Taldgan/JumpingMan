@@ -164,7 +164,7 @@ public class GameObject extends InputFunctions{
 		for(Obstacle obstacle : LevelManager.allStaticObjects) {
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
 				//Win if on last obstacle
-				if(obstacle.getColor() == Color.WHITESMOKE && c.getColor() == Color.RED) { //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
+				if(obstacle.getColor() == Color.WHITESMOKE && c instanceof MainCharacter) { //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
 					
 					//might need to move this somewhere else but idrk where else it would work
 					//System.out.println("pole score: " + Math.abs(LevelManager.mainGuy.gety()-800));
@@ -179,13 +179,13 @@ public class GameObject extends InputFunctions{
 				{
 					diff = LevelManager.level.getTranslateY() + (c.gety() - c.getPrevY());
 					c.setCollide(true);
-					if(c.getColor() == Color.RED)
+					if(c instanceof MainCharacter)
 					{
-						c.setGroundLvl(c.gety());
-						c.setdy(0);
-						c.setJumping(false);
-						c.getCharacter().setTranslateY(obstacle.getPlat().getY()-LevelManager.groundLevel+5);
-						c.getHat().setTranslateY(obstacle.getPlat().getY()-LevelManager.groundLevel+5);
+						LevelManager.mainGuy.setGroundLvl(c.gety());
+						LevelManager.mainGuy.setdy(0);
+						LevelManager.mainGuy.setJumping(false);
+						LevelManager.mainGuy.getCharacter().setTranslateY(obstacle.getPlat().getY()-LevelManager.groundLevel+5);
+						LevelManager.mainGuy.getHat().setTranslateY(obstacle.getPlat().getY()-LevelManager.groundLevel+5);
 					}
 				}
 				//Left of platform collision:
@@ -193,15 +193,15 @@ public class GameObject extends InputFunctions{
 
 					c.setCollideRight(true);
 					diff = LevelManager.level.getTranslateX() + (c.getx() - c.getPrevX());
-					if(c.getColor() == Color.RED)
+					if(c instanceof MainCharacter)
 					{
-						c.setx(c.getPrevX());
-						c.getCharacter().setTranslateX(LevelManager.mainGuy.getPrevTranslateX());
-						c.getHat().setTranslateX(LevelManager.mainGuy.getHatPrevTranslateX());
+						LevelManager.mainGuy.setx(LevelManager.mainGuy.getPrevX());
+						LevelManager.mainGuy.getCharacter().setTranslateX(LevelManager.mainGuy.getPrevTranslateX());
+						LevelManager.mainGuy.getHat().setTranslateX(LevelManager.mainGuy.getHatPrevTranslateX());
 						LevelManager.level.setTranslateX(diff);
 					}
 					//Swap enemy direction when touching an obstacle.
-					else if(c.getColor() != Color.RED) //Dont ask how, dont ask why. But it just works.
+					else if(!(c instanceof MainCharacter)) //Dont ask how, dont ask why. But it just works.
 					{
 						c.swapDir();
 					}
@@ -211,14 +211,14 @@ public class GameObject extends InputFunctions{
 				else if(charRight >= obstacle.getX()+obstacle.getWidth()-15 && !(charBot-12 <= obstacle.getY()+10)) {
 					c.setCollideLeft(true);
 					diff = LevelManager.level.getTranslateX() + (c.getx() - c.getPrevX());
-					if(c.getColor() == Color.RED)
+					if(c instanceof MainCharacter)
 					{
-						c.setx(c.getPrevX());
-						c.getCharacter().setTranslateX(LevelManager.mainGuy.getPrevTranslateX());
-						c.getHat().setTranslateX(LevelManager.mainGuy.getHatPrevTranslateX());
+						LevelManager.mainGuy.setx(c.getPrevX());
+						LevelManager.mainGuy.getCharacter().setTranslateX(LevelManager.mainGuy.getPrevTranslateX());
+						LevelManager.mainGuy.getHat().setTranslateX(LevelManager.mainGuy.getHatPrevTranslateX());
 						LevelManager.level.setTranslateX(diff);
 					}
-					else if(c.getColor() != Color.RED)
+					else if(!(c instanceof MainCharacter))
 					{
 						c.swapDir();
 					}
@@ -236,11 +236,11 @@ public class GameObject extends InputFunctions{
 					diff = LevelManager.level.getTranslateY() + (c.gety() - c.getPrevY());
 
 					c.setdy(1);
-					if(c.getColor() == Color.RED)
+					if(c instanceof MainCharacter)
 					{
-						c.sety(c.getPrevY());
-						c.getCharacter().setTranslateY(LevelManager.mainGuy.getPrevTranslateY());
-						c.getHat().setTranslateY(LevelManager.mainGuy.getPrevHatTranslateY());
+						LevelManager.mainGuy.sety(c.getPrevY());
+						LevelManager.mainGuy.getCharacter().setTranslateY(LevelManager.mainGuy.getPrevTranslateY());
+						LevelManager.mainGuy.getHat().setTranslateY(LevelManager.mainGuy.getPrevHatTranslateY());
 					}
 				}
 			}
@@ -266,16 +266,16 @@ public class GameObject extends InputFunctions{
 				if(charBot-12 <= obstacle.getY() && c.getdy() >= 0)
 				{
 					c.setCollide(true);
-					if(c.getColor() == Color.RED)
+					if(c instanceof MainCharacter)
 					{
-						c.setGroundLvl(c.gety());
-						c.setdy(0);
-						c.setPlatdx(obstacle.getdx());
-						c.setPlatdy(obstacle.getdy());
-						c.getCharacter().setTranslateY(c.getCharacter().getTranslateY() + obstacle.getdy());
-						c.getHat().setTranslateY(c.getHat().getTranslateY() + obstacle.getdy());
-						c.setJumping(false);
-						c.setOnMovingPlat(true);
+						LevelManager.mainGuy.setGroundLvl(LevelManager.mainGuy.gety());
+						LevelManager.mainGuy.setdy(0);
+						LevelManager.mainGuy.setPlatdx(obstacle.getdx());
+						LevelManager.mainGuy.setPlatdy(obstacle.getdy());
+						LevelManager.mainGuy.getCharacter().setTranslateY(c.getCharacter().getTranslateY() + obstacle.getdy());
+						LevelManager.mainGuy.getHat().setTranslateY(LevelManager.mainGuy.getHat().getTranslateY() + obstacle.getdy());
+						LevelManager.mainGuy.setJumping(false);
+						LevelManager.mainGuy.setOnMovingPlat(true);
 					}
 				}
 			}
@@ -442,7 +442,7 @@ public class GameObject extends InputFunctions{
 		Sounds.sPlayer.playSFX(4);
 		Sounds.sPlayer.stopSong();
 		LevelManager.mainGuy.setWinning(true);
-		LevelManager.mainGuy.setWinACount(420);
+		LevelManager.mainGuy.setWinACount(510);
 		StateManager.gameState = State.WINNING;
 	}
 
