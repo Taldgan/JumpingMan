@@ -1,4 +1,4 @@
-package application;
+package application.model;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -25,23 +25,39 @@ public class LevelManager {
 	private static int pointBoxHeight = 40;
 
 	//Level Strings for Obstacle x/y locations in level
-	static String groundString, lowerPlatString, upperPlatString, 
-	movingPlatString, pointBoxString, lowerEnemyString, upperEnemyString; 
+	public static String groundString;
+
+	static String lowerPlatString;
+
+	static String upperPlatString;
+
+	static String movingPlatString;
+
+	static String pointBoxString;
+
+	static String lowerEnemyString;
+
+	static String upperEnemyString; 
 
 	//Group vars, for altering level object positions
-	static Group ground, lowerPlatforms, upperPlatforms, movingPlatforms,
-	level, pointBoxes, enemies;
+	static Group ground, lowerPlatforms, upperPlatforms, movingPlatforms;
+
+	public static Group level;
+
+	static Group pointBoxes;
+
+	static Group enemies;
 	
 	//List vars, lists of objects containing location data
-	static ArrayList<Obstacle> groundList;
-	static ArrayList<Integer> groundOffsets;
-	static ArrayList<Obstacle> lowerPlatList;
-	static ArrayList<Obstacle> upperPlatList;
-	static ArrayList<PointBox> pointBoxList;
-	static ArrayList<MovingObstacle> movingPlatList;
-	static ArrayList<Obstacle> allStaticObjects;
-	static ArrayList<MovingObstacle> allMovingObjects;
-	static ArrayList<Enemies> enemyList;
+	public static ArrayList<Obstacle> groundList;
+	public static ArrayList<Integer> groundOffsets;
+	public static ArrayList<Obstacle> lowerPlatList;
+	public static ArrayList<Obstacle> upperPlatList;
+	public static ArrayList<PointBox> pointBoxList;
+	public static ArrayList<MovingObstacle> movingPlatList;
+	public static ArrayList<Obstacle> allStaticObjects;
+	public static ArrayList<MovingObstacle> allMovingObjects;
+	public static ArrayList<Enemies> enemyList;
 	
 	//Background
 	static Rectangle background;
@@ -49,44 +65,46 @@ public class LevelManager {
 
 	//Main character variables
 	private static int spawnX = 250, spawnY = LevelManager.groundLevel-25;
-	static MainCharacter mainGuy;
+	public static MainCharacter mainGuy;
 	
 	//Labels/Data
-	static Label pauseLabel = new Label("PAUSED\n(Q)UIT");
-	static Group lifeCounter;
-	static Label infoLabel = new Label("Level: \nLives: \nScore: ");
-	static int lifeCount = 3;
+	public static Label pauseLabel = new Label("PAUSED\n(Q)UIT");
+	public static Group lifeCounter;
+	public static Label infoLabel = new Label("Level: \nLives: \nScore: ");
+	public static int lifeCount = 3;
 	
 	//Colors
 	private static Color bgColor, groundColor, grassColor, platColor, cloudColor;
 	
 	public static void levelOver() {
-		score.stop();
-		score.finalScore += score.calculateTimeScore();
+		Score.stop();
+		Score.finalScore += score.calculateTimeScore();
 		//System.out.println("time score: " + score.calculateTimeScore());
 		//System.out.println("final score: " + score.finalScore);
 	}
 	public static void gameOver() {
-		score.finalScore = 0;
+		Score.finalScore = 0;
 	}
 	
 	public static void loadLevel() {
 		
-		score.start();		
+		Score.start();		
 		
 		//Read in level data to strings
 		try {
 			BufferedReader levelReader = new BufferedReader(new FileReader("src/application/levels/level" + StateManager.currentLevel.ordinal() + ".lvl"));
 			//Colors
-			String comment = levelReader.readLine();
+			//Read comment in
+			levelReader.readLine();
 			groundColor = Color.web(levelReader.readLine());
 			grassColor = Color.web(levelReader.readLine());
 			bgColor = Color.web(levelReader.readLine());
 			cloudColor = Color.web(levelReader.readLine());
 			platColor = Color.web(levelReader.readLine());
 			//Level strings
-			comment = levelReader.readLine();
-			comment = levelReader.readLine();
+			//Read 2 comments in
+			levelReader.readLine();
+			levelReader.readLine();
 			groundString = levelReader.readLine();
 			lowerPlatString = levelReader.readLine();
 			upperPlatString = levelReader.readLine();

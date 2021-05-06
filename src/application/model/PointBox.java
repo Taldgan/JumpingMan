@@ -1,4 +1,4 @@
-package application;
+package application.model;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -32,7 +32,54 @@ public class PointBox extends Obstacle {
 		pointsLeft = pointNum.nextInt(4)+1;
 		scoreLabels = new ArrayList<FloatLabel>();
 	}
-	
+
+
+
+	public void floatLabels() {
+		for(FloatLabel scoreLabel : scoreLabels) {
+			scoreLabel.move();
+			if(scoreLabel.needToRemove()) {
+				this.getImageGroup().getChildren().remove(scoreLabel);
+			}
+		}
+	}
+
+	public void animateCube() {
+		if(animationCount == 0) {
+			this.getImageGroup().setTranslateY(this.getImageGroup().getTranslateY() + 5);
+			animating = false;
+		}
+		else {
+			animationCount--;
+		}
+	}
+
+	public void getHit() {
+		if(this.pointsLeft >= 1) {
+			Sounds.sPlayer.playSFX(2);
+			Score.finalScore += 100;
+			System.out.println("Score without time bonus: " + Score.finalScore);
+			//create floatLabel and add it
+			FloatLabel scoreLabel = new FloatLabel("+100", 15, -20);
+			scoreLabel.setFont(new Font("Blocky Font", 30));
+			scoreLabel.setTranslateX(this.getX() + this.pointNum.nextInt(60)-30);
+			scoreLabel.setTranslateY(this.getY() + this.pointNum.nextInt(30)-60);
+			scoreLabel.setStartEndXY(scoreLabel.getTranslateX(), scoreLabel.getTranslateY());
+			scoreLabels.add(scoreLabel);
+			getImageGroup().getChildren().add(scoreLabels.get(scoreLabels.size()-1));
+			if(!animating){
+				this.animating = true;
+				this.getImageGroup().setTranslateY(this.getImageGroup().getTranslateY() - 5);
+				animationCount = 10;
+			}
+
+			this.pointsLeft--;
+
+			if(this.pointsLeft == 0) 
+				this.imageViewer.setImage(emptyBox);
+		}
+	}
+
 	public int getACount() {
 		return this.animationCount;
 	}
@@ -54,58 +101,13 @@ public class PointBox extends Obstacle {
 	public Group getImageGroup() {
 		return this.displayImage;
 	}
-	
+
 	public int getPointsLeft() {
 		return this.pointsLeft;
 	}
 
 	public boolean isAnimating() {
 		return this.animating;
-	}
-	
-	public void floatLabels() {
-		for(FloatLabel scoreLabel : scoreLabels) {
-			scoreLabel.move();
-			if(scoreLabel.needToRemove()) {
-				this.getImageGroup().getChildren().remove(scoreLabel);
-			}
-		}
-	}
-	
-	public void animateCube() {
-		if(animationCount == 0) {
-			this.getImageGroup().setTranslateY(this.getImageGroup().getTranslateY() + 5);
-			animating = false;
-		}
-		else {
-			animationCount--;
-		}
-	}
-
-	public void getHit() {
-		if(this.pointsLeft >= 1) {
-			Sounds.sPlayer.playSFX(2);
-			LevelManager.score.finalScore += 100;
-			System.out.println("Score without time bonus: " + LevelManager.score.finalScore);
-			//create floatLabel and add it
-			FloatLabel scoreLabel = new FloatLabel("+100", 15, -20);
-			scoreLabel.setFont(new Font("Blocky Font", 30));
-			scoreLabel.setTranslateX(this.getX() + this.pointNum.nextInt(60)-30);
-			scoreLabel.setTranslateY(this.getY() + this.pointNum.nextInt(30)-60);
-			scoreLabel.setStartEndXY(scoreLabel.getTranslateX(), scoreLabel.getTranslateY());
-			scoreLabels.add(scoreLabel);
-			getImageGroup().getChildren().add(scoreLabels.get(scoreLabels.size()-1));
-			if(!animating){
-				this.animating = true;
-				this.getImageGroup().setTranslateY(this.getImageGroup().getTranslateY() - 5);
-				animationCount = 10;
-			}
-
-			this.pointsLeft--;
-
-			if(this.pointsLeft == 0) 
-				this.imageViewer.setImage(emptyBox);
-		}
 	}
 
 	class FloatLabel extends Label {
@@ -141,5 +143,5 @@ public class PointBox extends Obstacle {
 			return this.remove;
 		}
 	}
-	
+
 }

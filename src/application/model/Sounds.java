@@ -1,4 +1,4 @@
-package application;
+package application.model;
 
 import javax.sound.sampled.*;
 import java.io.File;
@@ -12,7 +12,7 @@ public class Sounds
 	private ArrayList<String> bgmCollection;
 	private AudioInputStream sfxStream;
 	private AudioInputStream bgmStream;
-	static Sounds sPlayer = new Sounds();
+	public static Sounds sPlayer = new Sounds();
 	private boolean played = false;
 	public Sounds()
 	{

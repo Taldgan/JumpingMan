@@ -1,7 +1,19 @@
-package application;
+package application.controller;
 
 import java.io.IOException;
-
+import application.model.Character;
+import application.model.Enemies;
+import application.model.InputFunctions;
+import application.model.Level;
+import application.model.LevelManager;
+import application.model.MainCharacter;
+import application.model.MovingObstacle;
+import application.model.Obstacle;
+import application.model.PointBox;
+import application.model.Score;
+import application.model.Sounds;
+import application.model.State;
+import application.model.StateManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -42,7 +54,7 @@ public class GameObject extends InputFunctions{
 
 	public void update() {
 		updateMC();
-		if(!LevelManager.mainGuy.getDead() && !LevelManager.mainGuy.isWinning()) {
+		if(!LevelManager.mainGuy.isDead() && !LevelManager.mainGuy.isWinning()) {
 			updateMovPlats();
 			updatePointBoxes();
 			checkCollision(LevelManager.mainGuy);
@@ -168,9 +180,9 @@ public class GameObject extends InputFunctions{
 					
 					//might need to move this somewhere else but idrk where else it would work
 					//System.out.println("pole score: " + Math.abs(LevelManager.mainGuy.gety()-800));
-					LevelManager.score.finalScore += Math.abs(LevelManager.mainGuy.gety()-800);
+					Score.finalScore += Math.abs(LevelManager.mainGuy.gety()-800);
 					
-					LevelManager.mainGuy.winPlatX = (int) obstacle.getX();
+					LevelManager.mainGuy.setWinPlatX((int) obstacle.getX());
 					nextLevel();
 				}
 				double diff;
@@ -181,7 +193,7 @@ public class GameObject extends InputFunctions{
 					c.setCollide(true);
 					if(c instanceof MainCharacter)
 					{
-						LevelManager.mainGuy.setGroundLvl(c.gety());
+						LevelManager.mainGuy.setGroundLevel(c.gety());
 						LevelManager.mainGuy.setdy(0);
 						LevelManager.mainGuy.setJumping(false);
 						LevelManager.mainGuy.getCharacter().setTranslateY(obstacle.getPlat().getY()-LevelManager.groundLevel+5);
@@ -268,7 +280,7 @@ public class GameObject extends InputFunctions{
 					c.setCollide(true);
 					if(c instanceof MainCharacter)
 					{
-						LevelManager.mainGuy.setGroundLvl(LevelManager.mainGuy.gety());
+						LevelManager.mainGuy.setGroundLevel(LevelManager.mainGuy.gety());
 						LevelManager.mainGuy.setdy(0);
 						LevelManager.mainGuy.setPlatdx(obstacle.getdx());
 						LevelManager.mainGuy.setPlatdy(obstacle.getdy());
@@ -331,7 +343,7 @@ public class GameObject extends InputFunctions{
 		if(LevelManager.mainGuy.isWinning()) {
 			LevelManager.mainGuy.animateWin();
 		}
-		if(LevelManager.mainGuy.getDead()) {
+		if(LevelManager.mainGuy.isDead()) {
 			LevelManager.mainGuy.animateDeath();
 		}
 		if(LevelManager.mainGuy.gety() > 800 && StateManager.gameState != State.DYING  && StateManager.gameState != State.WINNING) {
@@ -345,10 +357,10 @@ public class GameObject extends InputFunctions{
 		}
 
 		//If he is jumping or walking, update his movement to match, also prevent max fall speed from exceeding 6.5
-		if (LevelManager.mainGuy.walking || LevelManager.mainGuy.jumping || LevelManager.mainGuy.getOnMovingPlat()) {
+		if (LevelManager.mainGuy.getWalking() || LevelManager.mainGuy.getJumping() || LevelManager.mainGuy.getOnMovingPlat()) {
 			LevelManager.mainGuy.move();
 			LevelManager.level.setTranslateX(LevelManager.level.getTranslateX() - LevelManager.mainGuy.getdx() - LevelManager.mainGuy.getPlatdx());
-			if (LevelManager.mainGuy.jumping && LevelManager.mainGuy.getdy() < 6.5) {
+			if (LevelManager.mainGuy.getJumping() && LevelManager.mainGuy.getdy() < 6.5) {
 				LevelManager.mainGuy.setdy(LevelManager.mainGuy.getdy() + (gravity*calculate()));
 			}
 		}
@@ -405,7 +417,7 @@ public class GameObject extends InputFunctions{
 				}
 				else {
 					LevelManager.mainGuy.setdy(-3);
-					LevelManager.score.finalScore += 300;
+					Score.finalScore += 300;
 					
 				}
 				LevelManager.enemyList.get(x).getCharacter().setFill(Color.YELLOW);
@@ -428,15 +440,12 @@ public class GameObject extends InputFunctions{
 		}
 	}
 	public void updateLabels() {
-		LevelManager.infoLabel.setText("Level " + StateManager.currentLevel.ordinal() + "\n\nScore: " + LevelManager.score.finalScore);
+		LevelManager.infoLabel.setText("Level " + StateManager.currentLevel.ordinal() + "\n\nScore: " + Score.finalScore);
 		LevelManager.infoLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX()+40);
 		LevelManager.lifeCounter.setTranslateY(LevelManager.infoLabel.getTranslateY()+65);
 		LevelManager.lifeCounter.setTranslateX(LevelManager.infoLabel.getTranslateX());
 	}
 
-	public void win() {
-	}
-	
 	public void nextLevel() {
 		StateManager.currentLevel = Level.values()[StateManager.currentLevel.ordinal()+1];
 		Sounds.sPlayer.playSFX(4);

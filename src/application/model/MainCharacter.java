@@ -1,4 +1,4 @@
-package application;
+package application.model;
 
 import javafx.scene.Group;
 import javafx.scene.control.Label;
@@ -9,25 +9,18 @@ import javafx.scene.shape.Ellipse;
 public class MainCharacter extends Character {
 
 	private boolean animatingWinG = false;
-	private int deathAnimationCount = 150;
-	private int winAnimationCount = 0;
+	private int deathAnimationCount = 150, winAnimationCount = 0;
 	private Group hat;
 	private boolean animating = false;
+	private int winPlatX;
+	private double predeathX, predeathY, predeathTranslateX, predeathTranslateY;
+	private int lives;
 
 	double hatPrevTranslateX, hatPrevTranslateY;
 
 	public MainCharacter(double x, double y, double size, Color color, int lives) {
 		super(x, y, size, color);
 		this.lives = lives;
-		dead = false;
-		jumping = false;
-		walking = false;
-		collide = false;
-		collideLeft = false;
-		collideRight = false;
-		radius = size;
-		groundLvl = 280;
-		dir = true;
 		setx(x);
 		sety(y);
 		setSize(size);
@@ -53,11 +46,11 @@ public class MainCharacter extends Character {
 	}
 
 	public void deathByEnemy() {
-		predeathx = getx();
-		predeathy = gety();
+		predeathX = getx();
+		predeathY = gety();
 		predeathTranslateX = character.getTranslateX();
 		predeathTranslateY = character.getTranslateY();
-		if (dead) {
+		if (isDead()) {
 			setLives(getLives() - 1);
 			LevelManager.lifeCount--;
 			LevelManager.lifeCounter.getChildren().remove(getLives());
@@ -74,8 +67,8 @@ public class MainCharacter extends Character {
 		character.setTranslateY(LevelManager.groundList.get((respawnX-1)/LevelManager.tileWidth).getY()-(LevelManager.groundOffsets.get((respawnX-1)/LevelManager.tileWidth))-LevelManager.groundLevel);
 		hat.setTranslateY(LevelManager.groundList.get(respawnX/LevelManager.tileWidth).getY()-(LevelManager.groundOffsets.get((respawnX-1)/LevelManager.tileWidth))-LevelManager.groundLevel);
 		group.setTranslateX(group.getTranslateX() + (oldX-newX));
-		predeathx = respawnX;
-		if (dead) {
+		predeathX = respawnX;
+		if (isDead()) {
 			setdy(0);
 			setdx(0);
 			setLives(getLives() - 1);
@@ -105,7 +98,7 @@ public class MainCharacter extends Character {
 				swapDir();
 			}
 			if(gety()+character.getRadius() < LevelManager.groundLevel && !animatingWinG) {
-				if(dir) {
+				if(movingRight()) {
 					character.setTranslateX(character.getTranslateX() + 3);
 					hat.setTranslateX(hat.getTranslateX() + 3);
 				}
@@ -169,8 +162,8 @@ public class MainCharacter extends Character {
 				setdy(0);
 				this.getCharacter().setTranslateX(predeathTranslateX);
 				this.getCharacter().setTranslateY(predeathTranslateY);
-				sety(predeathy);
-				setx(predeathx);
+				setx(predeathX);
+				sety(predeathY);
 				if(getLives() != 0) 
 					StateManager.gameState = State.YOUDIED;
 				else
@@ -205,6 +198,22 @@ public class MainCharacter extends Character {
 
 	public void setAnimating(boolean animating) {
 		this.animating = animating;
+	}
+
+	public int getWinPlatX() {
+		return this.winPlatX;
+	}
+
+	public void setWinPlatX(int x) {
+		this.winPlatX = x;
+	}
+
+	public void setLives(int lives) {
+		this.lives = lives;
+	}
+
+	public int getLives() {
+		return this.lives;
 	}
 
 }

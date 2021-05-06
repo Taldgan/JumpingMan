@@ -1,29 +1,23 @@
-package application;
+package application.model;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 public class Character {
 
-	int lives;
-	Boolean dead;
-	boolean winning = false;
-	Boolean jumping, walking;
-	double dx, dy, platdx = 0, platdy = 0;
-	double predeathy, predeathx, predeathTranslateX, predeathTranslateY;
-	double safeY, safeTranslateY;
+	private boolean dead;
+	private boolean winning = false;
+	private boolean jumping, walking;
+	private double dx, dy, platdx = 0, platdy = 0;
 	boolean onMovingPlat = false;
-	double x, y, minY = 280;
-	double prevX, prevY, prevTranslateX, prevTranslateY;
-	double size;
+	private double x, y, minY = 280;
+	private double prevX, prevY, prevTranslateX, prevTranslateY, size, radius;
+	private double groundLevel;
 	Color color;
 	Circle character = new Circle(x, y, size, color);
-	boolean collide, collideRight, collideLeft, collideTop, collideBottom;
-	double groundLvl;
-	double radius;
-	boolean dir;
-	int winPlatX;
-	double collisionTimeDelta = 0, startTime = 0;
+	private boolean collide, collideRight, collideLeft, collideTop, collideBottom;
+	private boolean dir;
+	private double collisionTimeDelta = 0, startTime = 0;
 
 	public Character(double x, double y, double size, Color color) {
 		dead = false;
@@ -33,7 +27,7 @@ public class Character {
 		collideLeft = false;
 		collideRight = false;
 		radius = size;
-		groundLvl = 280;
+		groundLevel = 280;
 		dir = true;
 		setx(x);
 		sety(y);
@@ -114,8 +108,8 @@ public class Character {
 		this.dx = dx;
 	}
 
-	public void setGroundLvl(double y) {
-		groundLvl = y;
+	public void setGroundLevel(double y) {
+		groundLevel = y;
 	}
 
 	public double getdy() {
@@ -145,12 +139,14 @@ public class Character {
 	public boolean getCollide() {
 		return collide;
 	}
+	
+	public boolean movingRight() {
+		return this.dir;
+	}
 
 	public void setCollide(boolean collide) {
 		if(collide) {
 			startTime = System.currentTimeMillis();
-			safeY = gety();
-			safeTranslateY = character.getTranslateY();
 		}
 		else {
 			collisionTimeDelta = System.currentTimeMillis() - startTime;
@@ -192,8 +188,8 @@ public class Character {
 		return this.collideBottom;
 	}
 
-	public double getGroundLvl() {
-		return groundLvl;
+	public double getgroundLevel() {
+		return groundLevel;
 	}
 
 	public double getMinY() {
@@ -248,19 +244,11 @@ public class Character {
 		this.prevTranslateY = prevTranslateY;
 	}
 
-	public void setLives(int lives) {
-		this.lives = lives;
-	}
-
-	public int getLives() {
-		return this.lives;
-	}
-
 	public void setDead(Boolean dead) {
 		this.dead = dead;
 	}
 
-	public Boolean getDead() {
+	public boolean isDead() {
 		return this.dead;
 	}
 

@@ -1,4 +1,4 @@
-package application;
+package application.model;
 
 public interface Collidable {
 	public boolean collide(double x, double y, double w, double h);

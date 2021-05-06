@@ -1,4 +1,4 @@
-package application;
+package application.model;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -28,17 +28,17 @@ public class InputFunctions {
 		if(StateManager.gameState == State.PLAYING) {
 			if ((key == KeyCode.RIGHT || key == KeyCode.L) && !character.getCollideRight()) {
 				character.setdx(5);
-				character.walking = true;
+				character.setWalking(true);
 			}
 			if ((key == KeyCode.LEFT || key == KeyCode.H) && !character.getCollideLeft()) {
 				character.setdx(-5);
-				character.walking = true;
+				character.setWalking(true);
 			}
 			if (key == KeyCode.SPACE || key == KeyCode.UP || key == KeyCode.K) {
 				if (!character.getJumping() || character.getCollide()) {
-					character.setGroundLvl(character.gety());
+					character.setGroundLevel(character.gety());
 					character.setdy(-6.5); //Changed from 5, to accomodate raising the platforms
-					character.jumping = true;
+					character.setJumping(true);
 					s.playSFX(0);
 				}
 			}
@@ -51,11 +51,11 @@ public class InputFunctions {
 		KeyCode key = event.getCode();
 
 		if (key == KeyCode.RIGHT || key == KeyCode.L) {
-			character.walking = false;
+			character.setWalking(false);
 			character.setdx(0);
 		}
 		if (key == KeyCode.LEFT || key == KeyCode.H) {
-			character.walking = false;
+			character.setWalking(false);
 			character.setdx(0);
 		}
 

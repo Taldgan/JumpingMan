@@ -1,7 +1,11 @@
-package application;
+package application.view;
 
 import java.io.IOException;
 
+import application.controller.GameObject;
+import application.model.Level;
+import application.model.State;
+import application.model.StateManager;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.stage.Stage;

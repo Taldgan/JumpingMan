@@ -1,4 +1,4 @@
-package application;
+package application.model;
 
 import java.util.Date;
 
@@ -8,13 +8,11 @@ public class Score {
 	public static int finalScore;
 	public static long maxTime;
 	
-	public void start() {		
-		//System.out.println("start: " + System.currentTimeMillis());
+	public static void start() {		
 		maxTime = System.currentTimeMillis() + 30000;
 	}
 	
-	public void stop() {
-		//System.out.println("stop: " + System.currentTimeMillis());
+	public static void stop() {
 		maxTime -= System.currentTimeMillis();
 	}
 	
