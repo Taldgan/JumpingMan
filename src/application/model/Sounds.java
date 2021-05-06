@@ -20,14 +20,14 @@ public class Sounds
 		bgmCollection = new ArrayList<String>();
 		
 		//Clips and songs will be played according to their index in this array list
-		sfxCollection.add("src/application/sounds/Jump.wav");
-		sfxCollection.add("src/application/sounds/Death.wav");
-		sfxCollection.add("src/application/sounds/pointBox.wav");
-		sfxCollection.add("src/application/sounds/enemyDeath.wav");
-		sfxCollection.add("src/application/sounds/winLevel.wav");
+		sfxCollection.add("src/resources/sounds/Jump.wav");
+		sfxCollection.add("src/resources/sounds/Death.wav");
+		sfxCollection.add("src/resources/sounds/pointBox.wav");
+		sfxCollection.add("src/resources/sounds/enemyDeath.wav");
+		sfxCollection.add("src/resources/sounds/winLevel.wav");
 		
-		bgmCollection.add("src/application/sounds/bgm.wav");
-		bgmCollection.add("src/application/sounds/ex101.wav");
+		bgmCollection.add("src/resources/sounds/bgm.wav");
+		bgmCollection.add("src/resources/sounds/ex101.wav");
 	}
 	
 	//Invoke these methods through the static object sPlayer

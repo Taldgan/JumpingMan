@@ -24,8 +24,8 @@ public class PointBox extends Obstacle {
 	public PointBox(int w, int h, Color c) {
 		super(w, h, c);
 		pointNum = new Random();
-		fullBox = new Image("/application/images/pointBoxSprite.png");
-		emptyBox = new Image("/application/images/pointBoxSpriteEmpty.png");
+		fullBox = new Image("/resources/images/pointBoxSprite.png");
+		emptyBox = new Image("/resources/images/pointBoxSpriteEmpty.png");
 		imageViewer = new ImageView();
 		imageViewer.setImage(fullBox);
 		displayImage = new Group(imageViewer);

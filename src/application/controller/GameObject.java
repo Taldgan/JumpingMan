@@ -98,7 +98,7 @@ public class GameObject extends InputFunctions{
 		Parent view;
 		switch(StateManager.gameState) {
 		case MAINMENU:
-			view = FXMLLoader.load(getClass().getResource("/application/MainMenu.fxml"));
+			view = FXMLLoader.load(getClass().getResource("/application/view/MainMenu.fxml"));
 			this.menuScene = new Scene(view);
 			primaryStage.setScene(this.menuScene);
 			break;
@@ -125,23 +125,23 @@ public class GameObject extends InputFunctions{
 			primaryStage.setScene(this.gameScene);
 			break;
 		case YOUDIED:
-			view = FXMLLoader.load(getClass().getResource("/application/YouDied.fxml"));
+			view = FXMLLoader.load(getClass().getResource("/application/view/YouDied.fxml"));
 			this.deadScene = new Scene(view);
 			primaryStage.setScene(this.deadScene);
 			break;
 		case GAMEOVER:
 			Sounds.sPlayer.stopSong();
-			view = FXMLLoader.load(getClass().getResource("/application/GameOver.fxml"));
+			view = FXMLLoader.load(getClass().getResource("/application/view/GameOver.fxml"));
 			this.gameOverScene = new Scene(view);
 			primaryStage.setScene(this.gameOverScene);
 			break;
 		case NEXTLEVEL:
-			view = FXMLLoader.load(getClass().getResource("/application/NextLevel.fxml"));
+			view = FXMLLoader.load(getClass().getResource("/application/view/NextLevel.fxml"));
 			this.winScene = new Scene(view);
 			primaryStage.setScene(this.winScene);
 			break;
 		case YOUWON:
-			view = FXMLLoader.load(getClass().getResource("/application/YouWon.fxml"));
+			view = FXMLLoader.load(getClass().getResource("/application/view/YouWon.fxml"));
 			this.winScene = new Scene(view);
 			primaryStage.setScene(this.winScene);
 			break;
