@@ -1,6 +1,5 @@
 package application.controller;
 
-import java.io.IOException;
 import application.model.Character;
 import application.model.Enemies;
 import application.model.InputFunctions;
@@ -14,27 +13,15 @@ import application.model.Score;
 import application.model.Sounds;
 import application.model.State;
 import application.model.StateManager;
+import application.view.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
 public class GameObject extends InputFunctions{
 	
 	@FXML Label finalScore;
-
-	//Scenes
-	BorderPane root;
-	Scene menuScene;
-	Scene gameScene;
-	Scene deadScene;
-	Scene winScene;
-	Scene gameOverScene;
 
 	double lastTime = System.currentTimeMillis();
 	double delta;
@@ -42,11 +29,11 @@ public class GameObject extends InputFunctions{
 
 	public void processInput() {
 
-		this.gameScene.setOnKeyPressed(e ->{
+		Main.gameScene.setOnKeyPressed(e ->{
 			keyPressed(e, LevelManager.mainGuy);
 		});
 
-		this.gameScene.setOnKeyReleased(e ->{
+		Main.gameScene.setOnKeyReleased(e ->{
 			keyReleased(e, LevelManager.mainGuy);
 		});
 
@@ -94,60 +81,7 @@ public class GameObject extends InputFunctions{
 		System.exit(0);
 	}
 
-	public void render(Stage primaryStage) throws IOException {
-		Parent view;
-		switch(StateManager.gameState) {
-		case MAINMENU:
-			view = FXMLLoader.load(getClass().getResource("/application/view/MainMenu.fxml"));
-			this.menuScene = new Scene(view);
-			primaryStage.setScene(this.menuScene);
-			break;
-		case PAUSE:
-			LevelManager.pauseLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX()+400);
-			LevelManager.level.getChildren().add(LevelManager.pauseLabel);
-			break;
-
-		case DYING:
-		case WINNING:
-			Sounds.sPlayer.stopSong();
-		case PLAYING:
-			LevelManager.infoLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX());
-			if(!LevelManager.level.getChildren().contains(LevelManager.infoLabel)) 
-				LevelManager.level.getChildren().add(LevelManager.infoLabel);
-			if(!LevelManager.level.getChildren().contains(LevelManager.lifeCounter)) 
-				LevelManager.level.getChildren().add(LevelManager.lifeCounter);
-			if(StateManager.gameState == State.PLAYING)
-				Sounds.sPlayer.playSong(0);
-			this.root = new BorderPane(LevelManager.level);
-			this.gameScene = new Scene(root);
-			if(LevelManager.level.getChildren().contains(LevelManager.pauseLabel))
-				LevelManager.level.getChildren().remove(LevelManager.pauseLabel);
-			primaryStage.setScene(this.gameScene);
-			break;
-		case YOUDIED:
-			view = FXMLLoader.load(getClass().getResource("/application/view/YouDied.fxml"));
-			this.deadScene = new Scene(view);
-			primaryStage.setScene(this.deadScene);
-			break;
-		case GAMEOVER:
-			Sounds.sPlayer.stopSong();
-			view = FXMLLoader.load(getClass().getResource("/application/view/GameOver.fxml"));
-			this.gameOverScene = new Scene(view);
-			primaryStage.setScene(this.gameOverScene);
-			break;
-		case NEXTLEVEL:
-			view = FXMLLoader.load(getClass().getResource("/application/view/NextLevel.fxml"));
-			this.winScene = new Scene(view);
-			primaryStage.setScene(this.winScene);
-			break;
-		case YOUWON:
-			view = FXMLLoader.load(getClass().getResource("/application/view/YouWon.fxml"));
-			this.winScene = new Scene(view);
-			primaryStage.setScene(this.winScene);
-			break;
-		}
-		primaryStage.show();
-	}
+	
 
 	public double calculate() {
 		double current = System.currentTimeMillis();
