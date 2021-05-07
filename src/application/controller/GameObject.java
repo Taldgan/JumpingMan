@@ -161,21 +161,10 @@ public class GameObject extends InputFunctions{
 			StateManager.currentLevel = Level.LEVEL1;
 			LevelManager.gameOver();
 		}
-		//LevelManager.loadLevel();
 		LevelManager.mainGuy.setDead(false);
 		StateManager.gameState = State.PLAYING;
 	}
 	
-	public void menuLoad() {
-		if(LevelManager.lifeCount == 0) {
-			LevelManager.lifeCount = 3;
-			StateManager.currentLevel = Level.LEVEL1;
-			LevelManager.gameOver();
-		}
-		LevelManager.mainGuy.setDead(false);
-		StateManager.gameState = State.MAINMENU;
-	}
-
 	@FXML
 	public void playAgain(ActionEvent e) {
 		StateManager.gameState = State.PLAYING;
