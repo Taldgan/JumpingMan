@@ -1,5 +1,8 @@
 package application.controller;
 
+import java.io.IOException;
+
+import application.Main;
 import application.model.Character;
 import application.model.Enemies;
 import application.model.InputFunctions;
@@ -13,27 +16,75 @@ import application.model.Score;
 import application.model.Sounds;
 import application.model.State;
 import application.model.StateManager;
-import application.view.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
 public class GameObject extends InputFunctions{
 	
 	@FXML Label finalScore;
-
+	
 	double lastTime = System.currentTimeMillis();
 	double delta;
 	double gravity = 1;
 
+	public void render(Stage primaryStage, BorderPane root) throws IOException {
+		Parent view = null;
+		switch(StateManager.gameState) {
+		case MAINMENU:
+			view = FXMLLoader.load(getClass().getResource("/application/view/MainMenu.fxml"));
+			break;
+		case PAUSE:
+			LevelManager.pauseLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX()+400);
+			LevelManager.level.getChildren().add(LevelManager.pauseLabel);
+			view = LevelManager.level;
+			break;
+		case DYING:
+		case WINNING:
+			Sounds.sPlayer.stopSong();
+		case PLAYING:
+			LevelManager.infoLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX());
+			if(!LevelManager.level.getChildren().contains(LevelManager.infoLabel)) 
+				LevelManager.level.getChildren().add(LevelManager.infoLabel);
+			if(!LevelManager.level.getChildren().contains(LevelManager.lifeCounter)) 
+				LevelManager.level.getChildren().add(LevelManager.lifeCounter);
+			if(StateManager.gameState == State.PLAYING)
+				Sounds.sPlayer.playSong(0);
+			if(LevelManager.level.getChildren().contains(LevelManager.pauseLabel))
+				LevelManager.level.getChildren().remove(LevelManager.pauseLabel);
+			view = LevelManager.level;
+			break;
+		case YOUDIED:
+			view = FXMLLoader.load(getClass().getResource("/application/view/YouDied.fxml"));
+			break;
+		case GAMEOVER:
+			Sounds.sPlayer.stopSong();
+			view = FXMLLoader.load(getClass().getResource("/application/view/GameOver.fxml"));
+			break;
+		case NEXTLEVEL:
+			view = FXMLLoader.load(getClass().getResource("/application/view/NextLevel.fxml"));
+			break;
+		case YOUWON:
+			view = FXMLLoader.load(getClass().getResource("/application/view/YouWon.fxml"));
+			break;
+		}
+		root.setCenter(view);
+		primaryStage.show();
+	}
+	
+	
 	public void processInput() {
 
-		Main.gameScene.setOnKeyPressed(e ->{
+		Main.mainScene.setOnKeyPressed(e ->{
 			keyPressed(e, LevelManager.mainGuy);
 		});
 
-		Main.gameScene.setOnKeyReleased(e ->{
+		Main.mainScene.setOnKeyReleased(e ->{
 			keyReleased(e, LevelManager.mainGuy);
 		});
 

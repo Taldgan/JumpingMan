@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -96,7 +94,6 @@ public class LevelManager {
 		
 		//Read in level data to strings
 		try {
-			//InputStreamReader levelStream = new InputStreamReader((LevelManager.class.getClass().getResourceAsStream("/res/levels/level" + StateManager.currentLevel.ordinal() + ".lvl")), StandardCharsets.UTF_8);
 			URL levelsURL = LevelManager.class.getClass().getResource("/resources/levels/level" + StateManager.currentLevel.ordinal() + ".lvl");
 			BufferedReader levelReader = new BufferedReader(new FileReader(new File(levelsURL.getPath())));
 			//Colors
