@@ -8,15 +8,17 @@ import javafx.scene.shape.Ellipse;
 
 public class MainCharacter extends Character {
 
-	private boolean animatingWinG = false;
-	private int deathAnimationCount = 150, winAnimationCount = 0;
-	private Group hat;
-	private boolean animating = false;
-	private int winPlatX;
 	private double predeathX, predeathY, predeathTranslateX, predeathTranslateY;
+	private double hatPrevTranslateX, hatPrevTranslateY;
+	private Group hat;
+	private int winPlatX;
+
 	private int lives;
 
-	double hatPrevTranslateX, hatPrevTranslateY;
+	private boolean animatingWinG = false;
+	private boolean animating = false;
+	private int deathAnimationCount = 150, winAnimationCount = 0;
+
 
 	public MainCharacter(double x, double y, double size, Color color, int lives) {
 		super(x, y, size, color);
@@ -96,7 +98,6 @@ public class MainCharacter extends Character {
 			}
 			setdy(0);
 			if(winAnimationCount % 15 == 0) {
-				System.out.println(" should swap");
 				swapDir();
 			}
 			if(gety()+character.getRadius() < LevelManager.groundLevel && !animatingWinG) {

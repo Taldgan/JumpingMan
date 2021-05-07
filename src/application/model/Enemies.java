@@ -1,5 +1,6 @@
 package application.model;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import javafx.scene.paint.Color;
@@ -11,6 +12,7 @@ public class Enemies extends Character implements Collidable
 	private int zoneCode, groundLevel;
 	@SuppressWarnings("unused")
 	private boolean isCollidable;
+	private ArrayList<FloatLabel> scoreLabels;
 
 	public Enemies(double x, double y, double size, Color color, int zoneC,int gl) 
 	{
@@ -21,8 +23,21 @@ public class Enemies extends Character implements Collidable
 		isCollidable = true;
 		zoneCode = zoneC;
 		this.groundLevel = gl;
+		scoreLabels = new ArrayList<FloatLabel>();
 	}
-	
+
+	public void floatLabels() {
+		ArrayList<FloatLabel> iterList = new ArrayList<FloatLabel>();
+		iterList.addAll(scoreLabels);
+		for(FloatLabel scoreLabel : iterList) {
+			scoreLabel.move();
+			if(scoreLabel.needToRemove()) {
+				this.scoreLabels.remove(scoreLabel);
+			}
+		}
+		System.out.println(scoreLabels);
+	}
+
 	public void enemyMove()
 	{
 		//Move left if direction is true

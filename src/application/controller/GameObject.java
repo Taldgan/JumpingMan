@@ -5,6 +5,7 @@ import java.io.IOException;
 import application.Main;
 import application.model.Character;
 import application.model.Enemies;
+import application.model.FloatLabel;
 import application.model.InputFunctions;
 import application.model.Level;
 import application.model.LevelManager;
@@ -117,8 +118,8 @@ public class GameObject extends InputFunctions{
 			checkCollision(LevelManager.mainGuy);
 			checkMovingCollision(LevelManager.mainGuy);
 			updateEnemies();
-			updateLabels();
 		}
+		updateLabels();
 	}
 
 
@@ -180,12 +181,13 @@ public class GameObject extends InputFunctions{
 		for(Obstacle obstacle : LevelManager.allStaticObjects) {
 			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
 				//Win if on last obstacle
-				if(obstacle.getColor() == Color.WHITESMOKE && c instanceof MainCharacter) { //If you wanna change the color for the winning platform, then make sure to change it in the spawn method too
-					
-					//might need to move this somewhere else but idrk where else it would work
-					//System.out.println("pole score: " + Math.abs(LevelManager.mainGuy.gety()-800));
-					Score.finalScore += Math.abs(LevelManager.mainGuy.gety()-800);
-					
+				if(obstacle.getColor() == Color.WHITESMOKE && c instanceof MainCharacter) {
+					double poleScore = Math.abs(LevelManager.mainGuy.gety()-800);
+					Score.finalScore += poleScore;
+					FloatLabel scoreLabel = new FloatLabel("+" + (int) poleScore, 80, -80, LevelManager.mainGuy.getx()-40, LevelManager.mainGuy.gety(), (int) (poleScore/3.5));
+					scoreLabel.setStartEndXY(scoreLabel.getTranslateX(), scoreLabel.getTranslateY());
+					LevelManager.scoreLabels.add(scoreLabel);
+					LevelManager.level.getChildren().add(LevelManager.scoreLabels.get(LevelManager.scoreLabels.size()-1));
 					LevelManager.mainGuy.setWinPlatX((int) obstacle.getX());
 					nextLevel();
 				}
@@ -423,7 +425,11 @@ public class GameObject extends InputFunctions{
 				else {
 					LevelManager.mainGuy.setdy(-3);
 					Score.finalScore += 300;
-					
+					FloatLabel scoreLabel = new FloatLabel("+300", 20, -20, LevelManager.enemyList.get(x).getx(), LevelManager.enemyList.get(x).gety()-50);
+					scoreLabel.setStartEndXY(scoreLabel.getTranslateX(), scoreLabel.getTranslateY());
+					LevelManager.scoreLabels.add(scoreLabel);
+					LevelManager.level.getChildren().add(LevelManager.scoreLabels.get(LevelManager.scoreLabels.size()-1));
+							
 				}
 				LevelManager.enemyList.get(x).getCharacter().setFill(Color.YELLOW);
 				LevelManager.enemyList.get(x).getCharacter().setCenterY(-1000);
@@ -446,10 +452,13 @@ public class GameObject extends InputFunctions{
 	}
 
 	public void updateLabels() {
-		LevelManager.infoLabel.setText("Level " + StateManager.currentLevel.ordinal() + "\n\nScore: " + Score.finalScore);
-		LevelManager.infoLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX()+40);
-		LevelManager.lifeCounter.setTranslateY(LevelManager.infoLabel.getTranslateY()+65);
-		LevelManager.lifeCounter.setTranslateX(LevelManager.infoLabel.getTranslateX());
+		if(StateManager.gameState == State.PLAYING) {
+			LevelManager.infoLabel.setText("Level " + StateManager.currentLevel.ordinal() + "\n\nScore: " + Score.finalScore);
+			LevelManager.infoLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX()+40);
+			LevelManager.lifeCounter.setTranslateY(LevelManager.infoLabel.getTranslateY()+65);
+			LevelManager.lifeCounter.setTranslateX(LevelManager.infoLabel.getTranslateX());
+		}
+		LevelManager.floatLabels();
 	}
 
 	public void nextLevel() {
@@ -463,7 +472,6 @@ public class GameObject extends InputFunctions{
 
 	public void updatePointBoxes() {
 		for(PointBox pBox : LevelManager.pointBoxList) {
-			pBox.floatLabels();
 			if(pBox.isAnimating()) {
 				pBox.animateCube();
 			}

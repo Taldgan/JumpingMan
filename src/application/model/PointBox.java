@@ -1,10 +1,8 @@
 package application.model;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import javafx.scene.Group;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -16,7 +14,6 @@ public class PointBox extends Obstacle {
 	private Image fullBox, emptyBox;
 	private ImageView imageViewer;
 	private Group displayImage;
-	private ArrayList<FloatLabel> scoreLabels;
 	private Random pointNum;
 	private boolean animating = false;
 	private int animationCount = 0;
@@ -30,18 +27,6 @@ public class PointBox extends Obstacle {
 		imageViewer.setImage(fullBox);
 		displayImage = new Group(imageViewer);
 		pointsLeft = pointNum.nextInt(4)+1;
-		scoreLabels = new ArrayList<FloatLabel>();
-	}
-
-
-
-	public void floatLabels() {
-		for(FloatLabel scoreLabel : scoreLabels) {
-			scoreLabel.move();
-			if(scoreLabel.needToRemove()) {
-				this.getImageGroup().getChildren().remove(scoreLabel);
-			}
-		}
 	}
 
 	public void animateCube() {
@@ -60,13 +45,10 @@ public class PointBox extends Obstacle {
 			Score.finalScore += 100;
 			System.out.println("Score without time bonus: " + Score.finalScore);
 			//create floatLabel and add it
-			FloatLabel scoreLabel = new FloatLabel("+100", 15, -20);
-			scoreLabel.setFont(new Font("Blocky Font", 30));
-			scoreLabel.setTranslateX(this.getX() + this.pointNum.nextInt(60)-30);
-			scoreLabel.setTranslateY(this.getY() + this.pointNum.nextInt(30)-60);
+			FloatLabel scoreLabel = new FloatLabel("+100", 20, -20, this.getX(), this.getY());
 			scoreLabel.setStartEndXY(scoreLabel.getTranslateX(), scoreLabel.getTranslateY());
-			scoreLabels.add(scoreLabel);
-			getImageGroup().getChildren().add(scoreLabels.get(scoreLabels.size()-1));
+			LevelManager.scoreLabels.add(scoreLabel);
+			LevelManager.level.getChildren().add(LevelManager.scoreLabels.get(LevelManager.scoreLabels.size()-1));
 			if(!animating){
 				this.animating = true;
 				this.getImageGroup().setTranslateY(this.getImageGroup().getTranslateY() - 5);
@@ -110,38 +92,5 @@ public class PointBox extends Obstacle {
 		return this.animating;
 	}
 
-	class FloatLabel extends Label {
-
-		private double moveX, moveY, startX, endX, startY, endY, movedX, movedY;
-		private boolean remove = false;
-
-		public FloatLabel(String text, double moveX, double moveY) {
-			super(text);
-			this.moveX = moveX;
-			this.moveY = moveY;
-		}
-
-		public void setStartEndXY(double startX, double startY) {
-			this.startX = startX;
-			this.endX = this.startX+this.moveX;
-			this.startY = startY;
-			this.endY = this.startY+this.moveY;
-		}
-
-		public void move() {
-			if(movedX != endX-startX && movedY != endY-startY) {
-				this.setTranslateX(this.getTranslateX() + 1);
-				movedX++;
-				this.setTranslateY(this.getTranslateY() - 1);
-				movedY--;
-			}
-			else
-				this.remove = true;
-		}
-
-		public boolean needToRemove() {
-			return this.remove;
-		}
-	}
-
+	
 }

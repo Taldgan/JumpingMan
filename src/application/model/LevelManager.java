@@ -28,18 +28,12 @@ public class LevelManager {
 
 	//Level Strings for Obstacle x/y locations in level
 	public static String groundString;
-
-	static String lowerPlatString;
-
-	static String upperPlatString;
-
-	static String movingPlatString;
-
-	static String pointBoxString;
-
-	static String lowerEnemyString;
-
-	static String upperEnemyString; 
+	public static String lowerPlatString;
+	public static String upperPlatString;
+	public static String movingPlatString;
+	public static String pointBoxString;
+	public static String lowerEnemyString;
+	public static String upperEnemyString; 
 
 	//Group vars, for altering level object positions
 	static Group ground, lowerPlatforms, upperPlatforms, movingPlatforms;
@@ -60,6 +54,7 @@ public class LevelManager {
 	public static ArrayList<Obstacle> allStaticObjects;
 	public static ArrayList<MovingObstacle> allMovingObjects;
 	public static ArrayList<Enemies> enemyList;
+	public static ArrayList<FloatLabel> scoreLabels;
 	
 	//Background
 	static Rectangle background;
@@ -78,11 +73,21 @@ public class LevelManager {
 	//Colors
 	private static Color bgColor, groundColor, grassColor, platColor, cloudColor;
 	
+	public static void floatLabels() {
+		ArrayList<FloatLabel> iterList = new ArrayList<FloatLabel>();
+		iterList.addAll(scoreLabels);
+		for(FloatLabel scoreLabel : iterList) {
+			scoreLabel.move();
+			if(scoreLabel.needToRemove()) {
+				level.getChildren().remove(scoreLabel);
+				scoreLabels.remove(scoreLabel);
+			}
+		}
+	}
+
 	public static void levelOver() {
 		Score.stop();
 		Score.finalScore += score.calculateTimeScore();
-		//System.out.println("time score: " + score.calculateTimeScore());
-		//System.out.println("final score: " + score.finalScore);
 	}
 	public static void gameOver() {
 		Score.finalScore = 0;
@@ -131,6 +136,7 @@ public class LevelManager {
 		allStaticObjects = new ArrayList<Obstacle>();
 		allMovingObjects = new ArrayList<MovingObstacle>();
 		enemyList = new ArrayList<Enemies>();
+		scoreLabels = new ArrayList<FloatLabel>();
 		int upperOffset = 10;
 
 		mainGuy = new MainCharacter(spawnX, spawnY, 20, Color.RED, lifeCount);
@@ -148,7 +154,7 @@ public class LevelManager {
 		pointBoxes = spawnPointBoxes(pointBoxString, pointBoxWidth, pointBoxHeight, Color.web("0xF5E101"), pointBoxList);		
 		enemies = spawnEnemies(lowerEnemyString, groundString, 0);
 		enemies.getChildren().add(spawnEnemies(upperEnemyString, groundString, upperOffset));
-		level = new Group(theVoid, background, ground, lowerPlatforms, upperPlatforms, movingPlatforms, pointBoxes, enemies, mainGuy.getCharacter(), mainGuy.getHat());
+		level = new Group(theVoid, background, drawClouds(), ground, lowerPlatforms, upperPlatforms, movingPlatforms, pointBoxes, enemies, mainGuy.getCharacter(), mainGuy.getHat());
 		level.setManaged(false);
 
 		//Add all static object lists to allStaticObjects for easier collision
@@ -173,11 +179,11 @@ public class LevelManager {
 
 	}
 	
-	private static void drawClouds() {
+	private static Group drawClouds() {
 		Random gen = new Random();
 		int cloudX = 200;
 		int cloudY;
-		Group cloud;
+		Group cloud, clouds = new Group();;
 		Ellipse puff;
 		for(int i = 0; i < groundString.length(); i+=3) {
 			cloudY = 400 - gen.nextInt(200)-100;
@@ -191,8 +197,9 @@ public class LevelManager {
 				puff.setFill(cloudColor);
 				cloud.getChildren().add(puff);
 			}
-			level.getChildren().add(cloud);	
+			clouds.getChildren().add(cloud);	
 		}
+		return clouds;
 		
 	}
 
