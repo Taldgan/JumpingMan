@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<Pane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controller.GameObject">
+<Pane xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controller.GameObject">
    <children>
       <StackPane>
          <children>
@@ -46,7 +46,7 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Button blendMode="DIFFERENCE" mnemonicParsing="false" onAction="#playAgain" text="Play Again">
+                        <Button mnemonicParsing="false" onAction="#playAgain" style="-fx-background-color: brown;" text="Play Again" textFill="#00ecf8">
                            <font>
                               <Font size="30.0" />
                            </font>
@@ -55,9 +55,9 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Button blendMode="DIFFERENCE" mnemonicParsing="false" onAction="#exitGame" style="-fx-background-color: SADDLEBROWN;" text="Quit" textFill="#7899a4">
+                        <Button mnemonicParsing="false" onAction="#exitGame" style="-fx-background-color: brown;" text="Quit" textFill="#00ecf8">
                            <font>
-                              <Font size="31.0" />
+                              <Font size="30.0" />
                            </font>
                         </Button>
                      </children>

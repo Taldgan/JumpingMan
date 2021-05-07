@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
 
-
-<BorderPane xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
-   <top>
-      <Label text="for viewing sake" BorderPane.alignment="CENTER" />
-   </top>
-</BorderPane>
+<StackPane xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controller.GameObject">
+   <children>
+      <Label fx:id="finalLabel" prefHeight="62.0" prefWidth="557.0">
+         <font>
+            <Font size="42.0" />
+         </font>
+      </Label>
+   </children>
+</StackPane>

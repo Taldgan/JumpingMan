@@ -4,16 +4,13 @@ import java.io.IOException;
 
 import application.controller.GameObject;
 import application.model.Level;
-import application.model.LevelManager;
-import application.model.Sounds;
 import application.model.State;
 import application.model.StateManager;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -22,13 +19,17 @@ public class Main extends Application {
 	private boolean gameLoaded = false;
 
 	//Scenes
-	private BorderPane root;
+	private StackPane root;
 	public static Scene mainScene;
+	
+	//For use of instanced controller
+	private GameObject game;
 
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			root = FXMLLoader.load(getClass().getResource("/application/view/Main.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader();
+			root = fxmlLoader.load(getClass().getResource("/application/view/Main.fxml").openStream());
 			mainScene = new Scene(root, 1000, 800);
 			primaryStage.setWidth(1000);
 			primaryStage.setHeight(800);
@@ -36,9 +37,9 @@ public class Main extends Application {
 			primaryStage.setScene(mainScene);
 			StateManager.gameState = State.MAINMENU;
 			StateManager.currentLevel = Level.LEVEL1;
-			GameObject game = new GameObject();
+			game = fxmlLoader.getController();
 
-			game.render(primaryStage, root);
+			game.render(primaryStage, root, fxmlLoader);
 			AnimationTimer timer = new AnimationTimer() {
 				@Override
 				public void handle(long arg0) {
@@ -46,7 +47,7 @@ public class Main extends Application {
 						game.update();
 						if(!gameLoaded) {
 							try {
-								game.render(primaryStage, root);
+								game.render(primaryStage, root, fxmlLoader);
 								gameLoaded = true;
 								menuLoaded = false;
 							} catch (IOException e) {
@@ -59,7 +60,7 @@ public class Main extends Application {
 						if(StateManager.prevMenu == State.GAMEOVER)
 							StateManager.prevMenu = State.MAINMENU;
 						try {
-							game.render(primaryStage, root);
+							game.render(primaryStage, root, fxmlLoader);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}

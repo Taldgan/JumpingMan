@@ -53,7 +53,8 @@ public class MainCharacter extends Character {
 		if (isDead()) {
 			setLives(getLives() - 1);
 			LevelManager.lifeCount--;
-			LevelManager.lifeCounter.getChildren().remove(getLives());
+			if(getLives() <= 0)
+				LevelManager.lifeCounter.getChildren().remove(getLives());
 			StateManager.gameState = State.DYING;
 		}
 	}
@@ -73,7 +74,8 @@ public class MainCharacter extends Character {
 			setdx(0);
 			setLives(getLives() - 1);
 			LevelManager.lifeCount--;
-			LevelManager.lifeCounter.getChildren().remove(getLives());
+			if(getLives() != -1)
+				LevelManager.lifeCounter.getChildren().remove(getLives());
 			if(getLives() <= 0)
 				StateManager.gameState = State.GAMEOVER;
 			else
@@ -164,7 +166,7 @@ public class MainCharacter extends Character {
 				this.getCharacter().setTranslateY(predeathTranslateY);
 				setx(predeathX);
 				sety(predeathY);
-				if(getLives() != 0) 
+				if(getLives() > 0) 
 					StateManager.gameState = State.YOUDIED;
 				else
 					StateManager.gameState = State.GAMEOVER;

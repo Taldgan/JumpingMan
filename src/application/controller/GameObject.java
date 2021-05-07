@@ -21,28 +21,34 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class GameObject extends InputFunctions{
 	
-	@FXML Label finalScore;
-	
+	@FXML 
+	Label finalLabel;
+
+	private Parent view = null;
 	double lastTime = System.currentTimeMillis();
 	double delta;
 	double gravity = 1;
 
-	public void render(Stage primaryStage, BorderPane root) throws IOException {
-		Parent view = null;
+	public void render(Stage primaryStage, StackPane root, FXMLLoader loader) throws IOException {
+		if(view != null) {
+			root.getChildren().remove(view);
+		}
 		switch(StateManager.gameState) {
 		case MAINMENU:
 			view = FXMLLoader.load(getClass().getResource("/application/view/MainMenu.fxml"));
+			this.finalLabel.setText("");
 			break;
 		case PAUSE:
 			LevelManager.pauseLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX()+400);
 			LevelManager.level.getChildren().add(LevelManager.pauseLabel);
 			view = LevelManager.level;
+			this.finalLabel.setText("");
 			break;
 		case DYING:
 		case WINNING:
@@ -58,22 +64,34 @@ public class GameObject extends InputFunctions{
 			if(LevelManager.level.getChildren().contains(LevelManager.pauseLabel))
 				LevelManager.level.getChildren().remove(LevelManager.pauseLabel);
 			view = LevelManager.level;
+			this.finalLabel.setText("");
 			break;
 		case YOUDIED:
 			view = FXMLLoader.load(getClass().getResource("/application/view/YouDied.fxml"));
+			this.finalLabel.setText("" + LevelManager.lifeCount);
+			this.finalLabel.setTranslateX(425);
+			this.finalLabel.setTranslateY(-188);
 			break;
 		case GAMEOVER:
 			Sounds.sPlayer.stopSong();
 			view = FXMLLoader.load(getClass().getResource("/application/view/GameOver.fxml"));
+			this.finalLabel.setText("" + Score.finalScore);
+			this.finalLabel.setTranslateX(230);
+			this.finalLabel.setTranslateY(-195);
 			break;
 		case NEXTLEVEL:
 			view = FXMLLoader.load(getClass().getResource("/application/view/NextLevel.fxml"));
+			this.finalLabel.setTranslateX(230);
+			this.finalLabel.setTranslateY(-195);
 			break;
 		case YOUWON:
 			view = FXMLLoader.load(getClass().getResource("/application/view/YouWon.fxml"));
+			this.finalLabel.setTranslateX(230);
+			this.finalLabel.setTranslateY(-195);
 			break;
 		}
-		root.setCenter(view);
+		root.getChildren().add(view);
+		this.finalLabel.toFront();
 		primaryStage.show();
 	}
 	
@@ -398,6 +416,7 @@ public class GameObject extends InputFunctions{
 					Sounds.sPlayer.playSFX(1);
 					LevelManager.mainGuy.setAnimating(true);
 					LevelManager.mainGuy.deathByEnemy();
+					System.out.println("FinalLabel text: " + this.finalLabel.getText());
 					LevelManager.mainGuy.setdx(0);
 				}
 				else {
@@ -424,6 +443,7 @@ public class GameObject extends InputFunctions{
 			}
 		}
 	}
+
 	public void updateLabels() {
 		LevelManager.infoLabel.setText("Level " + StateManager.currentLevel.ordinal() + "\n\nScore: " + Score.finalScore);
 		LevelManager.infoLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX()+40);
