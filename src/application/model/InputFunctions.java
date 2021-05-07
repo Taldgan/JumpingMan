@@ -53,6 +53,11 @@ public class InputFunctions {
 
 	}
 
+	/**
+	 * 
+	 * @param event -> determines which key was pressed
+	 * @param character -> the character object
+	 */
 	//If key is released, stop respective movement
 	public void keyReleased(KeyEvent event, Character character) {
 

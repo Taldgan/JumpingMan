@@ -3,15 +3,12 @@ package application.controller;
 import java.io.IOException;
 
 import application.Main;
-import application.model.Character;
-import application.model.Enemies;
+import application.model.Collision;
 import application.model.FloatLabel;
 import application.model.InputFunctions;
 import application.model.Level;
 import application.model.LevelManager;
-import application.model.MainCharacter;
 import application.model.MovingObstacle;
-import application.model.Obstacle;
 import application.model.PointBox;
 import application.model.Score;
 import application.model.Sounds;
@@ -44,6 +41,8 @@ public class GameObject extends InputFunctions{
 	private double lastTime = System.currentTimeMillis();
 	private double delta;
 	private double gravity = 1;
+	
+	private Collision col = new Collision();
 
 	/**
 	 * Assigns the passed in StackPane's contents to a new view, based off of game State.
@@ -142,14 +141,20 @@ public class GameObject extends InputFunctions{
 		if(!LevelManager.mainGuy.isDead() && !LevelManager.mainGuy.isWinning()) {
 			updateMovPlats();
 			updatePointBoxes();
-			checkCollision(LevelManager.mainGuy);
-			checkMovingCollision(LevelManager.mainGuy);
+			col.checkCollision(LevelManager.mainGuy);
+			col.checkMovingCollision(LevelManager.mainGuy);
 			updateEnemies();
 		}
 		updateLabels();
 	}
 
 
+	/**
+	 * 
+	 * @param e -> event listener for clicks on the main menu button
+	 * 
+	 * sends user to the main menu
+	 */
 	@FXML
 	public void mainMenu(ActionEvent e) {
 		StateManager.prevMenu = State.GAMEOVER;
@@ -157,6 +162,9 @@ public class GameObject extends InputFunctions{
 		LevelManager.loadLevel();
 	}
 
+	/**
+	 * starts a new game upon click of the new game button
+	 */
 	@FXML 
 	public void newGame() {
 		if(LevelManager.lifeCount == 0) {
@@ -168,6 +176,10 @@ public class GameObject extends InputFunctions{
 		StateManager.gameState = State.PLAYING;
 	}
 	
+	/**
+	 * 
+	 * @param e -> event listener for clicks on the play again button
+	 */
 	@FXML
 	public void playAgain(ActionEvent e) {
 		StateManager.gameState = State.PLAYING;
@@ -179,6 +191,10 @@ public class GameObject extends InputFunctions{
 		System.exit(0);
 	}
 
+	/**
+	 * calculates change in time used for FPS and the game loop
+	 * @return -> the change in time between frames
+	 */
 	public double calculate() {
 		double current = System.currentTimeMillis();
 		delta += (current-lastTime);
@@ -193,182 +209,10 @@ public class GameObject extends InputFunctions{
 		return delta;
 	}
 
-	public void checkCollision(Character c)
-	{
-		//character bound variables for readability
-		double charTop = c.gety()-c.getCharacter().getRadius();
-		double charBot = c.gety()+c.getCharacter().getRadius();
-		double charLeft = c.getx()+c.getCharacter().getRadius();
-		double charRight = c.getx()-c.getCharacter().getRadius();
-		double charRad = c.getCharacter().getRadius();
-
-		for(Obstacle obstacle : LevelManager.allStaticObjects) {
-			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
-				//Win if on last obstacle
-				if(obstacle.getColor() == Color.WHITESMOKE && c instanceof MainCharacter) {
-					double poleScore = Math.abs(LevelManager.mainGuy.gety()-800);
-					Score.finalScore += poleScore;
-					FloatLabel scoreLabel = new FloatLabel("+" + (int) poleScore, 80, -80, LevelManager.mainGuy.getx()-40, LevelManager.mainGuy.gety(), (int) (poleScore/3.5));
-					scoreLabel.setStartEndXY(scoreLabel.getTranslateX(), scoreLabel.getTranslateY());
-					LevelManager.scoreLabels.add(scoreLabel);
-					LevelManager.level.getChildren().add(LevelManager.scoreLabels.get(LevelManager.scoreLabels.size()-1));
-					LevelManager.mainGuy.setWinPlatX((int) obstacle.getX());
-					nextLevel();
-				}
-				double diff;
-				//On top of the platform
-				if(charBot-12 <= obstacle.getY() && c.getdy() >= 0)
-				{
-					diff = LevelManager.level.getTranslateY() + (c.gety() - c.getPrevY());
-					c.setCollide(true);
-					if(c instanceof MainCharacter)
-					{
-						LevelManager.mainGuy.setGroundLevel(c.gety());
-						LevelManager.mainGuy.setdy(0);
-						LevelManager.mainGuy.setJumping(false);
-						LevelManager.mainGuy.getCharacter().setTranslateY(obstacle.getPlat().getY()-LevelManager.groundLevel+5);
-						LevelManager.mainGuy.getHat().setTranslateY(obstacle.getPlat().getY()-LevelManager.groundLevel+5);
-					}
-				}
-				//Left of platform collision:
-				if(charLeft <= obstacle.getX()+15 && !(charBot-12 <= obstacle.getY()+10)) {
-
-					c.setCollideRight(true);
-					diff = LevelManager.level.getTranslateX() + (c.getx() - c.getPrevX());
-					if(c instanceof MainCharacter)
-					{
-						LevelManager.mainGuy.setx(LevelManager.mainGuy.getPrevX());
-						LevelManager.mainGuy.getCharacter().setTranslateX(LevelManager.mainGuy.getPrevTranslateX());
-						LevelManager.mainGuy.getHat().setTranslateX(LevelManager.mainGuy.getHatPrevTranslateX());
-						LevelManager.level.setTranslateX(diff);
-					}
-					//Swap enemy direction when touching an obstacle.
-					else if(!(c instanceof MainCharacter)) //Dont ask how, dont ask why. But it just works.
-					{
-						c.swapDir();
-					}
-
-				}
-				//Right of platform collision:
-				else if(charRight >= obstacle.getX()+obstacle.getWidth()-15 && !(charBot-12 <= obstacle.getY()+10)) {
-					c.setCollideLeft(true);
-					diff = LevelManager.level.getTranslateX() + (c.getx() - c.getPrevX());
-					if(c instanceof MainCharacter)
-					{
-						LevelManager.mainGuy.setx(c.getPrevX());
-						LevelManager.mainGuy.getCharacter().setTranslateX(LevelManager.mainGuy.getPrevTranslateX());
-						LevelManager.mainGuy.getHat().setTranslateX(LevelManager.mainGuy.getHatPrevTranslateX());
-						LevelManager.level.setTranslateX(diff);
-					}
-					else if(!(c instanceof MainCharacter))
-					{
-						c.swapDir();
-					}
-
-				}
-				//If under the platform:
-				else if(charTop >= obstacle.getY() && c.getdy() <= 0)
-				{
-					LevelManager.mainGuy.setCollideTop(true);
-					
-					// width == height means its a prize box
-					if (obstacle instanceof PointBox) {
-						((PointBox) obstacle).getHit();
-					}
-					diff = LevelManager.level.getTranslateY() + (c.gety() - c.getPrevY());
-
-					c.setdy(1);
-					if(c instanceof MainCharacter)
-					{
-						LevelManager.mainGuy.sety(c.getPrevY());
-						LevelManager.mainGuy.getCharacter().setTranslateY(LevelManager.mainGuy.getPrevTranslateY());
-						LevelManager.mainGuy.getHat().setTranslateY(LevelManager.mainGuy.getPrevHatTranslateY());
-					}
-				}
-			}
-			else {
-				c.setCollide(false);
-				LevelManager.mainGuy.setCollideLeft(false);
-				LevelManager.mainGuy.setCollideRight(false);
-				LevelManager.mainGuy.setCollideTop(false);
-			}
-		}
-		
-	}
-	
-	public void checkMovingCollision(Character c) {
-		//character bound variables for readability
-		double charBot = c.gety()+c.getCharacter().getRadius();
-		double charRad = c.getCharacter().getRadius();
-		//moving platforms... add velocity to player
-		for(MovingObstacle obstacle : LevelManager.allMovingObjects) {
-
-			if(obstacle.collide(c.getx(), c.gety(), charRad, charRad)) {
-				//On top of the platform
-				if(charBot-12 <= obstacle.getY() && c.getdy() >= 0)
-				{
-					c.setCollide(true);
-					if(c instanceof MainCharacter)
-					{
-						LevelManager.mainGuy.setGroundLevel(LevelManager.mainGuy.gety());
-						LevelManager.mainGuy.setdy(0);
-						LevelManager.mainGuy.setPlatdx(obstacle.getdx());
-						LevelManager.mainGuy.setPlatdy(obstacle.getdy());
-						LevelManager.mainGuy.getCharacter().setTranslateY(c.getCharacter().getTranslateY() + obstacle.getdy());
-						LevelManager.mainGuy.getHat().setTranslateY(LevelManager.mainGuy.getHat().getTranslateY() + obstacle.getdy());
-						LevelManager.mainGuy.setJumping(false);
-						LevelManager.mainGuy.setOnMovingPlat(true);
-					}
-				}
-			}
-			else {
-				c.setCollide(false);
-			}
-			if(c.getCollisionDelta() > 100) {
-				c.setPlatdx(0);
-				c.setPlatdy(0);
-				c.setOnMovingPlat(false);
-			}
-		}
-	}
-	
-
-	//Method for enemies to turn around if they are next to a hole.
-	public void groundCheck(Enemies e, String holes)
-	{
-		for(int x = 0; x < holes.length(); x++)
-		{
-			if(holes.charAt(x) != e.getZoneCode())
-			{
-				double holeRight = LevelManager.tileWidth*(x+1);
-				double holeLeft = LevelManager.tileWidth*x;
-				double offset = 9;
-				if(e.getx() >= holeLeft-offset && e.getx() <= holeRight+offset && e.getColor() != Color.DARKMAGENTA)
-				{
-					e.swapDir();
-					break;
-				}
-			}
-		}
-	}
-
-	public int findNearestHole(String holes)
-	{
-		int pos = (int)LevelManager.mainGuy.getx()/(LevelManager.tileWidth-1); //position in string
-		for(int x = pos; x >= 0; x--)
-		{
-			if(holes.charAt(x) != '0')
-			{
-				int spawnPoint = (x+1)*LevelManager.tileWidth-20;
-				return spawnPoint;
-			}
-		}
-		return 250; //Should never reach here.
-	}
-
-
 	//Update methods
 
+	// updates the main character according to
+	// a win, a death, collision, jumping, walking, etc
 	public void updateMC() {
 		if(LevelManager.mainGuy.isWinning()) {
 			LevelManager.mainGuy.animateWin();
@@ -378,7 +222,7 @@ public class GameObject extends InputFunctions{
 		}
 		if(LevelManager.mainGuy.gety() > 800 && StateManager.gameState != State.DYING  && StateManager.gameState != State.WINNING) {
 			LevelManager.mainGuy.setDead(true);
-			LevelManager.mainGuy.deathByHole(LevelManager.level,findNearestHole(LevelManager.groundString));
+			LevelManager.mainGuy.deathByHole(LevelManager.level,col.findNearestHole(LevelManager.groundString));
 			Sounds.sPlayer.playSFX(1);
 		}
 		//If LevelManager.mainGuy is not touching top of platform, he must be jumping/falling
@@ -432,8 +276,8 @@ public class GameObject extends InputFunctions{
 			}
 			LevelManager.enemyList.get(x).enemyMove();
 			//Check collision with obstacles/platforms
-			checkCollision(LevelManager.enemyList.get(x)); 
-			groundCheck(LevelManager.enemyList.get(x), LevelManager.groundString); //Swap enemy direction when close to a hole.
+			col.checkCollision(LevelManager.enemyList.get(x)); 
+			col.groundCheck(LevelManager.enemyList.get(x), LevelManager.groundString); //Swap enemy direction when close to a hole.
 
 			//Check collision with the player
 			if(LevelManager.enemyList.get(x).collide(LevelManager.mainGuy.getx(),LevelManager.mainGuy.gety(),LevelManager.mainGuy.getRadius(),LevelManager.mainGuy.getRadius()))
@@ -483,15 +327,6 @@ public class GameObject extends InputFunctions{
 			LevelManager.lifeCounter.setTranslateX(LevelManager.infoLabel.getTranslateX());
 		}
 		LevelManager.floatLabels();
-	}
-
-	public void nextLevel() {
-		StateManager.currentLevel = Level.values()[StateManager.currentLevel.ordinal()+1];
-		Sounds.sPlayer.playSFX(4);
-		Sounds.sPlayer.stopSong();
-		LevelManager.mainGuy.setWinning(true);
-		LevelManager.mainGuy.setWinACount(510);
-		StateManager.gameState = State.WINNING;
 	}
 
 	public void updatePointBoxes() {
