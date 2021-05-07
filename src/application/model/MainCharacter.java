@@ -141,6 +141,7 @@ public class MainCharacter extends Character {
 				StateManager.gameState = State.NEXTLEVEL;
 				LevelManager.levelOver();
 			}
+			LevelManager.loadLevel();
 		}
 	}
 
@@ -171,8 +172,10 @@ public class MainCharacter extends Character {
 				sety(predeathY);
 				if(getLives() > 0) 
 					StateManager.gameState = State.YOUDIED;
-				else
+				else {
 					StateManager.gameState = State.GAMEOVER;
+					StateManager.currentLevel = Level.LEVEL1;
+				}
 			}
 		}
 	}

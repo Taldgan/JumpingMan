@@ -90,6 +90,7 @@ public class LevelManager {
 		Score.finalScore += score.calculateTimeScore();
 	}
 	public static void gameOver() {
+		loadLevel();
 		Score.finalScore = 0;
 	}
 	

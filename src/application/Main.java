@@ -54,6 +54,7 @@ public class Main extends Application {
 			AnimationTimer timer = new AnimationTimer() {
 				@Override
 				public void handle(long arg0) {
+					System.out.println("State " + StateManager.gameState);
 					if(StateManager.gameState == State.MAINMENU)
 						game.update();
 					//only process input if playing/dying/winning, render game if not already loaded
@@ -75,8 +76,6 @@ public class Main extends Application {
 						if(StateManager.prevMenu == State.GAMEOVER) {
 							StateManager.prevMenu = State.MAINMENU;
 							StateManager.currentLevel = Level.LEVEL1;
-							game.newGame();
-							StateManager.gameState = State.MAINMENU;
 						}
 						try {
 							game.render(primaryStage, root);
