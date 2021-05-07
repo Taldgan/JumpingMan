@@ -22,15 +22,15 @@ public class InputFunctions {
 
 		//Only get movement input if in 'playing' state
 		if(StateManager.gameState == State.PLAYING) {
-			if ((key == KeyCode.RIGHT || key == KeyCode.L) && !character.getCollideRight()) {
+			if ((key == KeyCode.D || key == KeyCode.RIGHT || key == KeyCode.L) && !character.getCollideRight()) {
 				character.setdx(5);
 				character.setWalking(true);
 			}
-			if ((key == KeyCode.LEFT || key == KeyCode.H) && !character.getCollideLeft()) {
+			if ((key == KeyCode.A || key == KeyCode.LEFT || key == KeyCode.H) && !character.getCollideLeft()) {
 				character.setdx(-5);
 				character.setWalking(true);
 			}
-			if (key == KeyCode.SPACE || key == KeyCode.UP || key == KeyCode.K) {
+			if (key == KeyCode.SPACE || key == KeyCode.UP || key == KeyCode.K || key == KeyCode.W) {
 				if (!character.getJumping() || character.getCollide()) {
 					character.setGroundLevel(character.gety());
 					character.setdy(-6.5); 
