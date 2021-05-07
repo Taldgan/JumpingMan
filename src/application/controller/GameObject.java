@@ -113,6 +113,7 @@ public class GameObject extends InputFunctions{
 			this.finalLabel.setText("" + Score.finalScore);
 			break;
 		}
+		//Ensure no duplicate children added to StackPane
 		if(StateManager.gameState == State.MAINMENU && !(root.getChildren().contains(gameView) && !(StateManager.prevMenu == State.GAMEOVER)))
 			root.getChildren().add(gameView);
 		if(!root.getChildren().contains(view))
@@ -122,8 +123,10 @@ public class GameObject extends InputFunctions{
 	}
 	
 	
+	/**
+	 * Processes player keyboard input
+	 */
 	public void processInput() {
-
 		Main.mainScene.setOnKeyPressed(e ->{
 			keyPressed(e, LevelManager.mainGuy);
 		});

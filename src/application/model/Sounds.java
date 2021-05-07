@@ -4,10 +4,19 @@ import javax.sound.sampled.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.io.IOException;
+
+/**
+ * Class for playing sounds and background music. Contains methods to start/stop background music, 
+ * as well as for playing sound effects.
+ * 
+ * @author Gabriel Pastelero
+ *
+ */
 public class Sounds 
 {
 	private Clip sfx;
 	private Clip song;
+	//ArrayLists of: Sound Effects, then Background Music
 	private ArrayList<String> sfxCollection;
 	private ArrayList<String> bgmCollection;
 	private AudioInputStream sfxStream;
@@ -30,8 +39,13 @@ public class Sounds
 		bgmCollection.add("src/resources/sounds/ex101.wav");
 	}
 	
-	//Invoke these methods through the static object sPlayer
+	//Invoke these (playSFX, playSong, stopSong) methods through the static object sPlayer
 	//ie, Sounds.sPlayer.playSFX(0);
+
+	/**
+	 * Plays a sound effect from the SFX ArrayList.
+	 * @param num - index for SFX ArrayList, determining which sound effect to play
+	 */
 	public void playSFX(int num)
 	{
 		try
@@ -60,6 +74,10 @@ public class Sounds
 
 	}
 	
+	/**
+	 * Plays a song from the BGM ArrayList.
+	 * @param num - index in BGM ArrayList of the song to play
+	 */
 	public void playSong(int num)
 	{
 		if(!played)
@@ -91,6 +109,9 @@ public class Sounds
 		}
 	}
 	
+	/**
+	 * Stops songs that are playing.
+	 */
 	public void stopSong()
 	{
 		if(song != null && song.isOpen())

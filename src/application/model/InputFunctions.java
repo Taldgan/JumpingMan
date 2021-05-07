@@ -3,12 +3,22 @@ package application.model;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
+/**
+ * Class containing functions for processing user input. Can alter player movement and gameState
+ * @author Thomas White, Caleb Kopecky, Gabriel Pastelero
+ */
 public class InputFunctions {
 
+	/**
+	 * Receives keyboard input and then processes it, doing various actions .
+	 * @param event - key event object, allows gathering the key pressed
+	 * @param character - character's movement to alter based off of key
+	 */
 	public void keyPressed (KeyEvent event, Character character) {
 
 		KeyCode key = event.getCode();
 
+		//Pause game if playing & press escape, otherwise resume
 		if (key == KeyCode.ESCAPE) {
 			if(StateManager.gameState == State.PAUSE) 
 				StateManager.gameState = State.PLAYING;
@@ -17,10 +27,11 @@ public class InputFunctions {
 
 		}
 
+		//Quit if paused and Q pressed
 		if(key == KeyCode.Q && StateManager.gameState == State.PAUSE)
 			System.exit(0);
 
-		//Only get movement input if in 'playing' state
+		//If 'playing', move player left/right or jump based off of input
 		if(StateManager.gameState == State.PLAYING) {
 			if ((key == KeyCode.D || key == KeyCode.RIGHT || key == KeyCode.L) && !character.getCollideRight()) {
 				character.setdx(5);
@@ -42,6 +53,7 @@ public class InputFunctions {
 
 	}
 
+	//If key is released, stop respective movement
 	public void keyReleased(KeyEvent event, Character character) {
 
 		KeyCode key = event.getCode();

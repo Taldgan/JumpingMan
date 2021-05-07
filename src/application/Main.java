@@ -14,6 +14,11 @@ import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+/**
+ * Initial class, creates the GUI and initializes the controller. 
+ * @author Thomas White, Caleb Kopecky, Gabriel Pastelero
+ *
+ */
 public class Main extends Application {
 
 	private boolean menuLoaded = false;
@@ -54,7 +59,6 @@ public class Main extends Application {
 			AnimationTimer timer = new AnimationTimer() {
 				@Override
 				public void handle(long arg0) {
-					System.out.println("State " + StateManager.gameState);
 					if(StateManager.gameState == State.MAINMENU)
 						game.update();
 					//only process input if playing/dying/winning, render game if not already loaded

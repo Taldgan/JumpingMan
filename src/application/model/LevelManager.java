@@ -16,8 +16,16 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
+/**
+ * Statically manages all of the level-related objects for the game. This includes lists of all game obstacles and characters, 
+ * the String data for levels, and all of their Groups. Also includes methods for reading in level data and spawning the 
+ * associated level objects from the files.
+ * 
+ * @author Thomas White, Caleb Kopecky, Gabriel Pastelero
+ */
 public class LevelManager {
 	
+	//Score counting object
 	static Score score = new Score();
 
 	//Level/Object Size integers
@@ -73,6 +81,9 @@ public class LevelManager {
 	//Colors
 	private static Color bgColor, groundColor, grassColor, platColor, cloudColor;
 	
+	/**
+	 * Move all FloatLabels, and remove them if they are marked for removal
+	 */
 	public static void floatLabels() {
 		ArrayList<FloatLabel> iterList = new ArrayList<FloatLabel>();
 		iterList.addAll(scoreLabels);
@@ -85,19 +96,30 @@ public class LevelManager {
 		}
 	}
 
+	/**
+	 * Calculate final score for the level
+	 */
 	public static void levelOver() {
 		Score.stop();
 		Score.finalScore += score.calculateTimeScore();
 	}
+
+	/**
+	 * Reset final score to 0 for losing game
+	 */
 	public static void gameOver() {
 		loadLevel();
 		Score.finalScore = 0;
 	}
 	
+	/**
+	 * Re-initializes all relevant level data. Level data is read in from the level files (determining file based off of the StateManager's declared 'currentLevel'.
+	 * The level strings are then read in, and platforms/enemies/pointboxes etc. are spawned in based off of those strings. The main character and other items are 
+	 * also spawned. 
+	 */
 	public static void loadLevel() {
 		
 		Score.start();		
-		
 		//Read in level data to strings
 		try {
 			URL levelsURL = LevelManager.class.getClass().getResource("/resources/levels/level" + StateManager.currentLevel.ordinal() + ".lvl");
@@ -140,6 +162,7 @@ public class LevelManager {
 		scoreLabels = new ArrayList<FloatLabel>();
 		int upperOffset = 10;
 
+		//Spawn main character
 		mainGuy = new MainCharacter(spawnX, spawnY, 20, Color.RED, lifeCount);
 
 
@@ -151,7 +174,6 @@ public class LevelManager {
 		lowerPlatforms = spawnPlatforms(lowerPlatString,0,0, platColor, grassColor, lowerPlatList);
 		upperPlatforms = spawnPlatforms(upperPlatString,0, upperOffset, platColor, grassColor, upperPlatList);
 		movingPlatforms = spawnMovingPlatforms(movingPlatString, 0, 50, grassColor, movingPlatList);
-		
 		pointBoxes = spawnPointBoxes(pointBoxString, pointBoxWidth, pointBoxHeight, Color.web("0xF5E101"), pointBoxList);		
 		enemies = spawnEnemies(lowerEnemyString, groundString, 0);
 		enemies.getChildren().add(spawnEnemies(upperEnemyString, groundString, upperOffset));
@@ -167,28 +189,34 @@ public class LevelManager {
 		//Add all moving object lists to allMovingObjects for moving collision
 		allMovingObjects.addAll(movingPlatList);
 
-		//Lastly, set labels
+		//Set labels
 		pauseLabel.setTranslateY(LevelManager.groundLevel-400);
 		pauseLabel.setFont(new Font("Blocky Font", 50));
 		infoLabel.setTranslateY(LevelManager.groundLevel - 655);
 		infoLabel.setFont(new Font("Blocky Font", 40));
+
+		//Lastly, re-create the graphical life counter
 		lifeCounter = new Group();
 		for(int l = 0; l < mainGuy.getLives(); l++) {
 			lifeCounter.getChildren().add(new Circle((l*(mainGuy.getRadius()*2))+15, 0, (mainGuy.getRadius()*2)/3, mainGuy.getColor()));
 		}
-		drawClouds();
-
 	}
 	
+	/**
+	 * Dynamically generates a group of clouds. Shape and y location of the clouds are randomized, and the group is returned.
+	 * @return Group - the Group object containing all of the clouds
+	 */
 	private static Group drawClouds() {
 		Random gen = new Random();
 		int cloudX = 200;
 		int cloudY;
 		Group cloud, clouds = new Group();;
 		Ellipse puff;
+		//For loop to create a cloud and add it to 'clouds' group
 		for(int i = 0; i < groundString.length(); i+=3) {
 			cloudY = 400 - gen.nextInt(200)-100;
 			cloud = new Group();
+			//For loop to randomly assign puffs and assign them to a cloud
 			for(int j = 0; j < gen.nextInt(5)+4; j++) {
 				puff = new Ellipse();
 				puff.setCenterX(cloudX + (i*tileWidth) + (j*12) + 10 + gen.nextInt(10));
@@ -204,6 +232,13 @@ public class LevelManager {
 		
 	}
 
+	/**
+	 * 
+	 * @param eSet - the String of enemy data, determines type and location of enemy spawn
+	 * @param groundSet - the String of ground data, determines zone code of enemy
+	 * @param upperOffset - upper platform offset, for enemies spawning on upper platforms
+	 * @return Group - returns the newly created Group of enemies
+	 */
 	private static Group spawnEnemies(String eSet, String groundSet, int upperOffset)
 	{
 		//1 is a normal enemy
@@ -244,12 +279,23 @@ public class LevelManager {
 		return enemyGroup;
 	}
 
+	/**
+	 *  Spawns ground obstacles, and fill ground/ground offset ArrayLists. Returns the group of ground objects.
+	 * @param lvl - the level String determining where and at what height to spawn the ground
+	 * @param offsetX - x offset for ground
+	 * @param offsetY - y offset for ground
+	 * @param c - 'ground' color of the ground
+	 * @param cTop - 'grass' color of the ground
+	 * @param gList - the list of Obstacles to add the ground to
+	 * @return Group - returns the Group of newly created ground obstacles
+	 */
 	private static Group spawnGround(String lvl, int offsetX, int offsetY, Color c, Color cTop, ArrayList<Obstacle> gList) 
 	{
 		int gOffset;
 		Group groundG = new Group();
 		for(int i = 0; i < lvl.length(); i++) {
 			gOffset = 0;
+			//0's mean a hole in the ground
 			if(lvl.charAt(i) != '0') {
 				Obstacle g = new Obstacle(tileWidth, groundLevel-50, c, cTop);
 				gList.add(g);
@@ -258,6 +304,7 @@ public class LevelManager {
 
 				g.setX(tileWidth*i);
 				int offsetVal = Integer.parseInt(String.valueOf(lvl.charAt(i)));
+				//Higher than 1 means an raised height/offset of 60*character value
 				if(offsetVal > 1) {
 					gOffset = 60*Integer.parseInt(String.valueOf(lvl.charAt(i)));
 					g.setY(groundLevel-gOffset);
@@ -271,16 +318,25 @@ public class LevelManager {
 
 	}
 	
+	/**
+	 *  Spawns moving platform obstacles, and fills the moving platforms ArrayList. Returns the group of newly created moving platforms.
+	 * @param lvl - the data String determining where, what height, and how far the moving platform will move
+	 * @param offsetX - x offset for the moving platforms
+	 * @param offsetY - y offset for the moving platforms
+	 * @param c - color of the moving platforms
+	 * @param pList - the list of MovingObstacles to add the moving platforms to
+	 * @return Group - returns the Group of newly created moving platforms
+	 */ 
 	private static Group spawnMovingPlatforms(String lvl, int offsetX, int offsetY, Color c, ArrayList<MovingObstacle> pList) {
 		Group platG = new Group();
-		double groundLvlOffset = groundLevel - 45;
+		double groundLvlOffset = groundLevel - 45; //base offset for platforms
 		for(int x = 0; x < lvl.length()-1;x++)
 		{
 			if(lvl.charAt(x) != '0') //If the current char is not 0, create a platform in that spot.
 			{
 				//Spawn platform based off of char's location in string
 				//Each char will be 90 pixels of space, and will spawn at a height of 265-(y*45)
-				//charAt(x) determines offset of platform, charAt(x+1) determines how far to move before returning 
+				//charAt(x) determines offset of platform, charAt(x+1) determines how far to move the platform before returning 
 
 				MovingObstacle r = new MovingObstacle((int) (tileWidth),25,c, Integer.parseInt(String.valueOf(lvl.charAt((x+1))))*tileWidth); //Platforms are 90x25
 				pList.add(r);
@@ -295,7 +351,17 @@ public class LevelManager {
 		}
 		return platG;
 	}
-		
+
+	/**
+	 *  Spawns platform obstacles, and fills the platforms ArrayList. Returns the group of newly created platforms.
+	 * @param lvl - the data String determining where and what height the platform will spawn at
+	 * @param offsetX - x offset for the platforms
+	 * @param offsetY - y offset for the platforms
+	 * @param c - 'ground' color of the platforms
+	 * @param cTop - 'grass' color of the platforms
+	 * @param pList - the list of Obstacles to add the platforms to
+	 * @return Group - returns the Group of newly created platforms
+	 */ 	
 	private static Group spawnPlatforms(String lvl, int offsetX, int offsetY, Color c, Color cTop, ArrayList<Obstacle> pList) 
 	{
 		//lvl string: 
@@ -333,19 +399,27 @@ public class LevelManager {
 		return platG;
 	}
 
+	/**
+	 *  Spawns PointBox obstacles, and fills the PointBox ArrayList. Returns the group of newly created PointBoxes.
+	 * @param lvl - level String determining position and height to spawn the PointBoxes at
+	 * @param sizeX - width of box
+	 * @param sizeY - height of box
+	 * @param c - color of box, should image loading fail
+	 * @param oList - list of PointBoxes to add the new PointBoxes to
+	 * @return Group - returns the Group of newly created PointBoxes
+	 */
 	private static Group spawnPointBoxes(String lvl, int sizeX, int sizeY, Color c, ArrayList<PointBox> oList)
 	{
 		Group pBoxGroup = new Group();
 		double groundLvlOffset = groundLevel-45;
 		for(int x = 0; x < lvl. length(); x++)
 		{
-			if(lvl.charAt(x) != '0') //If the current char is not 0, create a platform in that spot.
+			if(lvl.charAt(x) != '0') //No pointBoxes at '0' chars
 			{
 				PointBox pBox = new PointBox(sizeX,sizeY, c);
 				pBox.setX(tileWidth*x);
 				pBox.setY(groundLvlOffset-groundOffsets.get(x)+Integer.parseInt(String.valueOf(lvl.charAt(x)))*45*-1);
 				oList.add(pBox);
-				//pBoxGroup.getChildren().add(pBox.getPlat());
 				pBoxGroup.getChildren().add(pBox.getImageGroup());
 			}
 		}
