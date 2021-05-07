@@ -88,6 +88,7 @@ public class GameObject extends InputFunctions{
 			view = FXMLLoader.load(getClass().getResource("/application/view/YouWon.fxml"));
 			this.finalLabel.setTranslateX(230);
 			this.finalLabel.setTranslateY(-195);
+			this.finalLabel.setText("" + Score.finalScore);
 			break;
 		}
 		root.getChildren().add(view);

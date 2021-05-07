@@ -45,9 +45,9 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Button blendMode="DIFFERENCE" mnemonicParsing="false" onAction="#mainMenu" text="Main Menu">
+                        <Button mnemonicParsing="false" onAction="#mainMenu" style="-fx-background-color: #680c0c;" text="Main Menu" textFill="#00ecf8">
                            <font>
-                              <Font size="25.0" />
+                              <Font size="30.0" />
                            </font>
                         </Button>
                      </children>

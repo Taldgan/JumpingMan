@@ -46,7 +46,7 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#playAgain" style="-fx-background-color: brown;" text="Play Again" textFill="#00ecf8">
+                        <Button mnemonicParsing="false" onAction="#playAgain" style="-fx-background-color: #680c0c;" text="Play Again" textFill="#00ecf8">
                            <font>
                               <Font size="30.0" />
                            </font>
@@ -55,7 +55,7 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#exitGame" style="-fx-background-color: brown;" text="Quit" textFill="#00ecf8">
+                        <Button mnemonicParsing="false" onAction="#exitGame" style="-fx-background-color: #680c0c;" text="Quit" textFill="#00ecf8">
                            <font>
                               <Font size="30.0" />
                            </font>
