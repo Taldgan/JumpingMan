@@ -28,12 +28,12 @@ import javafx.stage.Stage;
 public class GameObject extends InputFunctions{
 	
 	@FXML 
-	Label finalLabel;
+	private Label finalLabel;
 
 	private Parent view = null;
-	double lastTime = System.currentTimeMillis();
-	double delta;
-	double gravity = 1;
+	private double lastTime = System.currentTimeMillis();
+	private double delta;
+	private double gravity = 1;
 
 	public void render(Stage primaryStage, StackPane root, FXMLLoader loader) throws IOException {
 		if(view != null) {
