@@ -55,7 +55,7 @@ public class MainCharacter extends Character {
 		if (isDead()) {
 			setLives(getLives() - 1);
 			LevelManager.lifeCount--;
-			if(getLives() <= 0)
+			if(getLives() >= 0)
 				LevelManager.lifeCounter.getChildren().remove(getLives());
 			StateManager.gameState = State.DYING;
 		}
@@ -78,8 +78,9 @@ public class MainCharacter extends Character {
 			LevelManager.lifeCount--;
 			if(getLives() != -1)
 				LevelManager.lifeCounter.getChildren().remove(getLives());
-			if(getLives() <= 0)
+			if(getLives() <= 0) {
 				StateManager.gameState = State.GAMEOVER;
+			}
 			else
 				StateManager.gameState = State.YOUDIED;
 		}
@@ -100,7 +101,7 @@ public class MainCharacter extends Character {
 			if(winAnimationCount % 15 == 0) {
 				swapDir();
 			}
-			if(gety()+character.getRadius() < LevelManager.groundLevel && !animatingWinG) {
+			if(gety()+character.getRadius() <= LevelManager.groundLevel && !animatingWinG) {
 				if(movingRight()) {
 					character.setTranslateX(character.getTranslateX() + 3);
 					hat.setTranslateX(hat.getTranslateX() + 3);

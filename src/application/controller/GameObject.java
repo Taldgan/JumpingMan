@@ -26,6 +26,15 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+/**
+ * 
+ * @author Thomas White, Caleb Kopecky, Gabriel Pastelero
+ * 
+ * The GameObject class acts as the controller for the GUI elements, updating core game variables and objects as needed based on user input.
+ * This includes updating positions of all dynamic objects in the game (platforms, characters, labels, etc), managing
+ * collision detection and resulting movement for all of the character objects, as well as updating the gameState/level information.
+ *
+ */
 public class GameObject extends InputFunctions{
 	
 	@FXML 
@@ -36,25 +45,35 @@ public class GameObject extends InputFunctions{
 	private double delta;
 	private double gravity = 1;
 
-	public void render(Stage primaryStage, StackPane root, FXMLLoader loader) throws IOException {
+	/**
+	 * Assigns the passed in StackPane's contents to a new view, based off of game State.
+	 * @param primaryStage - the stage, refreshed after re-assigning it's contents
+	 * @param root - the StackPane that has it's contents updated
+	 * @throws IOException
+	 */
+	public void render(Stage primaryStage, StackPane root) throws IOException {
 		Parent gameView = LevelManager.level;
 		if(view != null) {
 			root.getChildren().remove(view);
 		}
+		//Switch to assign displayed content based off of gameState
 		switch(StateManager.gameState) {
 		case MAINMENU:
 			view = FXMLLoader.load(getClass().getResource("/application/view/MainMenu.fxml"));
 			this.finalLabel.setText("");
 			break;
+		//Don't want to hide game content with the pause screen, so only set pause label
 		case PAUSE:
 			LevelManager.pauseLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX()+400);
 			LevelManager.level.getChildren().add(LevelManager.pauseLabel);
 			view = LevelManager.level;
 			this.finalLabel.setText("");
 			break;
+		//Dying/Winning are animation states, only stop playing the background song and continue as normal with 'playing'
 		case DYING:
 		case WINNING:
 			Sounds.sPlayer.stopSong();
+		//Re-assigns and re-add/remove necessary labels (lives/score, etc), sets primary view to the level
 		case PLAYING:
 			LevelManager.infoLabel.setTranslateX(LevelManager.mainGuy.getCharacter().getTranslateX());
 			if(!LevelManager.level.getChildren().contains(LevelManager.infoLabel)) 
@@ -68,12 +87,14 @@ public class GameObject extends InputFunctions{
 			view = LevelManager.level;
 			this.finalLabel.setText("");
 			break;
+		//Shows the 'YouDied' screen, as well as setting the final label position to show lives left
 		case YOUDIED:
 			view = FXMLLoader.load(getClass().getResource("/application/view/YouDied.fxml"));
 			this.finalLabel.setText("" + LevelManager.lifeCount);
 			this.finalLabel.setTranslateX(425);
 			this.finalLabel.setTranslateY(-188);
 			break;
+		//Shows the 'GameOver' screen, as well as setting the final label position to show your final score
 		case GAMEOVER:
 			Sounds.sPlayer.stopSong();
 			view = FXMLLoader.load(getClass().getResource("/application/view/GameOver.fxml"));
@@ -81,10 +102,9 @@ public class GameObject extends InputFunctions{
 			this.finalLabel.setTranslateX(230);
 			this.finalLabel.setTranslateY(-195);
 			break;
+		//Shows next level screen, 
 		case NEXTLEVEL:
 			view = FXMLLoader.load(getClass().getResource("/application/view/NextLevel.fxml"));
-			this.finalLabel.setTranslateX(230);
-			this.finalLabel.setTranslateY(-195);
 			break;
 		case YOUWON:
 			view = FXMLLoader.load(getClass().getResource("/application/view/YouWon.fxml"));
@@ -93,9 +113,9 @@ public class GameObject extends InputFunctions{
 			this.finalLabel.setText("" + Score.finalScore);
 			break;
 		}
-		root.getChildren().add(view);
-		if(StateManager.gameState == State.MAINMENU && !(root.getChildren().contains(gameView)))
+		if(StateManager.gameState == State.MAINMENU && !(root.getChildren().contains(gameView) && !(StateManager.prevMenu == State.GAMEOVER)))
 			root.getChildren().add(gameView);
+		root.getChildren().add(view);
 		this.finalLabel.toFront();
 		primaryStage.show();
 	}
