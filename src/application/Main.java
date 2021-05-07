@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import application.controller.GameObject;
 import application.model.Level;
+import application.model.LevelManager;
 import application.model.State;
 import application.model.StateManager;
 import javafx.animation.AnimationTimer;
@@ -37,14 +38,15 @@ public class Main extends Application {
 			primaryStage.setScene(mainScene);
 			StateManager.gameState = State.MAINMENU;
 			StateManager.currentLevel = Level.LEVEL1;
+			LevelManager.loadLevel();
 			game = fxmlLoader.getController();
 
 			game.render(primaryStage, root, fxmlLoader);
 			AnimationTimer timer = new AnimationTimer() {
 				@Override
 				public void handle(long arg0) {
+					game.update();
 					if(StateManager.gameState == State.PLAYING || StateManager.gameState == State.DYING || StateManager.gameState == State.WINNING) {
-						game.update();
 						if(!gameLoaded) {
 							try {
 								game.render(primaryStage, root, fxmlLoader);

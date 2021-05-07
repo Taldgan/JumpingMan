@@ -37,6 +37,7 @@ public class GameObject extends InputFunctions{
 	private double gravity = 1;
 
 	public void render(Stage primaryStage, StackPane root, FXMLLoader loader) throws IOException {
+		Parent gameView = LevelManager.level;
 		if(view != null) {
 			root.getChildren().remove(view);
 		}
@@ -93,6 +94,8 @@ public class GameObject extends InputFunctions{
 			break;
 		}
 		root.getChildren().add(view);
+		if(StateManager.gameState == State.MAINMENU && !(root.getChildren().contains(gameView)))
+			root.getChildren().add(gameView);
 		this.finalLabel.toFront();
 		primaryStage.show();
 	}

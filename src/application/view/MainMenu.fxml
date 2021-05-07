@@ -2,8 +2,6 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
@@ -14,11 +12,6 @@
    <children>
       <StackPane prefHeight="150.0" prefWidth="200.0">
          <children>
-            <ImageView fitHeight="799.0" fitWidth="1035.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../resources/images/JumpMan.png" />
-               </image>
-            </ImageView>
             <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0">
                <children>
                   <StackPane prefHeight="100.0" prefWidth="500.0">
@@ -30,7 +23,8 @@
                         </Label>
                      </children>
                   </StackPane>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                  <HBox alignment="CENTER" prefHeight="161.0" prefWidth="1000.0" />
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="1000.0">
                      <children>
                         <Button mnemonicParsing="false" onAction="#newGame" prefHeight="56.0" prefWidth="175.0" style="-fx-background-color: #680c0c;" text="PLAY" textFill="#00ecf8">
                            <font>
@@ -48,8 +42,6 @@
                         </Button>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" />
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" />
                </children>
             </VBox>
          </children>
