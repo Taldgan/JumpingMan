@@ -115,7 +115,8 @@ public class GameObject extends InputFunctions{
 		}
 		if(StateManager.gameState == State.MAINMENU && !(root.getChildren().contains(gameView) && !(StateManager.prevMenu == State.GAMEOVER)))
 			root.getChildren().add(gameView);
-		root.getChildren().add(view);
+		if(!root.getChildren().contains(view))
+			root.getChildren().add(view);
 		this.finalLabel.toFront();
 		primaryStage.show();
 	}
@@ -154,7 +155,7 @@ public class GameObject extends InputFunctions{
 	}
 
 	@FXML 
-	public void newGame(ActionEvent event) {
+	public void newGame() {
 		if(LevelManager.lifeCount == 0) {
 			LevelManager.lifeCount = 3;
 			StateManager.currentLevel = Level.LEVEL1;
