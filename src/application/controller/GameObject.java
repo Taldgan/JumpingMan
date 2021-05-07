@@ -150,6 +150,7 @@ public class GameObject extends InputFunctions{
 	public void mainMenu(ActionEvent e) {
 		StateManager.prevMenu = State.GAMEOVER;
 		StateManager.gameState = State.MAINMENU;
+		LevelManager.loadLevel();
 	}
 
 	@FXML 
