@@ -61,7 +61,7 @@ public class LevelManager {
 	static Rectangle theVoid;
 
 	//Main character variables
-	private static int spawnX = 250, spawnY = LevelManager.groundLevel-25;
+	private static int spawnX = 250, spawnY = LevelManager.groundLevel-20;
 	public static MainCharacter mainGuy;
 	
 	//Labels/Data
