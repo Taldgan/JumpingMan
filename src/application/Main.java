@@ -74,6 +74,7 @@ public class Main extends Application {
 					else if(!menuLoaded || StateManager.prevMenu == State.GAMEOVER) {
 						if(StateManager.prevMenu == State.GAMEOVER) {
 							StateManager.prevMenu = State.MAINMENU;
+							StateManager.currentLevel = Level.LEVEL1;
 							LevelManager.loadLevel();
 						}
 						try {

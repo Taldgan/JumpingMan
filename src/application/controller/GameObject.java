@@ -354,7 +354,7 @@ public class GameObject extends InputFunctions{
 
 	public int findNearestHole(String holes)
 	{
-		int pos = (int)LevelManager.mainGuy.getx()/LevelManager.tileWidth-1; //position in string
+		int pos = (int)LevelManager.mainGuy.getx()/(LevelManager.tileWidth-1); //position in string
 		for(int x = pos; x >= 0; x--)
 		{
 			if(holes.charAt(x) != '0')
