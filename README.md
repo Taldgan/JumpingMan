@@ -1,7 +1,7 @@
 # CS3443 Semester Project
 Jumping Man
 
-Running the program: Just load the program up and run it on your ide of choice,
+Running the program: Just load the program up and run it on your IDE of choice,
 no other steps required.
 
 Instructions: Get to the end of the level without running into any enemies or
